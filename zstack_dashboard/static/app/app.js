@@ -15867,6 +15867,7 @@ var MHost;
         HostManager.prototype.wrap = function (Host) {
             return new kendo.data.ObservableObject(Host);
         };
+        
         HostManager.prototype.create = function (host, done) {
             var _this = this;
             var msg = null;
@@ -15878,6 +15879,12 @@ var MHost;
             }
             else if (host.hypervisorType == 'Simulator') {
                 msg = new ApiHeader.APIAddSimulatorHostMsg();
+            }
+            else if (host.hypervisorType == 'Xen') {                    //修改为Xen，完善配套API
+            	 msg = new ApiHeader.APIAddKVMHostMsg();
+                 msg.username = host.username;
+                 msg.password = host.password;
+                 msg.sshPort = host.port;
             }
             msg.name = host.name;
             msg.description = host.description;
@@ -16384,6 +16391,11 @@ var MHost;
                     angular.isDefined(this.clusterUuid) && Utils.notNullnotUndefined(this.managementIp) &&
                     Utils.notNullnotUndefined(this.username) && Utils.notNullnotUndefined(this.password);
             }
+            if (this.hypervisorType == 'Xen') {
+                return angular.isDefined(this.name) && angular.isDefined(this.description) &&
+                    angular.isDefined(this.clusterUuid) && Utils.notNullnotUndefined(this.managementIp) &&
+                    Utils.notNullnotUndefined(this.username) && Utils.notNullnotUndefined(this.password);
+            }
             else {
                 return angular.isDefined(this.name) && angular.isDefined(this.description) &&
                     angular.isDefined(this.clusterUuid) && Utils.notNullnotUndefined(this.managementIp);
@@ -16434,6 +16446,11 @@ var MHost;
                             return Utils.notNullnotUndefined(this.name)
                                 && Utils.notNullnotUndefined(this.clusterUuid) && Utils.notNullnotUndefined(this.managementIp) &&
                                 Utils.notNullnotUndefined(this.username) && Utils.notNullnotUndefined(this.password);
+                        }
+                        else if(this.hypervisorType == 'Xen') {
+                        	 return Utils.notNullnotUndefined(this.name)
+                             && Utils.notNullnotUndefined(this.clusterUuid) && Utils.notNullnotUndefined(this.managementIp) &&
+                             Utils.notNullnotUndefined(this.username) && Utils.notNullnotUndefined(this.password);
                         }
                         else {
                             return Utils.notNullnotUndefined(this.name)
