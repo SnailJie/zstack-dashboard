@@ -16386,12 +16386,7 @@ var MHost;
         function CreateHostModel() {
         }
         CreateHostModel.prototype.canCreate = function () {
-            if (this.hypervisorType == 'KVM') {
-                return angular.isDefined(this.name) && angular.isDefined(this.description) &&
-                    angular.isDefined(this.clusterUuid) && Utils.notNullnotUndefined(this.managementIp) &&
-                    Utils.notNullnotUndefined(this.username) && Utils.notNullnotUndefined(this.password);
-            }
-            if (this.hypervisorType == 'Xen') {
+            if (this.hypervisorType == 'KVM' ||this.hypervisorType == 'Xen' ) {
                 return angular.isDefined(this.name) && angular.isDefined(this.description) &&
                     angular.isDefined(this.clusterUuid) && Utils.notNullnotUndefined(this.managementIp) &&
                     Utils.notNullnotUndefined(this.username) && Utils.notNullnotUndefined(this.password);
