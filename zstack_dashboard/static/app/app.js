@@ -3268,6 +3268,29 @@ var ApiHeader;
         return APIAddKVMHostMsg;
     }());
     ApiHeader.APIAddKVMHostMsg = APIAddKVMHostMsg;
+    
+    
+    
+    
+    
+    //````````````````````````````````Xen Headers Begin``````````````````````````````````````
+    
+    var APIAddXenHostMsg = (function () {
+        function APIAddXenHostMsg() {
+        }
+        APIAddXenHostMsg.prototype.toApiMap = function () {
+            var msg = {
+                'org.zstack.xen.APIAddXenHostMsg': this
+            };
+            return msg;
+        };
+        return APIAddXenHostMsg;
+    }());
+    ApiHeader.APIAddXenHostMsg = APIAddXenHostMsg;
+    
+    //````````````````````````````````Xen Headers Begin``````````````````````````````````````    
+    
+    
     var APIAddNfsPrimaryStorageMsg = (function () {
         function APIAddNfsPrimaryStorageMsg() {
         }
@@ -15881,7 +15904,7 @@ var MHost;
                 msg = new ApiHeader.APIAddSimulatorHostMsg();
             }
             else if (host.hypervisorType == 'Xen') {                    //修改为Xen，完善配套API
-            	 msg = new ApiHeader.APIAddKVMHostMsg();
+            	 msg = new ApiHeader.APIAddXenHostMsg();
                  msg.username = host.username;
                  msg.password = host.password;
                  msg.sshPort = host.port;
@@ -16386,7 +16409,7 @@ var MHost;
         function CreateHostModel() {
         }
         CreateHostModel.prototype.canCreate = function () {
-            if (this.hypervisorType == 'KVM' ||this.hypervisorType == 'Xen' ) {
+            if ((this.hypervisorType == 'KVM')||(this.hypervisorType == 'Xen') ) {
                 return angular.isDefined(this.name) && angular.isDefined(this.description) &&
                     angular.isDefined(this.clusterUuid) && Utils.notNullnotUndefined(this.managementIp) &&
                     Utils.notNullnotUndefined(this.username) && Utils.notNullnotUndefined(this.password);
