@@ -3287,6 +3287,20 @@ var ApiHeader;
         return APIAddXenHostMsg;
     }());
     ApiHeader.APIAddXenHostMsg = APIAddXenHostMsg;
+
+var APIUpdateXenHostMsg = (function () {
+        function APIUpdateXenHostMsg() {
+        }
+        APIUpdateXenHostMsg.prototype.toApiMap = function () {
+            var msg = {
+                'org.zstack.xen.APIUpdateXenHostMsg': this
+            };
+            return msg;
+        };
+        return APIUpdateXenHostMsg;
+    }());
+    ApiHeader.APIUpdateXenHostMsg = APIUpdateXenHostMsg;
+
     
     //````````````````````````````````Xen Headers Begin``````````````````````````````````````    
     
@@ -6392,7 +6406,16 @@ var ApiHeader;
         }
         return KVMHostInventory;
     }());
-    ApiHeader.KVMHostInventory = KVMHostInventory;
+    ApiHeader.XenHostInventory = XenHostInventory;
+     var XenHostInventory = (function () {
+        function XenHostInventory() {
+        }
+        return XenHostInventory;
+    }());
+    ApiHeader.XenHostInventory = XenHostInventory;
+
+
+
     var VirtualRouterEipRefInventory = (function () {
         function VirtualRouterEipRefInventory() {
         }
@@ -6536,7 +6559,9 @@ var ApiHeader;
     ApiHeader.FusionstorBackupStorageMonInventoryQueryable = ['hostname', 'monPort', 'createDate', 'lastOpDate', 'backupStorageUuid'];
     ApiHeader.TagResourceTypeFusionstorBackupStorageMonVO = 'FusionstorBackupStorageMonVO';
     ApiHeader.KVMHostInventoryQueryable = ['username', 'zoneUuid', 'name', 'uuid', 'clusterUuid', 'description', 'managementIp', 'hypervisorType', 'state', 'status', 'totalCpuCapacity', 'availableCpuCapacity', 'totalMemoryCapacity', 'availableMemoryCapacity', 'createDate', 'lastOpDate'];
+    ApiHeader.XenHostInventoryQueryable = ['username', 'zoneUuid', 'name', 'uuid', 'clusterUuid', 'description', 'managementIp', 'hypervisorType', 'state', 'status', 'totalCpuCapacity', 'availableCpuCapacity', 'totalMemoryCapacity', 'availableMemoryCapacity', 'createDate', 'lastOpDate'];
     ApiHeader.TagResourceTypeKVMHostVO = 'KVMHostVO';
+    ApiHeader.TagResourceTypeXenHostVO = 'XenHostVO';
     ApiHeader.SftpBackupStorageInventoryQueryable = ['hostname', 'uuid', 'name', 'url', 'description', 'totalCapacity', 'availableCapacity', 'type', 'state', 'status', 'createDate', 'lastOpDate', 'attachedZoneUuids'];
     ApiHeader.TagResourceTypeSftpBackupStorageVO = 'SftpBackupStorageVO';
     ApiHeader.VirtualRouterOfferingInventoryQueryable = ['managementNetworkUuid', 'publicNetworkUuid', 'zoneUuid', 'isDefault', 'imageUuid', 'uuid', 'name', 'description', 'cpuNum', 'cpuSpeed', 'memorySize', 'type', 'allocatorStrategy', 'sortKey', 'createDate', 'lastOpDate', 'state'];

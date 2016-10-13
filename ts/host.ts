@@ -90,6 +90,12 @@ module MHost {
             } else if (host.hypervisorType == 'Simulator') {
                 msg = new ApiHeader.APIAddSimulatorHostMsg();
             }
+             else if (host.hypervisorType == 'Xen') {
+                msg = new ApiHeader.APIAddXenHostMsg();
+                msg.username  = host.username;
+                msg.password = host.password;
+                msg.sshPort = host.port;
+            }
             msg.name = host.name;
             msg.description = host.description;
             msg.clusterUuid = host.clusterUuid;
@@ -618,7 +624,7 @@ module MHost {
         zoneList: kendo.ui.DropDownListOptions;
 
         canCreate() : boolean {
-            if (this.hypervisorType == 'KVM') {
+            if (this.hypervisorType == 'KVM'||this.hypervisorType == 'Xen') {
                 return angular.isDefined(this.name) && angular.isDefined(this.description) &&
                     angular.isDefined(this.clusterUuid) && Utils.notNullnotUndefined(this.managementIp) &&
                     Utils.notNullnotUndefined(this.username) && Utils.notNullnotUndefined(this.password);
@@ -735,7 +741,7 @@ module MHost {
                     },
 
                     canMoveToNext(): boolean {
-                        if (this.hypervisorType == 'KVM') {
+                        if (this.hypervisorType == 'KVM'||this.hypervisorType == 'Xen') {
                             return Utils.notNullnotUndefined(this.name)
                                 && Utils.notNullnotUndefined(this.clusterUuid) && Utils.notNullnotUndefined(this.managementIp) &&
                                 Utils.notNullnotUndefined(this.username) && Utils.notNullnotUndefined(this.password);

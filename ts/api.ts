@@ -4325,6 +4325,48 @@ module ApiHeader {
   }
 
 
+
+  export class APIUpdateXenHostMsg implements APIMessage {
+    toApiMap() : any {
+      var msg = {
+        'org.zstack.xen.APIUpdateXenHostMsg': this
+      };
+      return msg;
+    }
+    username : string;
+    password : string;
+    uuid : string;
+    name : string;
+    description : string;
+    session : SessionInventory;
+    timeout : number;
+  }
+
+
+  export class APIAddXenHostMsg implements APIMessage {
+    toApiMap() : any {
+      var msg = {
+        'org.zstack.xen.APIAddXenHostMsg': this
+      };
+      return msg;
+    }
+    username : string;
+    password : string;
+    name : string;
+    port : number;
+    description : string;
+    managementIp : string;
+    clusterUuid : string;
+    resourceUuid : string;
+    userTags : Array<string>;
+    systemTags : Array<string>;
+    session : SessionInventory;
+    timeout : number;
+  }
+
+
+
+
   export class APIAddNfsPrimaryStorageMsg implements APIMessage {
     toApiMap() : any {
       var msg = {
@@ -8944,6 +8986,24 @@ module ApiHeader {
     lastOpDate : string;
   }
 
+export class XenHostInventory {
+    username : string;
+    zoneUuid : string;
+    name : string;
+    uuid : string;
+    clusterUuid : string;
+    description : string;
+    managementIp : string;
+    hypervisorType : string;
+    state : string;
+    status : string;
+    totalCpuCapacity : number;
+    availableCpuCapacity : number;
+    totalMemoryCapacity : number;
+    availableMemoryCapacity : number;
+    createDate : string;
+    lastOpDate : string;
+  }
 
   export class VirtualRouterEipRefInventory {
     eipUuid : string;
@@ -9264,8 +9324,10 @@ module ApiHeader {
 
   export var KVMHostInventoryQueryable = ['username', 'zoneUuid', 'name', 'uuid', 'clusterUuid', 'description', 'managementIp', 'hypervisorType', 'state', 'status', 'totalCpuCapacity', 'availableCpuCapacity', 'totalMemoryCapacity', 'availableMemoryCapacity', 'createDate', 'lastOpDate'];
 
+ export var XenHostInventoryQueryable = ['username', 'zoneUuid', 'name', 'uuid', 'clusterUuid', 'description', 'managementIp', 'hypervisorType', 'state', 'status', 'totalCpuCapacity', 'availableCpuCapacity', 'totalMemoryCapacity', 'availableMemoryCapacity', 'createDate', 'lastOpDate'];
 
   export var TagResourceTypeKVMHostVO = 'KVMHostVO';
+  export var TagResourceTypeXenHostVO = 'XenHostVO';
 
   export var SftpBackupStorageInventoryQueryable = ['hostname', 'uuid', 'name', 'url', 'description', 'totalCapacity', 'availableCapacity', 'type', 'state', 'status', 'createDate', 'lastOpDate', 'attachedZoneUuids'];
 
