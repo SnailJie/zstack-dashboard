@@ -22,47 +22,36 @@
                             <label for="description">{{"cluster.createCluster.DESCRIPTION" | translate}}</label>
                             <textarea  class="form-control z-win-input" rows="5" id="description" placeholder="(Optional) max length of 2048 characters" ng-model="infoPage.description"></textarea>
                         </div>
-                        
-                           
-                        <div ng-switch="infoPage.hypervisorType">
-                       
-                            <div ng-switch-when="GY">
-                                <div class="form-group col-sm-21">
-                                    <label for="port">{{"host.createHost.SSH Port" | translate}}</label>
-                                    <input type="text" class="form-control" id="port" placeholder="22" ng-model="infoPage.port">
-                                </div>
-                                <div class="form-group col-sm-21">
-                                    <label for="username">{{"host.createHost.USER NAME" | translate}}</label>
-                                    <input type="text" class="form-control" id="username" placeholder="ssh user name" ng-model="infoPage.username">
-                                </div>
-                                <div class="form-group col-sm-21">
-                                    <label for="password">{{"host.createHost.PASSWORD" | translate}}</label>
-                                    <input type="password" class="form-control" id="password" placeholder="ssh password" ng-model="infoPage.password">
-                                </div>
-                            </div>
-                             <div ng-switch-when="SY">
-                                <div class="form-group col-sm-21">
-                                    <label for="port">03</label>
-                                    <input type="text" class="form-control" id="port" placeholder="22" ng-model="infoPage.port">
-                                </div>
-                                <div class="form-group col-sm-21">
-                                    <label for="username">{{"host.createHost.USER NAME" | translate}}</label>
-                                    <input type="text" class="form-control" id="username" placeholder="ssh user name" ng-model="infoPage.username">
-                                </div>
-                                <div class="form-group col-sm-21">
-                                    <label for="password">{{"host.createHost.PASSWORD" | translate}}</label>
-                                    <input type="password" class="form-control" id="password" placeholder="ssh password" ng-model="infoPage.password">
-                                </div>
-                            </div>
-                        </div>
-                        
-                        
-                        
                         <div class="form-group col-sm-24">
-                            <label for="hypervisor">{{"cluster.createCluster.HYPERVISOR" | translate}}</label>
-                            <select id="hypervisor" kendo-drop-down-list k-options="hypervisorList" class="z-win-dropdown" ng-model="infoPage.hypervisorType"></select>
+                            <label for="cloudType">{{"cluster.createCluster.CLOUDTYPE" | translate}}</label>
+                            <select id="cloudType" kendo-drop-down-list  k-options="cloudTypeOptions__" class="z-win-dropdown" ng-model="infoPage.cloudType"></select>
                             <p class="z-hint">{{"cluster.createCluster.HINT2" | translate}}</p>
                         </div>
+                        
+                        <div ng-switch="infoPage.cloudType">
+                            <div ng-switch-when="Private Cloud">
+                               <div class="form-group col-sm-24">
+                                 <label for="hypervisor">{{"cluster.createCluster.HYPERVISOR" | translate}}</label>
+                                 <select id="hypervisor" kendo-drop-down-list k-options="hypervisorList" class="z-win-dropdown" ng-model="infoPage.hypervisorType"></select>
+                                 <p class="z-hint">{{"cluster.createCluster.HINT2" | translate}}</p>
+                               </div>
+                            </div>
+                             <div ng-switch-when="Public Cloud">
+                                <div class="form-group col-sm-21">
+                                    <label for="username">{{"cluster.createCluster.USER NAME" | translate}}</label>
+                                    <input type="text" class="form-control" id="username" placeholder="ssh user name" ng-model="infoPage.username">
+                                	 <p class="z-hint">{{"cluster.createCluster.UsernameDesc" | translate}}</p>
+                                </div>
+                                <div class="form-group col-sm-21">
+                                    <label for="password">{{"cluster.createCluster.PASSWORD" | translate}}</label>
+                                    <input type="password" class="form-control" id="password" placeholder="ssh password" ng-model="infoPage.password">
+                                	<p class="z-hint">{{"cluster.createCluster.PasswordDesc" | translate}}</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        
+                        
                     </form>
                 </div>
 

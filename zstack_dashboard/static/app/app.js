@@ -8886,20 +8886,42 @@ var MCluster;
         };
         ClusterManager.prototype.create = function (cluster, done) {
             var _this = this;
-            var msg = new ApiHeader.APICreateClusterMsg();
-            msg.name = cluster.name;
-            msg.description = cluster.description;
-            msg.hypervisorType = cluster.hypervisorType;
-            msg.zoneUuid = cluster.zoneUuid;
-            this.api.asyncApi(msg, function (ret) {
+            var _this = this;
+            if (cluster.cloudType == 'Public Cloud') {
+                var msg = new ApiHeader.APICreateECSClusterMsg();
+                msg.name = cluster.name;
+                msg.description = cluster.description;
+                msg.zoneUuid = cluster.zoneUuid;
+                msg.username = cluster.username;
+                msg.password = cluster.password;
+
+                this.api.asyncApi(msg, function (ret) {
+                var c = new ECS_Cluster();
+                angular.extend(c, ret.inventory);
+                done(_this.wrap(c));
+                _this.$rootScope.$broadcast(MRoot.Events.NOTIFICATION, {
+                    msg: Utils.sprintf('Created new cluster: {0}', c.name),
+                    link: Utils.sprintf('/#/cluster', c.uuid)
+                });
+            });
+            } 
+            else {
+                var msg = new ApiHeader.APICreateClusterMsg();
+                msg.name = cluster.name;
+                msg.description = cluster.description;
+                msg.hypervisorType = cluster.hypervisorType;
+                msg.zoneUuid = cluster.zoneUuid;
+
+                this.api.asyncApi(msg, function (ret) {
                 var c = new Cluster();
                 angular.extend(c, ret.inventory);
                 done(_this.wrap(c));
                 _this.$rootScope.$broadcast(MRoot.Events.NOTIFICATION, {
                     msg: Utils.sprintf('Created new cluster: {0}', c.name),
-                    link: Utils.sprintf('/#/cluster/{0}', c.uuid)
+                    link: Utils.sprintf('/#/cluster', c.uuid)
                 });
             });
+            }
         };
         ClusterManager.prototype.query = function (qobj, callback) {
             var _this = this;
@@ -9896,6 +9918,20 @@ var MCluster;
                     draggable: false,
                     resizable: false
                 };
+                $scope.cloudTypeOptions__ = {
+                        dataSource: new kendo.data.DataSource({
+                            data: [
+                                'Private Cloud',
+                                'Public Cloud'
+                            ]
+                        })
+                    };
+                $scope.$watch(function () {
+                  return $scope.infoPage.cloudType;
+                 }, function () {
+              	
+                              $scope.infoPage.cloudType = $scope.infoPage.cloudType;
+                 });
                 $scope.primaryStorageListOptions__ = {
                     dataSource: new kendo.data.DataSource({ data: [] }),
                     dataTextField: "name",

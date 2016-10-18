@@ -28,15 +28,17 @@
             <i class="fa fa-filter"></i><span>&nbsp; {{filterBy.getButtonName()}}</span>
         </button>
 
-        <button type="button" class="btn btn-success btn-sm" style="margin-left: 20px" ng-click="funcCreateVmInstance(winNewVmInstance)">
-            <i class="fa fa-plus"></i>
-            <span>&nbsp; {{"vm.vm.New VmInstance" | translate}}</span>
-        </button>
         
-        <button type="button" class="btn btn-success btn-sm" style="margin-left: 20px" ng-click="funcCreateVmInstance(winNewVmInstance)">
-            <i class="fa fa-plus"></i>
-            <span>&nbsp;CREATE ECS</span>
-        </button>
+        <div class="btn-group" >
+            <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown"  >
+               {{"vm.vm.New VmInstance" | translate}}<span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu" role="menu">
+                <li><a href ng-click="funcCreateVmInstance(winNewVmInstance)" >{{"vm.vm.New PrivateVmInstance" | translate}}</a></li>
+                 <li class="divider"></li>
+                <li><a href ng-click="funcCreateVmInstance(winNewVmInstance)" >{{"vm.vm.New ECSVmInstance" | translate}}</a></li>
+            </ul>
+        </div>
 
         <div id="vmInstanceFilterContent" style="display: none">
             <form class="form">
