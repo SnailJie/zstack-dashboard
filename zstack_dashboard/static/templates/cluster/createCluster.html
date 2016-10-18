@@ -38,15 +38,11 @@
                             </div>
                              <div ng-switch-when="Public Cloud">
                                 <div class="form-group col-sm-21">
-                                    <label for="username">{{"cluster.createCluster.USER NAME" | translate}}</label>
-                                    <input type="text" class="form-control" id="username" placeholder="ssh user name" ng-model="infoPage.username">
-                                	 <p class="z-hint">{{"cluster.createCluster.UsernameDesc" | translate}}</p>
+                                    <label for="accesskey">{{"cluster.createCluster.ACCESSNAME" | translate}}</label>
+                                    <input type="text" class="form-control" id="accesskey" placeholder="accesskey" ng-model="infoPage.accesskey">
+                                	 <p class="z-hint">{{"cluster.createCluster.AccesskeyDsc" | translate}}</p>
                                 </div>
-                                <div class="form-group col-sm-21">
-                                    <label for="password">{{"cluster.createCluster.PASSWORD" | translate}}</label>
-                                    <input type="password" class="form-control" id="password" placeholder="ssh password" ng-model="infoPage.password">
-                                	<p class="z-hint">{{"cluster.createCluster.PasswordDesc" | translate}}</p>
-                                </div>
+                                
                             </div>
                         </div>
                         
