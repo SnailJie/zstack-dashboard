@@ -229,6 +229,7 @@ api_names = [
     'org.zstack.header.zone.APICreateZoneMsg',
     'org.zstack.header.zone.APIUpdateZoneMsg',
     'org.zstack.header.cluster.APICreateClusterMsg',
+    'org.zstack.header.cluster.APICreateECSClusterMsg',
     'org.zstack.header.cluster.APIDeleteClusterMsg',
     'org.zstack.header.cluster.APIChangeClusterStateMsg',
     'org.zstack.header.cluster.APIUpdateClusterMsg',

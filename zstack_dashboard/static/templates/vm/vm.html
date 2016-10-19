@@ -1,5 +1,6 @@
 <div style="display: none">
     <div z-create-vm-instance="winNewVmInstance" z-options="optionsCreateVmInstance"></div>
+    <div z-create-vm-instance="winNewECSVmInstance" z-options="optionsCreateVmInstance"></div>
     <div z-search="search" z-options="optionsSearch"></div>
     <div z-confirm="deleteVmInstance" z-options="optionsDeleteVmInstance"></div>
     <div z-confirm="expungeVmInstance" z-options="optionsExpungeVmInstance"></div>
@@ -36,7 +37,7 @@
             <ul class="dropdown-menu" role="menu">
                 <li><a href ng-click="funcCreateVmInstance(winNewVmInstance)" >{{"vm.vm.New PrivateVmInstance" | translate}}</a></li>
                  <li class="divider"></li>
-                <li><a href ng-click="funcCreateVmInstance(winNewVmInstance)" >{{"vm.vm.New ECSVmInstance" | translate}}</a></li>
+                <li><a href ng-click="funcCreateECSVmInstance(winNewECSVmInstance)" >{{"vm.vm.New ECSVmInstance" | translate}}</a></li>
             </ul>
         </div>
 
