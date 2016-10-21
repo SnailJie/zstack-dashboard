@@ -377,6 +377,20 @@ var ApiHeader;
         return APICreateVmInstanceMsg;
     }());
     ApiHeader.APICreateVmInstanceMsg = APICreateVmInstanceMsg;
+    
+    var APICreatePublicVmInstanceMsg = (function () {
+        function APICreatePublicVmInstanceMsg() {
+        }
+        APICreatePublicVmInstanceMsg.prototype.toApiMap = function () {
+            var msg = {
+                'org.zstack.header.vm.APICreatePublicVmInstanceMsg': this
+            };
+            return msg;
+        };
+        return APICreatePublicVmInstanceMsg;
+    }());
+    ApiHeader.APICreatePublicVmInstanceMsg = APICreatePublicVmInstanceMsg;
+    
     var APIGetVmInstanceMsg = (function () {
         function APIGetVmInstanceMsg() {
         }
@@ -8843,7 +8857,7 @@ angular.module('root').factory('ZoneManager', ['Api', '$rootScope', function (ap
 /// <reference path="d.ts/kendo.all.d.ts" />
 var MCluster;
 (function (MCluster) {
-    var Cluster = (function (_super) {
+   var Cluster = (function (_super) {
         __extends(Cluster, _super);
         function Cluster() {
             _super.apply(this, arguments);
@@ -8891,64 +8905,12 @@ var MCluster;
             self.set('state', inv.state);
             self.set('createDate', inv.createDate);
             self.set('lastOpDate', inv.lastOpDate);
+             self.set('accesskey', inv.accesskey);
         };
         return Cluster;
     }(ApiHeader.ClusterInventory));
     MCluster.Cluster = Cluster;
-    
-    var ECSCluster = (function (_super) {
-        __extends(ECSCluster, _super);
-        function ECSCluster() {
-            _super.apply(this, arguments);
-        }
-        ECSCluster.prototype.progressOn = function () {
-            this.inProgress = true;
-        };
-        ECSCluster.prototype.progressOff = function () {
-            this.inProgress = false;
-        };
-        ECSCluster.prototype.isInProgress = function () {
-            return this.inProgress;
-        };
-        ECSCluster.prototype.isEnableShow = function () {
-            return this.state == 'Disabled';
-        };
-        ECSCluster.prototype.isDisableShow = function () {
-            return this.state == 'Enabled';
-        };
-        ECSCluster.prototype.stateLabel = function () {
-            if (this.state == 'Enabled') {
-                return 'label label-success';
-            }
-            else if (this.state == 'Disabled') {
-                return 'label label-danger';
-            }
-            else {
-                return 'label label-default';
-            }
-        };
-        ECSCluster.prototype.gridColumnLabel = function () {
-            if (this.state == 'Enabled') {
-                return 'z-color-box-green';
-            }
-            else if (this.state == 'Disabled') {
-                return 'z-color-box-red';
-            }
-        };
-        ECSCluster.prototype.updateObservableObject = function (inv) {
-            // self : ObservableObject
-            var self = this;
-            self.set('name', inv.name);
-            self.set('description', inv.description);
-            self.set('state', inv.state);
-            self.set('createDate', inv.createDate);
-            self.set('lastOpDate', inv.lastOpDate);
-            self.set('accesskey', inv.accesskey);
-        };
-        return ECSCluster;
-    }(ApiHeader.ECSClusterInventory));
-    MCluster.ECSCluster = ECSCluster;
-    
+     
     var ClusterManager = (function () {
         function ClusterManager(api, $rootScope) {
             this.api = api;
@@ -8967,7 +8929,7 @@ var MCluster;
                 msg.name = cluster.name;
                 msg.description = cluster.description;
                 msg.zoneUuid = cluster.zoneUuid;
-                msg.accessKey = cluster.accessKey;
+                msg.accessKey = cluster.accesskey;
 
                 this.api.asyncApi(msg, function (ret) {
                 var c = new ECSCluster();
@@ -9836,6 +9798,7 @@ var MCluster;
                     zoneUuid: null,
                     description: null,
                     hypervisorType: null,
+                    accesskey: null,
                     canMoveToPrevious: function () {
                         return false;
                     },
@@ -9866,6 +9829,8 @@ var MCluster;
                         this.zoneUuid = null;
                         this.description = null;
                         this.hypervisorType = null;
+                        this.cloudType = null;
+                        this.accesskey = null;
                         this.activeState = false;
                     }
                 };
@@ -19301,6 +19266,52 @@ var MVmInstance;
         return VmInstance;
     }(ApiHeader.VmInstanceInventory));
     MVmInstance.VmInstance = VmInstance;
+    
+    
+    var ECSVmInstance = (function (_super) {
+        __extends(ECSVmInstance, _super);
+        function ECSVmInstance() {
+            _super.apply(this, arguments);
+        }
+        ECSVmInstance.prototype.progressOn = function () {
+            this.inProgress = true;
+        };
+        ECSVmInstance.prototype.progressOff = function () {
+            this.inProgress = false;
+        };
+        ECSVmInstance.prototype.isInProgress = function () {
+            return this.inProgress;
+        };
+        ECSVmInstance.prototype.stateLabel = function () {
+            if (this.state == 'Running') {
+                return 'label label-success';
+            }
+            else if (this.state == 'Stopped') {
+                return 'label label-danger';
+            }
+            else if (this.state == 'Unknown') {
+                return 'label label-warning';
+            }
+            else {
+                return 'label label-default';
+            }
+        };
+        ECSVmInstance.prototype.updateObservableObject = function (inv) {
+            // self : ObservableObject
+            var self = this;
+            self.set('uuid', inv.uuid);
+            self.set('name', inv.name);
+            self.set('type', inv.type);
+            self.set('accesskeyID', inv.accesskeyID);
+            self.set('accesskeyKey', inv.accesskeyKey);
+            self.set('description', inv.description);
+           
+        };
+        ECSVmInstance.STATES = ['Connecting',  'Created'];
+        return ECSVmInstance;
+    }(ApiHeader.VmInstanceInventory));
+    MVmInstance.ECSVmInstance = ECSVmInstance;
+    
     var VmInstanceManager = (function () {
         function VmInstanceManager(api, $rootScope) {
             this.api = api;
@@ -19314,35 +19325,58 @@ var MVmInstance;
         };
         VmInstanceManager.prototype.create = function (vm, done) {
             var _this = this;
-            var msg = new ApiHeader.APICreateVmInstanceMsg();
-            msg.name = vm.name;
-            msg.description = vm.description;
-            msg.instanceOfferingUuid = vm.instanceOfferingUuid;
-            msg.imageUuid = vm.imageUuid;
-            msg.l3NetworkUuids = vm.l3NetworkUuids;
-            msg.rootDiskOfferingUuid = vm.rootDiskOfferingUuid;
-            msg.dataDiskOfferingUuids = vm.dataDiskOfferingUuids;
-            msg.zoneUuid = vm.zoneUuid;
-            msg.clusterUuid = vm.clusterUuid;
-            msg.hostUuid = vm.hostUuid;
-            msg.resourceUuid = vm.resourceUuid;
-            msg.defaultL3NetworkUuid = vm.defaultL3NetworkUuid;
-            msg.systemTags = [];
-            for (var i = 0; i < vm.l3NetworkStaticIps.length; ++i) {
-                msg.systemTags.push('staticIp::' + vm.l3NetworkStaticIps[i].uuid + '::' + vm.l3NetworkStaticIps[i].staticIp);
+            if (vm.type != 'ECS'){
+            	var msg = new ApiHeader.APICreateVmInstanceMsg();
+                msg.name = vm.name;
+                msg.description = vm.description;
+                msg.instanceOfferingUuid = vm.instanceOfferingUuid;
+                msg.imageUuid = vm.imageUuid;
+                msg.l3NetworkUuids = vm.l3NetworkUuids;
+                msg.rootDiskOfferingUuid = vm.rootDiskOfferingUuid;
+                msg.dataDiskOfferingUuids = vm.dataDiskOfferingUuids;
+                msg.zoneUuid = vm.zoneUuid;
+                msg.clusterUuid = vm.clusterUuid;
+                msg.hostUuid = vm.hostUuid;
+                msg.resourceUuid = vm.resourceUuid;
+                msg.defaultL3NetworkUuid = vm.defaultL3NetworkUuid;
+                msg.systemTags = [];
+                for (var i = 0; i < vm.l3NetworkStaticIps.length; ++i) {
+                    msg.systemTags.push('staticIp::' + vm.l3NetworkStaticIps[i].uuid + '::' + vm.l3NetworkStaticIps[i].staticIp);
+                }
+                if (Utils.notNullnotUndefined(vm.hostname)) {
+                    msg.systemTags.push('hostname::' + vm.hostname);
+                }
+                this.api.asyncApi(msg, function (ret) {
+                    var c = new VmInstance();
+                    angular.extend(c, ret.inventory);
+                    done(_this.wrap(c));
+                    _this.$rootScope.$broadcast(MRoot.Events.NOTIFICATION, {
+                        msg: Utils.sprintf('Created new VmInstance: {0}', c.name),
+                        link: Utils.sprintf('/#/vm/{0}', c.uuid)
+                    });
+                });  
+                }
+            else {
+            	var msg = new ApiHeader.APICreatePublicVmInstanceMsg();
+                msg.name = vm.name;
+                msg.accesskeyID = vm.accesskeyID;
+                msg.accesskeyKey = vm.accesskeyKey;
+                msg.tpye = vm.type;
+                msg.systemTags = [];
+               
+                this.api.asyncApi(msg, function (ret) {
+                    var c = new ECSVmInstance();
+                    angular.extend(c, ret.inventory);
+                    done(_this.wrap(c));
+                    _this.$rootScope.$broadcast(MRoot.Events.NOTIFICATION, {
+                        msg: Utils.sprintf('Created new VmInstance: {0}', c.name),
+                        link: Utils.sprintf('/#/vm/{0}', c.uuid)
+                    });
+                });  
             }
-            if (Utils.notNullnotUndefined(vm.hostname)) {
-                msg.systemTags.push('hostname::' + vm.hostname);
-            }
-            this.api.asyncApi(msg, function (ret) {
-                var c = new VmInstance();
-                angular.extend(c, ret.inventory);
-                done(_this.wrap(c));
-                _this.$rootScope.$broadcast(MRoot.Events.NOTIFICATION, {
-                    msg: Utils.sprintf('Created new VmInstance: {0}', c.name),
-                    link: Utils.sprintf('/#/vm/{0}', c.uuid)
-                });
-            });
+            
+            
+            
         };
         VmInstanceManager.prototype.getConsole = function (vm, done) {
             var msg = new ApiHeader.APIRequestConsoleAccessMsg();
@@ -19623,6 +19657,11 @@ var MVmInstance;
                     title: '{{"vm.ts.NAME" | translate}}',
                     width: '20%',
                     template: '<a href="/\\#/vmInstance/{{dataItem.uuid}}">{{dataItem.name}}</a>'
+                },
+                {
+                    field: 'type',
+                    title: '{{"vm.ts.TYPE" | translate}}',
+                    width: '20%'
                 },
                 {
                     field: 'description',
@@ -20183,7 +20222,7 @@ var MVmInstance;
             $scope.funcCreateVmInstance = function (win) {
                 win.open();
             };
-            $scope.funcCreateECSVmInstance = function (win) {
+            $scope.funcCreateEcsVmInstance = function (win) {
                 win.open();
             };
             $scope.funcDeleteVmInstance = function () {
@@ -20240,6 +20279,23 @@ var MVmInstance;
                     });
                 }
             };
+            
+            $scope.optionsCreateECSVmInstance = {
+                    done: function (info) {
+                        var vm = new ECSVmInstance();
+                        info.uuid = info.resourceUuid = Utils.uuid();
+                        info.type = 'ECS';
+                        info.description = info.accesskey;
+                        info.state = 'Connecting';
+                        angular.extend(vm, info);
+                        vm.Description = info.accesskey;
+                        vm = vmMgr.wrap(vm);
+                        $scope.oVmInstanceGrid.add(vm);
+                        vmMgr.create(info, function (ret) {
+                            $scope.oVmInstanceGrid.refresh();
+                        });
+                    }
+                };
             $scope.console = function () {
                 vmMgr.getConsole($scope.model.current, function (inv) {
                     var windowName = $scope.model.current.name + $scope.model.current.uuid;
@@ -20902,21 +20958,20 @@ var MVmInstance;
     }());
     MVmInstance.CreateVmInstance = CreateVmInstance;
     
-    
-    var CreateECSVmInstance = (function () {
-        function CreateECSVmInstance(api, vmMgr, clusterMgr,  zoneMgr ) {
+    var CreateEcsInstance = (function () {
+        function CreateEcsInstance(api,vmMgr) {
             var _this = this;
             this.api = api;
             this.vmMgr = vmMgr;
-            this.clusterMgr = clusterMgr;
-            this.zoneMgr = zoneMgr;
             this.scope = true;
             this.link = function ($scope, $element, $attrs, $ctrl, $transclude) {
-                var instanceName = $attrs.zCreateECSVmInstance;
+                var instanceName = $attrs.zCreateEcsInstance;
                 var parentScope = $scope.$parent;
                 parentScope[instanceName] = _this;
+                
                 _this.options = new CreateVmInstanceOptions();
                 var optionName = $attrs.zOptions;
+                
                 if (angular.isDefined(optionName)) {
                     _this.options = parentScope[optionName];
                     $scope.$watch(function () {
@@ -20925,193 +20980,30 @@ var MVmInstance;
                         _this.options = parentScope[optionName];
                     });
                 }
+                
                 var infoPage = $scope.infoPage = {
-                    activeState: true,
                     name: null,
-                    description: null,
-                    instanceOfferingUuid: null,
-                    imageUuid: null,
-                    l3NetworkUuid: null,
-                    l3NetworkIp: null,
-                    l3NetworkUuids: [],
-                    l3NetworkStaticIps: [],
-                    dataDiskOfferingUuids: [],
-                    rootDiskOfferingUuid: null,
-                    imageMediaType: null,
-                    images: {},
-                    defaultL3NetworkUuid: null,
-                    hostname: null,
-                    hasImage: function () {
-                        return $scope.imageOptions__.dataSource.data().length > 0;
-                    },
-                    hasInstanceOffering: function () {
-                        return $scope.instanceOfferingOptions__.dataSource.data().length > 0;
-                    },
-                    hasL3Network: function () {
-                        return $scope.l3NetworkGrid__.dataSource.data().length > 0;
-                    },
+                    type: null,
+                    accesskey: null,
                     canMoveToPrevious: function () {
                         return false;
                     },
                     canMoveToNext: function () {
-                        if (this.imageMediaType == 'RootVolumeTemplate') {
-                            return Utils.notNullnotUndefined(this.name) && Utils.notNullnotUndefined(this.instanceOfferingUuid)
-                                && Utils.notNullnotUndefined(this.imageUuid) && this.hasL3Network();
-                        }
-                        else {
-                            return Utils.notNullnotUndefined(this.name) && Utils.notNullnotUndefined(this.instanceOfferingUuid)
-                                && Utils.notNullnotUndefined(this.imageUuid) && this.hasL3Network() && Utils.notNullnotUndefined(this.rootDiskOfferingUuid);
-                        }
+                        return true;
+                    },
+                    getAnchorElement: function () {
+                        return $('.nav a[data-target="#createEcsVmInstance"]');
                     },
                     show: function () {
                         this.getAnchorElement().tab('show');
                     },
-                    getAnchorElement: function () {
-                        return $('.nav a[data-target="#createVmInstanceInfo"]');
-                    },
-                    active: function () {
-                        this.activeState = true;
-                    },
-                    isActive: function () {
-                        return this.activeState;
-                    },
-                    syncL3NetworkDataFromView: function () {
-                        var l3NetworkGridRawData = $scope.l3NetworkGrid__.dataSource.data();
-                        this.l3NetworkUuids = [];
-                        this.l3NetworkStaticIps = [];
-                        for (var i = 0; i < l3NetworkGridRawData.length; ++i) {
-                            this.l3NetworkUuids.push(l3NetworkGridRawData[i].uuid);
-                            if (Utils.notNullnotUndefined(this.l3NetworkIp) && this.l3NetworkIp != "") {
-                                this.l3NetworkStaticIps.push({
-                                    uuid: l3NetworkGridRawData[i].uuid,
-                                    staticIp: l3NetworkGridRawData[i].staticIp
-                                });
-                            }
-                        }
-                    },
-                    addL3Network: function () {
-                        if (!this.isStaticIpValid())
-                            return;
-                        var l3NetworkOptionsRawData = $scope.l3NetworkOptions__.dataSource.data();
-                        var l3Network = null;
-                        for (var i = 0; i < l3NetworkOptionsRawData.length; ++i) {
-                            if (l3NetworkOptionsRawData[i].uuid == this.l3NetworkUuid) {
-                                l3Network = l3NetworkOptionsRawData[i];
-                                break;
-                            }
-                        }
-                        if (Utils.notNullnotUndefined(this.l3NetworkIp)) {
-                            l3Network.staticIp = this.l3NetworkIp.trim();
-                        }
-                        var l3NetworkGridRawData = $scope.l3NetworkGrid__.dataSource.data();
-                        var updated = false;
-                        for (var i = 0; i < l3NetworkGridRawData.length; ++i) {
-                            if (l3NetworkGridRawData[i].uuid == l3Network.uuid) {
-                                l3NetworkGridRawData[i].staticIp = l3Network.staticIp;
-                                updated = true;
-                                break;
-                            }
-                        }
-                        if (!updated) {
-                            $scope.l3NetworkGrid__.dataSource.pushCreate(l3Network);
-                        }
-                        this.syncL3NetworkDataFromView();
-                        $scope.defaultL3NetworkOptions__.dataSource.data($scope.l3NetworkGrid__.dataSource.data());
-                        this.l3NetworkIp = "";
-                    },
-                    delL3Network: function (uid) {
-                        var row = $scope.l3NetworkGrid__.dataSource.getByUid(uid);
-                        $scope.l3NetworkGrid__.dataSource.remove(row);
-                        this.syncL3NetworkDataFromView();
-                    },
-                    isStaticIpValid: function () {
-                        if (Utils.notNullnotUndefined(this.l3NetworkIp)) {
-                            if (this.l3NetworkIp.trim() == "")
-                                return true;
-                            else
-                                return Utils.isIpv4Address(this.l3NetworkIp);
-                        }
-                        return true;
-                    },
                     getPageName: function () {
-                        return 'createVmInstanceInfo';
+                        return 'createEcsVmInstance';
                     },
                     reset: function () {
-                        this.name = Utils.shortHashName('vm');
-                        this.description = null;
-                        this.imageUuid = null;
-                        this.dataDiskOfferingUuids = [];
-                        this.l3NetworkIp = null;
-                        this.l3NetworkUuids = [];
-                        this.instanceOfferingUuid = null;
-                        this.activeState = false;
-                        this.rootDiskOfferingUuid = null;
-                        this.defaultL3NetworkUuid = null;
-                        this.images = {};
-                        this.hostname = null;
-                    }
-                };
-                $scope.l3NetworkGrid__ = {
-                    pageSize: 20,
-                    resizable: true,
-                    scrollable: true,
-                    pageable: true,
-                    columns: [
-                        {
-                            width: '12%',
-                            title: '',
-                            template: '<button type="button" class="btn btn-xs btn-default" ng-click="infoPage.delL3Network(dataItem.uid)"><i class="fa fa-times"></i></button>'
-                        },
-                        {
-                            field: 'name',
-                            title: '{{"vm.ts.NAME" | translate}}',
-                            width: '44%'
-                        },
-                        {
-                            field: 'staticIp',
-                            title: '{{"vm.ts.STATIC IP" | translate}}',
-                            width: '44%'
-                        }
-                    ],
-                    dataBound: function (e) {
-                        var grid = e.sender;
-                        if (grid.dataSource.total() == 0 || grid.dataSource.totalPages() == 1) {
-                            grid.pager.element.hide();
-                        }
-                    },
-                    dataSource: new kendo.data.DataSource([])
-                };
-                var locationPage = $scope.locationPage = {
-                    activeState: false,
-                    zoneUuid: null,
-                    clusterUuid: null,
-                    hostUuid: null,
-                    canMoveToPrevious: function () {
-                        return true;
-                    },
-                    canMoveToNext: function () {
-                        return true;
-                    },
-                    getAnchorElement: function () {
-                        return $('.nav a[data-target="#createVmInstanceLocation"]');
-                    },
-                    show: function () {
-                        this.getAnchorElement().tab('show');
-                    },
-                    active: function () {
-                        this.activeState = true;
-                    },
-                    isActive: function () {
-                        return this.activeState;
-                    },
-                    getPageName: function () {
-                        return 'createVmInstanceLocation';
-                    },
-                    reset: function () {
-                        this.activeState = false;
-                        this.zoneUuid = null;
-                        this.clusterUuid = null;
-                        this.hostUuid = null;
+                        this.name = false;
+                        this.type = null;
+                        this.accesskey = null;
                     }
                 };
                 var mediator = $scope.mediator = {
@@ -21123,71 +21015,19 @@ var MVmInstance;
                         return "Create";
                     },
                     finish: function () {
-                        $scope.infoPage.hostUuid = $scope.locationPage.hostUuid;
-                        $scope.infoPage.clusterUuid = $scope.locationPage.clusterUuid;
-                        $scope.infoPage.zoneUuid = $scope.locationPage.zoneUuid;
+                        $scope.infoPage.name = $scope.infoPage.name;
+                        $scope.infoPage.type = $scope.infoPage.type;
+                        $scope.infoPage.accesskeyID = $scope.infoPage.accesskeyID;
+                        $scope.infoPage.accesskeyKey = $scope.infoPage.accesskeyKey;
                         _this.options.done(infoPage);
-                        $scope.winCreateVmInstance__.close();
+                        $scope.winCreateEcsInstance__.close();
                     }
                 };
-                $scope.button = new Utils.WizardButton([
-                    infoPage, locationPage
+               
+                $scope.button = new Utils.WizardButton([infoPage
                 ], mediator);
-                $scope.$watch(function () {
-                    return $scope.locationPage.zoneUuid;
-                }, function () {
-                    var zuuid = $scope.locationPage.zoneUuid;
-                    if (Utils.notNullnotUndefined(zuuid)) {
-                        var qobj = new ApiHeader.QueryObject();
-                        qobj.conditions = [
-                            {
-                                name: 'zoneUuid',
-                                op: '=',
-                                value: zuuid
-                            }
-                        ];
-                        _this.clusterMgr.query(qobj, function (clusters) {
-                            _this.$scope.clusterOptions__.dataSource.data(clusters);
-                        });
-                    }
-                });
-                $scope.$watch(function () {
-                    return $scope.locationPage.clusterUuid;
-                }, function () {
-                    var clusterUuid = $scope.locationPage.clusterUuid;
-                    if (Utils.notNullnotUndefined(clusterUuid)) {
-                        var qobj = new ApiHeader.QueryObject();
-                        qobj.conditions = [
-                            {
-                                name: 'clusterUuid',
-                                op: '=',
-                                value: clusterUuid
-                            }
-                        ];
-                        _this.hostMgr.query(qobj, function (hosts) {
-                            _this.$scope.hostOptions__.dataSource.data(hosts);
-                        });
-                    }
-                });
-                $scope.$watch(function () {
-                    return $scope.infoPage.imageUuid;
-                }, function () {
-                    if (!Utils.notNullnotUndefined($scope.infoPage.imageUuid)) {
-                        return;
-                    }
-                    var img = $scope.infoPage.images[$scope.infoPage.imageUuid];
-                    if (Utils.notNullnotUndefined(img)) {
-                        $scope.infoPage.imageMediaType = img.mediaType;
-                    }
-                });
-                $scope.zoneOptions__ = {
-                    dataSource: new kendo.data.DataSource({ data: [] }),
-                    dataTextField: "name",
-                    dataValueField: "uuid",
-                    template: '<div style="color: black"><span class="z-label">{{"vm.ts.Name" | translate}}</span>: #: name #</div>' + '<div style="color: black"><span class="z-label">{{"vm.ts.State" | translate}}</span>#: state #</div>' + '<div style="color: black"><span class="z-label">{{"vm.ts.UUID" | translate}}</span> #: uuid #</div>',
-                    optionLabel: ""
-                };
-                $scope.winCreateVmInstanceOptions__ = {
+                
+                $scope.winCreateEcsInstanceOptions__ = {
                     width: '700px',
                     //height: '620px',
                     animation: false,
@@ -21195,192 +21035,23 @@ var MVmInstance;
                     draggable: false,
                     resizable: false
                 };
-                $scope.clusterOptions__ = {
-                    dataSource: new kendo.data.DataSource({ data: [] }),
-                    optionLabel: "",
-                    dataTextField: "name",
-                    dataValueField: "uuid",
-                    template: '<div style="color: black"><span class="z-label">{{"vm.ts.NAME" | translate}}</span><span>#: name #</span></div>' +
-                        '<div style="color: black"><span class="z-label">{{"vm.ts.HYPERVISOR" | translate}}</span><span>#: hypervisorType #</span></div>' +
-                        '<div style="color: black"><span class="z-label">{{"vm.ts.UUID" | translate}}</span><span>#: uuid #</span></div>'
-                };
-                $scope.hostOptions__ = {
-                    dataSource: new kendo.data.DataSource({ data: [] }),
-                    optionLabel: "",
-                    dataTextField: "name",
-                    dataValueField: "uuid",
-                    template: '<div style="color: black"><span class="z-label">{{"vm.ts.Name" | translate}}</span><span>#: name #</span></div>' +
-                        '<div style="color: black"><span class="z-label">{{"vm.ts.State" | translate}}</span><span>#: state #</span></div>' +
-                        '<div style="color: black"><span class="z-label">{{"vm.ts.Status" | translate}}</span><span>#: status #</span></div>' +
-                        '<div style="color: black"><span class="z-label">{{"vm.ts.UUID" | translate}}</span><span>#: uuid #</span></div>'
-                };
-                $scope.instanceOfferingOptions__ = {
-                    dataSource: new kendo.data.DataSource({ data: [] }),
-                    dataTextField: "name",
-                    dataValueField: "uuid",
-                    template: '<div style="color: black"><span class="z-label">{{"vm.ts.Name" | translate}}</span><span>#: name #</span></div>' +
-                        '<div style="color: black"><span class="z-label">{{"vm.ts.CPU Number" | translate}}</span><span>#: cpuNum #</span></div>' +
-                        '<div style="color: black"><span class="z-label">{{"vm.ts.Memory" | translate}}</span><span>#: memorySize #</span></div>' +
-                        '<div style="color: black"><span class="z-label">{{"vm.ts.UUID" | translate}}</span><span>#: uuid #</span></div>'
-                };
-                $scope.diskOfferingOptions__ = {
-                    dataSource: new kendo.data.DataSource({ data: [] }),
-                    dataTextField: "name",
-                    dataValueField: "uuid",
-                    template: '<div style="color: black"><span class="z-label">{{"vm.ts.Name" | translate}}</span><span>#: name #</span></div>' +
-                        '<div style="color: black"><span class="z-label">{{"vm.ts.Disk Size" | translate}}</span><span>#: diskSize #</span></div>' +
-                        '<div style="color: black"><span class="z-label">{{"vm.ts.UUID" | translate}}</span><span>#: uuid #</span></div>',
-                    change: function (e) {
-                        Utils.safeApply($scope, function () {
-                            var list = e.sender;
-                            $scope.infoPage.dataDiskOfferingUuids = [];
-                            angular.forEach(list.dataItems(), function (it) {
-                                $scope.infoPage.dataDiskOfferingUuids.push(it.uuid);
-                            });
-                        });
-                    }
-                };
-                $scope.rootDiskOfferingOptions__ = {
-                    dataSource: new kendo.data.DataSource({ data: [] }),
-                    dataTextField: "name",
-                    dataValueField: "uuid",
-                    template: '<div style="color: black"><span class="z-label">{{"vm.ts.Name" | translate}}</span><span>#: name #</span></div>' +
-                        '<div style="color: black"><span class="z-label">{{"vm.ts.Disk Size" | translate}}</span><span>#: diskSize #</span></div>' +
-                        '<div style="color: black"><span class="z-label">{{"vm.ts.UUID" | translate}}</span><span>#: uuid #</span></div>'
-                };
-                $scope.l3NetworkOptions__ = {
-                    dataSource: new kendo.data.DataSource({ data: [] }),
-                    dataTextField: "name",
-                    dataValueField: "uuid",
-                    template: '<div style="color: black"><span class="z-label">{{"vm.ts.Name" | translate}}</span><span>#: name #</span></div>' +
-                        '<div style="color: black"><span class="z-label">{{"vm.ts.UUID" | translate}}</span><span>#: uuid #</span></div>'
-                };
-                $scope.defaultL3NetworkOptions__ = {
-                    dataSource: new kendo.data.DataSource({ data: [] }),
-                    dataTextField: "name",
-                    dataValueField: "uuid",
-                    template: '<div style="color: black"><span class="z-label">{{"vm.ts.Name" | translate}}</span><span>#: name #</span></div>' +
-                        '<div style="color: black"><span class="z-label">{{"vm.ts.UUID" | translate}}</span><span>#: uuid #</span></div>'
-                };
-                $scope.imageOptions__ = {
-                    dataSource: new kendo.data.DataSource({ data: [] }),
-                    dataTextField: "name",
-                    dataValueField: "uuid",
-                    template: '<div style="color: black"><span class="z-label">{{"vm.ts.Name" | translate}}</span><span>#: name #</span></div>' +
-                        '<div style="color: black"><span class="z-label">{{"vm.ts.Platform" | translate}}</span><span>#: platform #</span></div>' +
-                        '<div style="color: black"><span class="z-label">{{"vm.ts.Media Type" | translate}}</span><span>#= mediaType #</span></div>' +
-                        '<div style="color: black"><span class="z-label">{{"vm.ts.Format" | translate}}</span><span>#: format #</span></div>' +
-                        '<div style="color: black"><span class="z-label">{{"vm.ts.UUID" | translate}}</span><span>#: uuid #</span></div>'
-                };
+                
+                  
                 _this.$scope = $scope;
             };
             this.restrict = 'EA';
             this.replace = true;
-            this.templateUrl = '/static/templates/vm/createVm.html';
+            this.templateUrl = '/static/templates/vm/createECSVm.html';
         }
-        CreateECSVmInstance.prototype.open = function () {
+        CreateEcsInstance.prototype.open = function () {
             var _this = this;
-            var win = this.$scope.winCreateECSVmInstance__;
-            var chain = new Utils.Chain();
-            this.$scope.clusterOptions__.dataSource.data([]);
-            this.$scope.button.reset();
-            chain.then(function () {
-                var qobj = new ApiHeader.QueryObject();
-                qobj.conditions = [
-                    {
-                        name: 'state',
-                        op: '=',
-                        value: 'Enabled'
-                    }
-                ];
-                _this.instOfferingMgr.query(qobj, function (instanceOfferings) {
-                    _this.$scope.instanceOfferingOptions__.dataSource.data(instanceOfferings);
-                    chain.next();
-                });
-            }).then(function () {
-                var qobj = new ApiHeader.QueryObject();
-                qobj.conditions = [
-                    {
-                        name: 'state',
-                        op: '=',
-                        value: 'Enabled'
-                    }
-                ];
-                _this.diskOfferingMgr.query(qobj, function (diskOfferings) {
-                    _this.$scope.diskOfferingOptions__.dataSource.data(diskOfferings);
-                    _this.$scope.rootDiskOfferingOptions__.dataSource.data(diskOfferings);
-                    chain.next();
-                });
-            }).then(function () {
-                var qobj = new ApiHeader.QueryObject();
-                qobj.conditions = [
-                    {
-                        name: 'state',
-                        op: '=',
-                        value: 'Enabled'
-                    },
-                    {
-                        name: 'system',
-                        op: '=',
-                        value: 'false'
-                    }
-                ];
-                _this.l3Mgr.query(qobj, function (l3s) {
-                    _this.$scope.l3NetworkOptions__.dataSource.data(l3s);
-                    chain.next();
-                });
-            }).then(function () {
-                var qobj = new ApiHeader.QueryObject();
-                qobj.conditions = [];
-                _this.zoneMgr.query(qobj, function (zones) {
-                    //var zs = [{uuid: 'none'}];
-                    //zs = zs.concat(zones);
-                    _this.$scope.zoneOptions__.dataSource.data(zones);
-                    chain.next();
-                });
-            }).then(function () {
-                var qobj = new ApiHeader.QueryObject();
-                qobj.conditions = [
-                    {
-                        name: 'state',
-                        op: '=',
-                        value: 'Enabled'
-                    },
-                    {
-                        name: 'status',
-                        op: '=',
-                        value: 'Ready'
-                    },
-                    {
-                        name: 'system',
-                        op: '=',
-                        value: 'false'
-                    },
-                    {
-                        name: 'mediaType',
-                        op: 'in',
-                        value: ['RootVolumeTemplate', 'ISO'].join()
-                    }
-                ];
-                _this.imageMgr.query(qobj, function (images) {
-                    angular.forEach(images, function (it) {
-                        if (!Utils.notNullnotUndefined(it.guestOsType)) {
-                            it.guestOsType = "";
-                        }
-                        _this.$scope.infoPage.images[it.uuid] = it;
-                    });
-                    _this.$scope.imageOptions__.dataSource.data(images);
-                    chain.next();
-                });
-            }).done(function () {
-                win.center();
-                win.open();
-            }).start();
+            var win = this.$scope.winCreateEcsInstance__; 
+            win.center();
+            win.open();
         };
-        return CreateECSVmInstance;
+        return CreateEcsInstance;
     }());
-    MVmInstance.CreateECSVmInstance = CreateECSmInstance;
-    
+    MVmInstance.CreateEcsInstance = CreateEcsInstance;
     
     var AttachL3Network = (function () {
         function AttachL3Network(api, vmMgr) {
@@ -21672,7 +21343,10 @@ angular.module('root').factory('VmInstanceManager', ['Api', '$rootScope', functi
     'ZoneManager', 'InstanceOfferingManager', 'DiskOfferingManager', 'L3NetworkManager', 'ImageManager',
     function (api, vmMgr, clusterMgr, hostMgr, zoneMgr, instOfferingMgr, diskOfferingMgr, l3Mgr, imageMgr) {
         return new MVmInstance.CreateVmInstance(api, vmMgr, clusterMgr, hostMgr, zoneMgr, instOfferingMgr, diskOfferingMgr, l3Mgr, imageMgr);
-    }]).directive('zMigrateVmInstance', ['Api', 'VmInstanceManager', function (api, vmMgr) {
+    }]).directive('zCreateEcsInstance', ['Api','VmInstanceManager',
+    function (api,vmMgr ) {
+    return new MVmInstance.CreateEcsInstance(api,vmMgr);
+   }]).directive('zMigrateVmInstance', ['Api', 'VmInstanceManager', function (api, vmMgr) {
         return new MVmInstance.MigrateVm(api, vmMgr);
     }]).directive('zChangeInstanceOffering', ['Api', 'VmInstanceManager', 'InstanceOfferingManager', function (api, vmMgr, insMgr) {
         return new MVmInstance.ChangeInstanceOffering(api, vmMgr, insMgr);

@@ -151,6 +151,7 @@ api_names = [
     'org.zstack.header.vm.APIStartVmInstanceMsg',
     'org.zstack.header.vm.APIDeleteVmHostnameMsg',
     'org.zstack.header.vm.APIDetachL3NetworkFromVmMsg',
+    'org.zstack.header.vm.APICreatePublicVmInstanceMsg',
     'org.zstack.header.volume.APIDeleteDataVolumeMsg',
     'org.zstack.header.volume.APIRecoverDataVolumeMsg',
     'org.zstack.header.volume.APIGetVolumeCapabilitiesMsg',
