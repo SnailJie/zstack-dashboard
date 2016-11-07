@@ -19361,7 +19361,7 @@ var MVmInstance;
                 msg.name = vm.name;
                 msg.accesskeyID = vm.accesskeyID;
                 msg.accesskeyKey = vm.accesskeyKey;
-                msg.tpye = vm.type;
+                msg.type = vm.type;
                 msg.systemTags = [];
                
                 this.api.asyncApi(msg, function (ret) {
