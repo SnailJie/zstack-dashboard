@@ -22,12 +22,20 @@
                             <label for="description">{{"cluster.createCluster.DESCRIPTION" | translate}}</label>
                             <textarea  class="form-control z-win-input" rows="5" id="description" placeholder="(Optional) max length of 2048 characters" ng-model="infoPage.description"></textarea>
                         </div>
+                        <!-- 
                         <div class="form-group col-sm-24">
                             <label for="cloudType">{{"cluster.createCluster.CLOUDTYPE" | translate}}</label>
                             <select id="cloudType" kendo-drop-down-list  k-options="cloudTypeOptions__" class="z-win-dropdown" ng-model="infoPage.cloudType"></select>
                             <p class="z-hint">{{"cluster.createCluster.HINT2" | translate}}</p>
                         </div>
-                        
+                         -->
+                         <div class="form-group col-sm-24">
+                                 <label for="hypervisor">{{"cluster.createCluster.HYPERVISOR" | translate}}</label>
+                                 <select id="hypervisor" kendo-drop-down-list k-options="hypervisorList" class="z-win-dropdown" ng-model="infoPage.hypervisorType"></select>
+                                 <p class="z-hint">{{"cluster.createCluster.HINT2" | translate}}</p>
+                        </div>
+                               
+                               <!-- 
                         <div ng-switch="infoPage.cloudType">
                             <div ng-switch-when="Private Cloud">
                                <div class="form-group col-sm-24">
@@ -45,6 +53,7 @@
                                 
                             </div>
                         </div>
+                         -->
                         
                         
                         
