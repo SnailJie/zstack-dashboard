@@ -209,6 +209,20 @@ var ApiHeader;
         return APIStopVmInstanceMsg;
     }());
     ApiHeader.APIStopVmInstanceMsg = APIStopVmInstanceMsg;
+    
+    var APIStopVmPubInstanceMsg = (function () {
+        function APIStopVmPubInstanceMsg() {
+        }
+        APIStopVmPubInstanceMsg.prototype.toApiMap = function () {
+            var msg = {
+                'org.zstack.header.vm.APIStopVmPubInstanceMsg': this
+            };
+            return msg;
+        };
+        return APIStopVmPubInstanceMsg;
+    }());
+    ApiHeader.APIStopVmPubInstanceMsg = APIStopVmPubInstanceMsg;
+    
     var APIChangeInstanceOfferingMsg = (function () {
         function APIChangeInstanceOfferingMsg() {
         }
@@ -19447,16 +19461,23 @@ var MVmInstance;
             var _this = this;
             vm.progressOn();
             vm.state = 'Stopping';
-            var msg = new ApiHeader.APIStopVmInstanceMsg();
-            msg.uuid = vm.uuid;
-            this.api.asyncApi(msg, function (ret) {
-                vm.updateObservableObject(ret.inventory);
-                vm.progressOff();
-                _this.$rootScope.$broadcast(MRoot.Events.NOTIFICATION, {
-                    msg: Utils.sprintf('Stopped VmInstance: {0}', vm.name),
-                    link: Utils.sprintf('/#/vmInstance/{0}', vm.uuid)
-                });
-            });
+            var msg;
+           if (vm.description != 'ECS Vm') {
+            msg = new ApiHeader.APIStopVmInstanceMsg();
+          
+           }
+           else {
+        	 msg = new ApiHeader.APIStopVmPubInstanceMsg();
+           }
+           msg.uuid = vm.uuid;
+           this.api.asyncApi(msg, function (ret) {
+               vm.updateObservableObject(ret.inventory);
+               vm.progressOff();
+               _this.$rootScope.$broadcast(MRoot.Events.NOTIFICATION, {
+                   msg: Utils.sprintf('Stopped VmInstance: {0}', vm.name),
+                   link: Utils.sprintf('/#/vmInstance/{0}', vm.uuid)
+               });
+           });
         };
         VmInstanceManager.prototype.start = function (vm) {
             var _this = this;
@@ -21027,7 +21048,7 @@ var MVmInstance;
                 $scope.button = new Utils.WizardButton([infoPage
                 ], mediator);
                 
-                $scope.winCreateEcsInstanceOptions__ = {
+                $scope.winCreateECSInstanceOptions__ = {
                     width: '700px',
                     //height: '620px',
                     animation: false,

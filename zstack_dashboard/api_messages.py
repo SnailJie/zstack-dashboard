@@ -139,6 +139,7 @@ api_names = [
     'org.zstack.header.vm.APIGetVmMigrationCandidateHostsMsg',
     'org.zstack.header.vm.APIQueryVmNicMsg',
     'org.zstack.header.vm.APIStopVmInstanceMsg',
+    'org.zstack.header.vm.APIStopVmPubInstanceMsg',
     'org.zstack.header.vm.APIAttachIsoToVmInstanceMsg',
     'org.zstack.header.vm.APICreateVmInstanceMsg',
     'org.zstack.header.vm.APIExpungeVmInstanceMsg',
