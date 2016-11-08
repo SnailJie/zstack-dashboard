@@ -124,6 +124,7 @@ api_names = [
     'org.zstack.header.tag.APIDeleteTagMsg',
     'org.zstack.header.vm.APIGetVmBootOrderMsg',
     'org.zstack.header.vm.APIRebootVmInstanceMsg',
+    'org.zstack.header.vm.APIRebootVmPubInstanceMsg',
     'org.zstack.header.vm.APIRecoverVmInstanceMsg',
     'org.zstack.header.vm.APIGetVmAttachableL3NetworkMsg',
     'org.zstack.header.vm.APISetVmBootOrderMsg',

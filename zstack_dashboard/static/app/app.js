@@ -223,6 +223,22 @@ var ApiHeader;
     }());
     ApiHeader.APIStopVmPubInstanceMsg = APIStopVmPubInstanceMsg;
     
+    
+    var APIRebootVmPubInstanceMsg = (function () {
+        function APIRebootVmPubInstanceMsg() {
+        }
+        APIRebootVmPubInstanceMsg.prototype.toApiMap = function () {
+            var msg = {
+                'org.zstack.header.vm.APIRebootVmPubInstanceMsg': this
+            };
+            return msg;
+        };
+        return APIRebootVmPubInstanceMsg;
+    }());
+    ApiHeader.APIRebootVmPubInstanceMsg = APIRebootVmPubInstanceMsg;
+    
+    
+    
     var APIChangeInstanceOfferingMsg = (function () {
         function APIChangeInstanceOfferingMsg() {
         }
@@ -19491,10 +19507,10 @@ var MVmInstance;
           
            }
            else {
-        	 msg = new ApiHeader.APIStopVmPubInstanceMsg();
+        	msg = new ApiHeader.APIStopVmPubInstanceMsg();
            }
-           msg.uuid = vm.uuid;
-           this.api.asyncApi(msg, function (ret) {
+            msg.uuid = vm.uuid;
+            this.api.asyncApi(msg, function (ret) {
                vm.updateObservableObject(ret.inventory);
                vm.progressOff();
                _this.$rootScope.$broadcast(MRoot.Events.NOTIFICATION, {
@@ -19519,10 +19535,18 @@ var MVmInstance;
             });
         };
         VmInstanceManager.prototype.reboot = function (vm) {
-            var _this = this;
+        	var _this = this;
             vm.progressOn();
             vm.state = 'Rebooting';
-            var msg = new ApiHeader.APIRebootVmInstanceMsg();
+            var msg;
+           if (vm.description != 'ECS Vm') {
+             msg = new ApiHeader.APIRebootVmInstanceMsg();
+          
+           }
+           else {
+        	  msg = new ApiHeader.APIRebootVmPubInstanceMsg();
+           }
+        	
             msg.uuid = vm.uuid;
             this.api.asyncApi(msg, function (ret) {
                 vm.updateObservableObject(ret.inventory);
@@ -19534,6 +19558,8 @@ var MVmInstance;
             }, function () {
                 vm.progressOff();
             });
+            
+            
         };
         VmInstanceManager.prototype.delete = function (vm, done) {
             var _this = this;
