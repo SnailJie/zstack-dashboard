@@ -136,6 +136,7 @@ api_names = [
     'org.zstack.header.vm.APIGetVmConsoleAddressMsg',
     'org.zstack.header.vm.APIAttachL3NetworkToVmMsg',
     'org.zstack.header.vm.APIDestroyVmInstanceMsg',
+    'org.zstack.header.vm.APIDestroyVmPubInstanceMsg',
     'org.zstack.header.vm.APIGetVmAttachableDataVolumeMsg',
     'org.zstack.header.vm.APIGetVmMigrationCandidateHostsMsg',
     'org.zstack.header.vm.APIQueryVmNicMsg',

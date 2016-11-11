@@ -239,6 +239,7 @@ var ApiHeader;
     
     
     
+    
     var APIChangeInstanceOfferingMsg = (function () {
         function APIChangeInstanceOfferingMsg() {
         }
@@ -323,6 +324,21 @@ var ApiHeader;
         return APIDestroyVmInstanceMsg;
     }());
     ApiHeader.APIDestroyVmInstanceMsg = APIDestroyVmInstanceMsg;
+    
+    var APIDestroyVmPubInstanceMsg = (function () {
+        function APIDestroyVmPubInstanceMsg() {
+        }
+        APIDestroyVmPubInstanceMsg.prototype.toApiMap = function () {
+            var msg = {
+                'org.zstack.header.vm.APIDestroyVmPubInstanceMsg': this
+            };
+            return msg;
+        };
+        return APIDestroyVmPubInstanceMsg;
+    }());
+    ApiHeader.APIDestroyVmPubInstanceMsg = APIDestroyVmPubInstanceMsg;
+    
+    
     var APIGetVmMigrationCandidateHostsMsg = (function () {
         function APIGetVmMigrationCandidateHostsMsg() {
         }
@@ -19359,7 +19375,8 @@ var MVmInstance;
             self.set('accesskeyID', inv.accesskeyID);
             self.set('accesskeyKey', inv.accesskeyKey);
             self.set('description', inv.description);
-           
+            self.set('ECSId',inv.ECSId);
+
         };
         ECSVmInstance.STATES = ['Connecting',  'Created'];
         return ECSVmInstance;
@@ -19565,7 +19582,16 @@ var MVmInstance;
             var _this = this;
             vm.progressOn();
             vm.state = 'Destroying';
-            var msg = new ApiHeader.APIDestroyVmInstanceMsg();
+            var msg;
+            if (vm.description != 'ECS Vm') {
+            	msg = new ApiHeader.APIDestroyVmInstanceMsg();
+             
+              }
+              else {
+           	  msg = new ApiHeader.APIDestroyVmPubInstanceMsg();
+              }
+            
+            
             msg.uuid = vm.uuid;
             this.api.asyncApi(msg, function (ret) {
                 vm.progressOff();
