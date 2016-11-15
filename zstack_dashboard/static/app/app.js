@@ -461,6 +461,21 @@ var ApiHeader;
         return APIStartVmInstanceMsg;
     }());
     ApiHeader.APIStartVmInstanceMsg = APIStartVmInstanceMsg;
+    
+    
+    var APIStartVmPubInstanceMsg = (function () {
+        function APIStartVmPubInstanceMsg() {
+        }
+        APIStartVmPubInstanceMsg.prototype.toApiMap = function () {
+            var msg = {
+                'org.zstack.header.vm.APIStartVmPubInstanceMsg': this
+            };
+            return msg;
+        };
+        return APIStartVmPubInstanceMsg;
+    }());
+    ApiHeader.APIStartVmPubInstanceMsg = APIStartVmPubInstanceMsg;
+    
     var APIChangeImageStateMsg = (function () {
         function APIChangeImageStateMsg() {
         }
@@ -19540,7 +19555,14 @@ var MVmInstance;
             var _this = this;
             vm.progressOn();
             vm.state = 'Starting';
-            var msg = new ApiHeader.APIStartVmInstanceMsg();
+            var msg;
+            if (vm.description != 'ECS Vm') {
+              msg = new ApiHeader.APIStartVmInstanceMsg();
+           
+            } else {
+          	  msg = new ApiHeader.APIStartVmPubInstanceMsg();
+            }
+            
             msg.uuid = vm.uuid;
             this.api.asyncApi(msg, function (ret) {
                 vm.updateObservableObject(ret.inventory);
