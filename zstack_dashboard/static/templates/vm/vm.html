@@ -1,5 +1,6 @@
 <div style="display: none">
     <div z-create-vm-instance="winNewVmInstance" z-options="optionsCreateVmInstance"></div>
+    <div z-create-ecs-instance="winNewEcsInstance" z-options="optionsCreateECSVmInstance"></div>
     <div z-search="search" z-options="optionsSearch"></div>
     <div z-confirm="deleteVmInstance" z-options="optionsDeleteVmInstance"></div>
     <div z-confirm="expungeVmInstance" z-options="optionsExpungeVmInstance"></div>
@@ -12,7 +13,7 @@
 </div>
 
 <div>
-    <h3 class="z-h3">{{"vm.vm.VM INSTANCE" | translate}}</h3>
+    <h3 class="z-h3">{{"vm.vm.VM INSTANCE" | translate}}</h3> 
     <div class="btn-group-sm z-btn-bar">
         <button type="button" class="btn btn-default btn-sm" ng-click="funcRefresh()">
             <i class="fa fa-refresh"></i>
@@ -36,7 +37,7 @@
             <ul class="dropdown-menu" role="menu">
                 <li><a href ng-click="funcCreateVmInstance(winNewVmInstance)" >{{"vm.vm.New PrivateVmInstance" | translate}}</a></li>
                  <li class="divider"></li>
-                <li><a href ng-click="funcCreateVmInstance(winNewVmInstance)" >{{"vm.vm.New ECSVmInstance" | translate}}</a></li>
+                <li><a href ng-click="funcCreateEcsVmInstance(winNewEcsInstance)" >{{"vm.vm.New ECSVmInstance" | translate}}</a></li>
             </ul>
         </div>
 

@@ -209,6 +209,37 @@ var ApiHeader;
         return APIStopVmInstanceMsg;
     }());
     ApiHeader.APIStopVmInstanceMsg = APIStopVmInstanceMsg;
+    
+    var APIStopVmPubInstanceMsg = (function () {
+        function APIStopVmPubInstanceMsg() {
+        }
+        APIStopVmPubInstanceMsg.prototype.toApiMap = function () {
+            var msg = {
+                'org.zstack.header.vm.APIStopVmPubInstanceMsg': this
+            };
+            return msg;
+        };
+        return APIStopVmPubInstanceMsg;
+    }());
+    ApiHeader.APIStopVmPubInstanceMsg = APIStopVmPubInstanceMsg;
+    
+    
+    var APIRebootVmPubInstanceMsg = (function () {
+        function APIRebootVmPubInstanceMsg() {
+        }
+        APIRebootVmPubInstanceMsg.prototype.toApiMap = function () {
+            var msg = {
+                'org.zstack.header.vm.APIRebootVmPubInstanceMsg': this
+            };
+            return msg;
+        };
+        return APIRebootVmPubInstanceMsg;
+    }());
+    ApiHeader.APIRebootVmPubInstanceMsg = APIRebootVmPubInstanceMsg;
+    
+    
+    
+    
     var APIChangeInstanceOfferingMsg = (function () {
         function APIChangeInstanceOfferingMsg() {
         }
@@ -293,6 +324,21 @@ var ApiHeader;
         return APIDestroyVmInstanceMsg;
     }());
     ApiHeader.APIDestroyVmInstanceMsg = APIDestroyVmInstanceMsg;
+    
+    var APIDestroyVmPubInstanceMsg = (function () {
+        function APIDestroyVmPubInstanceMsg() {
+        }
+        APIDestroyVmPubInstanceMsg.prototype.toApiMap = function () {
+            var msg = {
+                'org.zstack.header.vm.APIDestroyVmPubInstanceMsg': this
+            };
+            return msg;
+        };
+        return APIDestroyVmPubInstanceMsg;
+    }());
+    ApiHeader.APIDestroyVmPubInstanceMsg = APIDestroyVmPubInstanceMsg;
+    
+    
     var APIGetVmMigrationCandidateHostsMsg = (function () {
         function APIGetVmMigrationCandidateHostsMsg() {
         }
@@ -377,6 +423,20 @@ var ApiHeader;
         return APICreateVmInstanceMsg;
     }());
     ApiHeader.APICreateVmInstanceMsg = APICreateVmInstanceMsg;
+    
+    var APICreatePublicVmInstanceMsg = (function () {
+        function APICreatePublicVmInstanceMsg() {
+        }
+        APICreatePublicVmInstanceMsg.prototype.toApiMap = function () {
+            var msg = {
+                'org.zstack.header.vm.APICreatePublicVmInstanceMsg': this
+            };
+            return msg;
+        };
+        return APICreatePublicVmInstanceMsg;
+    }());
+    ApiHeader.APICreatePublicVmInstanceMsg = APICreatePublicVmInstanceMsg;
+    
     var APIGetVmInstanceMsg = (function () {
         function APIGetVmInstanceMsg() {
         }
@@ -401,6 +461,21 @@ var ApiHeader;
         return APIStartVmInstanceMsg;
     }());
     ApiHeader.APIStartVmInstanceMsg = APIStartVmInstanceMsg;
+    
+    
+    var APIStartVmPubInstanceMsg = (function () {
+        function APIStartVmPubInstanceMsg() {
+        }
+        APIStartVmPubInstanceMsg.prototype.toApiMap = function () {
+            var msg = {
+                'org.zstack.header.vm.APIStartVmPubInstanceMsg': this
+            };
+            return msg;
+        };
+        return APIStartVmPubInstanceMsg;
+    }());
+    ApiHeader.APIStartVmPubInstanceMsg = APIStartVmPubInstanceMsg;
+    
     var APIChangeImageStateMsg = (function () {
         function APIChangeImageStateMsg() {
         }
@@ -2225,6 +2300,20 @@ var ApiHeader;
         return APICreateClusterMsg;
     }());
     ApiHeader.APICreateClusterMsg = APICreateClusterMsg;
+    
+    var APICreateECSClusterMsg = (function () {
+        function APICreateECSClusterMsg() {
+        }
+        APICreateECSClusterMsg.prototype.toApiMap = function () {
+            var msg = {
+                'org.zstack.header.cluster.APICreateECSClusterMsg': this
+            };
+            return msg;
+        };
+        return APICreateECSClusterMsg;
+    }());
+    ApiHeader.APICreateECSClusterMsg = APICreateECSClusterMsg;
+    
     var APIChangeClusterStateMsg = (function () {
         function APIChangeClusterStateMsg() {
         }
@@ -4805,6 +4894,14 @@ var APIUpdateXenHostMsg = (function () {
         return ClusterInventory;
     }());
     ApiHeader.ClusterInventory = ClusterInventory;
+    
+    var ECSClusterInventory = (function () {
+        function ECSClusterInventory() {
+        }
+        return ECSClusterInventory;
+    }());
+    ApiHeader.ECSClusterInventory = ECSClusterInventory;
+    
     var APICreateClusterEvent = (function () {
         function APICreateClusterEvent() {
         }
@@ -8821,7 +8918,7 @@ angular.module('root').factory('ZoneManager', ['Api', '$rootScope', function (ap
 /// <reference path="d.ts/kendo.all.d.ts" />
 var MCluster;
 (function (MCluster) {
-    var Cluster = (function (_super) {
+   var Cluster = (function (_super) {
         __extends(Cluster, _super);
         function Cluster() {
             _super.apply(this, arguments);
@@ -8869,10 +8966,12 @@ var MCluster;
             self.set('state', inv.state);
             self.set('createDate', inv.createDate);
             self.set('lastOpDate', inv.lastOpDate);
+             self.set('accesskey', inv.accesskey);
         };
         return Cluster;
     }(ApiHeader.ClusterInventory));
     MCluster.Cluster = Cluster;
+     
     var ClusterManager = (function () {
         function ClusterManager(api, $rootScope) {
             this.api = api;
@@ -8886,17 +8985,32 @@ var MCluster;
         };
         ClusterManager.prototype.create = function (cluster, done) {
             var _this = this;
-            var _this = this;
+            var msg = new ApiHeader.APICreateClusterMsg();
+            msg.name = cluster.name;
+            msg.description = cluster.description;
+            msg.hypervisorType = cluster.hypervisorType;
+            msg.zoneUuid = cluster.zoneUuid;
+
+            this.api.asyncApi(msg, function (ret) {
+            var c = new Cluster();
+            angular.extend(c, ret.inventory);
+            done(_this.wrap(c));
+            _this.$rootScope.$broadcast(MRoot.Events.NOTIFICATION, {
+                msg: Utils.sprintf('Created new cluster: {0}', c.name),
+                link: Utils.sprintf('/#/cluster', c.uuid)
+            });
+        });
+            
+            /*
             if (cluster.cloudType == 'Public Cloud') {
                 var msg = new ApiHeader.APICreateECSClusterMsg();
                 msg.name = cluster.name;
                 msg.description = cluster.description;
                 msg.zoneUuid = cluster.zoneUuid;
-                msg.username = cluster.username;
-                msg.password = cluster.password;
+                msg.accessKey = cluster.accesskey;
 
                 this.api.asyncApi(msg, function (ret) {
-                var c = new ECS_Cluster();
+                var c = new ECSCluster();
                 angular.extend(c, ret.inventory);
                 done(_this.wrap(c));
                 _this.$rootScope.$broadcast(MRoot.Events.NOTIFICATION, {
@@ -8922,6 +9036,9 @@ var MCluster;
                 });
             });
             }
+            
+            */
+            
         };
         ClusterManager.prototype.query = function (qobj, callback) {
             var _this = this;
@@ -9073,6 +9190,17 @@ var MCluster;
         return ClusterModel;
     }(Utils.Model));
     MCluster.ClusterModel = ClusterModel;
+    
+    var ECSClusterModel = (function (_super) {
+        __extends(ECSClusterModel, _super);
+        function ECSClusterModel() {
+            _super.call(this);
+            this.current = new ECSCluster();
+        }
+        return ClusterModel;
+    }(Utils.Model));
+    MCluster.ClusterModel = ClusterModel;
+    
     var OClusterGrid = (function (_super) {
         __extends(OClusterGrid, _super);
         function OClusterGrid($scope, clusterMgr) {
@@ -9751,6 +9879,7 @@ var MCluster;
                     zoneUuid: null,
                     description: null,
                     hypervisorType: null,
+                    accesskey: null,
                     canMoveToPrevious: function () {
                         return false;
                     },
@@ -9781,6 +9910,8 @@ var MCluster;
                         this.zoneUuid = null;
                         this.description = null;
                         this.hypervisorType = null;
+ //                       this.cloudType = null;
+                        this.accesskey = null;
                         this.activeState = false;
                     }
                 };
@@ -9918,6 +10049,8 @@ var MCluster;
                     draggable: false,
                     resizable: false
                 };
+                
+                /*
                 $scope.cloudTypeOptions__ = {
                         dataSource: new kendo.data.DataSource({
                             data: [
@@ -9926,12 +10059,14 @@ var MCluster;
                             ]
                         })
                     };
+                
                 $scope.$watch(function () {
                   return $scope.infoPage.cloudType;
                  }, function () {
               	
                               $scope.infoPage.cloudType = $scope.infoPage.cloudType;
                  });
+                 */
                 $scope.primaryStorageListOptions__ = {
                     dataSource: new kendo.data.DataSource({ data: [] }),
                     dataTextField: "name",
@@ -10022,6 +10157,8 @@ var MCluster;
         return CreateCluster;
     }());
     MCluster.CreateCluster = CreateCluster;
+    
+    
     var AttachL2NetworkOptions = (function () {
         function AttachL2NetworkOptions() {
         }
@@ -19214,6 +19351,53 @@ var MVmInstance;
         return VmInstance;
     }(ApiHeader.VmInstanceInventory));
     MVmInstance.VmInstance = VmInstance;
+    
+    
+    var ECSVmInstance = (function (_super) {
+        __extends(ECSVmInstance, _super);
+        function ECSVmInstance() {
+            _super.apply(this, arguments);
+        }
+        ECSVmInstance.prototype.progressOn = function () {
+            this.inProgress = true;
+        };
+        ECSVmInstance.prototype.progressOff = function () {
+            this.inProgress = false;
+        };
+        ECSVmInstance.prototype.isInProgress = function () {
+            return this.inProgress;
+        };
+        ECSVmInstance.prototype.stateLabel = function () {
+            if (this.state == 'Running') {
+                return 'label label-success';
+            }
+            else if (this.state == 'Stopped') {
+                return 'label label-danger';
+            }
+            else if (this.state == 'Unknown') {
+                return 'label label-warning';
+            }
+            else {
+                return 'label label-default';
+            }
+        };
+        ECSVmInstance.prototype.updateObservableObject = function (inv) {
+            // self : ObservableObject
+            var self = this;
+            self.set('uuid', inv.uuid);
+            self.set('name', inv.name);
+            self.set('type', inv.type);
+            self.set('accesskeyID', inv.accesskeyID);
+            self.set('accesskeyKey', inv.accesskeyKey);
+            self.set('description', inv.description);
+            self.set('ECSId',inv.ECSId);
+
+        };
+        ECSVmInstance.STATES = ['Connecting',  'Created'];
+        return ECSVmInstance;
+    }(ApiHeader.VmInstanceInventory));
+    MVmInstance.ECSVmInstance = ECSVmInstance;
+    
     var VmInstanceManager = (function () {
         function VmInstanceManager(api, $rootScope) {
             this.api = api;
@@ -19227,35 +19411,58 @@ var MVmInstance;
         };
         VmInstanceManager.prototype.create = function (vm, done) {
             var _this = this;
-            var msg = new ApiHeader.APICreateVmInstanceMsg();
-            msg.name = vm.name;
-            msg.description = vm.description;
-            msg.instanceOfferingUuid = vm.instanceOfferingUuid;
-            msg.imageUuid = vm.imageUuid;
-            msg.l3NetworkUuids = vm.l3NetworkUuids;
-            msg.rootDiskOfferingUuid = vm.rootDiskOfferingUuid;
-            msg.dataDiskOfferingUuids = vm.dataDiskOfferingUuids;
-            msg.zoneUuid = vm.zoneUuid;
-            msg.clusterUuid = vm.clusterUuid;
-            msg.hostUuid = vm.hostUuid;
-            msg.resourceUuid = vm.resourceUuid;
-            msg.defaultL3NetworkUuid = vm.defaultL3NetworkUuid;
-            msg.systemTags = [];
-            for (var i = 0; i < vm.l3NetworkStaticIps.length; ++i) {
-                msg.systemTags.push('staticIp::' + vm.l3NetworkStaticIps[i].uuid + '::' + vm.l3NetworkStaticIps[i].staticIp);
+            if (vm.type != 'ECS'){
+            	var msg = new ApiHeader.APICreateVmInstanceMsg();
+                msg.name = vm.name;
+                msg.description = vm.description;
+                msg.instanceOfferingUuid = vm.instanceOfferingUuid;
+                msg.imageUuid = vm.imageUuid;
+                msg.l3NetworkUuids = vm.l3NetworkUuids;
+                msg.rootDiskOfferingUuid = vm.rootDiskOfferingUuid;
+                msg.dataDiskOfferingUuids = vm.dataDiskOfferingUuids;
+                msg.zoneUuid = vm.zoneUuid;
+                msg.clusterUuid = vm.clusterUuid;
+                msg.hostUuid = vm.hostUuid;
+                msg.resourceUuid = vm.resourceUuid;
+                msg.defaultL3NetworkUuid = vm.defaultL3NetworkUuid;
+                msg.systemTags = [];
+                for (var i = 0; i < vm.l3NetworkStaticIps.length; ++i) {
+                    msg.systemTags.push('staticIp::' + vm.l3NetworkStaticIps[i].uuid + '::' + vm.l3NetworkStaticIps[i].staticIp);
+                }
+                if (Utils.notNullnotUndefined(vm.hostname)) {
+                    msg.systemTags.push('hostname::' + vm.hostname);
+                }
+                this.api.asyncApi(msg, function (ret) {
+                    var c = new VmInstance();
+                    angular.extend(c, ret.inventory);
+                    done(_this.wrap(c));
+                    _this.$rootScope.$broadcast(MRoot.Events.NOTIFICATION, {
+                        msg: Utils.sprintf('Created new VmInstance: {0}', c.name),
+                        link: Utils.sprintf('/#/vm/{0}', c.uuid)
+                    });
+                });  
+                }
+            else {
+            	var msg = new ApiHeader.APICreatePublicVmInstanceMsg();
+                msg.name = vm.name;
+                msg.accesskeyID = vm.accesskeyID;
+                msg.accesskeyKey = vm.accesskeyKey;
+                msg.type = vm.type;
+                msg.systemTags = [];
+               
+                this.api.asyncApi(msg, function (ret) {
+                    var c = new ECSVmInstance();
+                    angular.extend(c, ret.inventory);
+                    done(_this.wrap(c));
+                    _this.$rootScope.$broadcast(MRoot.Events.NOTIFICATION, {
+                        msg: Utils.sprintf('Created new VmInstance: {0}', c.name),
+                        link: Utils.sprintf('/#/vm/{0}', c.uuid)
+                    });
+                });  
             }
-            if (Utils.notNullnotUndefined(vm.hostname)) {
-                msg.systemTags.push('hostname::' + vm.hostname);
-            }
-            this.api.asyncApi(msg, function (ret) {
-                var c = new VmInstance();
-                angular.extend(c, ret.inventory);
-                done(_this.wrap(c));
-                _this.$rootScope.$broadcast(MRoot.Events.NOTIFICATION, {
-                    msg: Utils.sprintf('Created new VmInstance: {0}', c.name),
-                    link: Utils.sprintf('/#/vm/{0}', c.uuid)
-                });
-            });
+            
+            
+            
         };
         VmInstanceManager.prototype.getConsole = function (vm, done) {
             var msg = new ApiHeader.APIRequestConsoleAccessMsg();
@@ -19326,22 +19533,36 @@ var MVmInstance;
             var _this = this;
             vm.progressOn();
             vm.state = 'Stopping';
-            var msg = new ApiHeader.APIStopVmInstanceMsg();
+            var msg;
+           if (vm.description != 'ECS Vm') {
+            msg = new ApiHeader.APIStopVmInstanceMsg();
+          
+           }
+           else {
+        	msg = new ApiHeader.APIStopVmPubInstanceMsg();
+           }
             msg.uuid = vm.uuid;
             this.api.asyncApi(msg, function (ret) {
-                vm.updateObservableObject(ret.inventory);
-                vm.progressOff();
-                _this.$rootScope.$broadcast(MRoot.Events.NOTIFICATION, {
-                    msg: Utils.sprintf('Stopped VmInstance: {0}', vm.name),
-                    link: Utils.sprintf('/#/vmInstance/{0}', vm.uuid)
-                });
-            });
+               vm.updateObservableObject(ret.inventory);
+               vm.progressOff();
+               _this.$rootScope.$broadcast(MRoot.Events.NOTIFICATION, {
+                   msg: Utils.sprintf('Stopped VmInstance: {0}', vm.name),
+                   link: Utils.sprintf('/#/vmInstance/{0}', vm.uuid)
+               });
+           });
         };
         VmInstanceManager.prototype.start = function (vm) {
             var _this = this;
             vm.progressOn();
             vm.state = 'Starting';
-            var msg = new ApiHeader.APIStartVmInstanceMsg();
+            var msg;
+            if (vm.description != 'ECS Vm') {
+              msg = new ApiHeader.APIStartVmInstanceMsg();
+           
+            } else {
+          	  msg = new ApiHeader.APIStartVmPubInstanceMsg();
+            }
+            
             msg.uuid = vm.uuid;
             this.api.asyncApi(msg, function (ret) {
                 vm.updateObservableObject(ret.inventory);
@@ -19353,10 +19574,18 @@ var MVmInstance;
             });
         };
         VmInstanceManager.prototype.reboot = function (vm) {
-            var _this = this;
+        	var _this = this;
             vm.progressOn();
             vm.state = 'Rebooting';
-            var msg = new ApiHeader.APIRebootVmInstanceMsg();
+            var msg;
+           if (vm.description != 'ECS Vm') {
+             msg = new ApiHeader.APIRebootVmInstanceMsg();
+          
+           }
+           else {
+        	  msg = new ApiHeader.APIRebootVmPubInstanceMsg();
+           }
+        	
             msg.uuid = vm.uuid;
             this.api.asyncApi(msg, function (ret) {
                 vm.updateObservableObject(ret.inventory);
@@ -19368,12 +19597,23 @@ var MVmInstance;
             }, function () {
                 vm.progressOff();
             });
+            
+            
         };
         VmInstanceManager.prototype.delete = function (vm, done) {
             var _this = this;
             vm.progressOn();
             vm.state = 'Destroying';
-            var msg = new ApiHeader.APIDestroyVmInstanceMsg();
+            var msg;
+            if (vm.description != 'ECS Vm') {
+            	msg = new ApiHeader.APIDestroyVmInstanceMsg();
+             
+              }
+              else {
+           	  msg = new ApiHeader.APIDestroyVmPubInstanceMsg();
+              }
+            
+            
             msg.uuid = vm.uuid;
             this.api.asyncApi(msg, function (ret) {
                 vm.progressOff();
@@ -19536,6 +19776,11 @@ var MVmInstance;
                     title: '{{"vm.ts.NAME" | translate}}',
                     width: '20%',
                     template: '<a href="/\\#/vmInstance/{{dataItem.uuid}}">{{dataItem.name}}</a>'
+                },
+                {
+                    field: 'type',
+                    title: '{{"vm.ts.TYPE" | translate}}',
+                    width: '20%'
                 },
                 {
                     field: 'description',
@@ -20096,6 +20341,9 @@ var MVmInstance;
             $scope.funcCreateVmInstance = function (win) {
                 win.open();
             };
+            $scope.funcCreateEcsVmInstance = function (win) {
+                win.open();
+            };
             $scope.funcDeleteVmInstance = function () {
                 $scope.deleteVmInstance.open();
             };
@@ -20150,6 +20398,23 @@ var MVmInstance;
                     });
                 }
             };
+            
+            $scope.optionsCreateECSVmInstance = {
+                    done: function (info) {
+                        var vm = new ECSVmInstance();
+                        info.uuid = info.resourceUuid = Utils.uuid();
+                        info.type = 'ECS';
+                        info.description = info.accesskey;
+                        info.state = 'Connecting';
+                        angular.extend(vm, info);
+                        vm.Description = info.accesskey;
+                        vm = vmMgr.wrap(vm);
+                        $scope.oVmInstanceGrid.add(vm);
+                        vmMgr.create(info, function (ret) {
+                            $scope.oVmInstanceGrid.refresh();
+                        });
+                    }
+                };
             $scope.console = function () {
                 vmMgr.getConsole($scope.model.current, function (inv) {
                     var windowName = $scope.model.current.name + $scope.model.current.uuid;
@@ -20811,6 +21076,102 @@ var MVmInstance;
         return CreateVmInstance;
     }());
     MVmInstance.CreateVmInstance = CreateVmInstance;
+    
+    var CreateEcsInstance = (function () {
+        function CreateEcsInstance(api,vmMgr) {
+            var _this = this;
+            this.api = api;
+            this.vmMgr = vmMgr;
+            this.scope = true;
+            this.link = function ($scope, $element, $attrs, $ctrl, $transclude) {
+                var instanceName = $attrs.zCreateEcsInstance;
+                var parentScope = $scope.$parent;
+                parentScope[instanceName] = _this;
+                
+                _this.options = new CreateVmInstanceOptions();
+                var optionName = $attrs.zOptions;
+                
+                if (angular.isDefined(optionName)) {
+                    _this.options = parentScope[optionName];
+                    $scope.$watch(function () {
+                        return parentScope[optionName];
+                    }, function () {
+                        _this.options = parentScope[optionName];
+                    });
+                }
+                
+                var infoPage = $scope.infoPage = {
+                    name: null,
+                    type: null,
+                    accesskey: null,
+                    canMoveToPrevious: function () {
+                        return false;
+                    },
+                    canMoveToNext: function () {
+                        return true;
+                    },
+                    getAnchorElement: function () {
+                        return $('.nav a[data-target="#createEcsVmInstance"]');
+                    },
+                    show: function () {
+                        this.getAnchorElement().tab('show');
+                    },
+                    getPageName: function () {
+                        return 'createEcsVmInstance';
+                    },
+                    reset: function () {
+                        this.name = false;
+                        this.type = null;
+                        this.accesskey = null;
+                    }
+                };
+                var mediator = $scope.mediator = {
+                    currentPage: infoPage,
+                    movedToPage: function (page) {
+                        $scope.mediator.currentPage = page;
+                    },
+                    finishButtonName: function () {
+                        return "Create";
+                    },
+                    finish: function () {
+                        $scope.infoPage.name = $scope.infoPage.name;
+                        $scope.infoPage.type = $scope.infoPage.type;
+                        $scope.infoPage.accesskeyID = $scope.infoPage.accesskeyID;
+                        $scope.infoPage.accesskeyKey = $scope.infoPage.accesskeyKey;
+                        _this.options.done(infoPage);
+                        $scope.winCreateEcsInstance__.close();
+                    }
+                };
+               
+                $scope.button = new Utils.WizardButton([infoPage
+                ], mediator);
+                
+                $scope.winCreateECSInstanceOptions__ = {
+                    width: '700px',
+                    //height: '620px',
+                    animation: false,
+                    modal: true,
+                    draggable: false,
+                    resizable: false
+                };
+                
+                  
+                _this.$scope = $scope;
+            };
+            this.restrict = 'EA';
+            this.replace = true;
+            this.templateUrl = '/static/templates/vm/createECSVm.html';
+        }
+        CreateEcsInstance.prototype.open = function () {
+            var _this = this;
+            var win = this.$scope.winCreateEcsInstance__; 
+            win.center();
+            win.open();
+        };
+        return CreateEcsInstance;
+    }());
+    MVmInstance.CreateEcsInstance = CreateEcsInstance;
+    
     var AttachL3Network = (function () {
         function AttachL3Network(api, vmMgr) {
             var _this = this;
@@ -21101,7 +21462,10 @@ angular.module('root').factory('VmInstanceManager', ['Api', '$rootScope', functi
     'ZoneManager', 'InstanceOfferingManager', 'DiskOfferingManager', 'L3NetworkManager', 'ImageManager',
     function (api, vmMgr, clusterMgr, hostMgr, zoneMgr, instOfferingMgr, diskOfferingMgr, l3Mgr, imageMgr) {
         return new MVmInstance.CreateVmInstance(api, vmMgr, clusterMgr, hostMgr, zoneMgr, instOfferingMgr, diskOfferingMgr, l3Mgr, imageMgr);
-    }]).directive('zMigrateVmInstance', ['Api', 'VmInstanceManager', function (api, vmMgr) {
+    }]).directive('zCreateEcsInstance', ['Api','VmInstanceManager',
+    function (api,vmMgr ) {
+    return new MVmInstance.CreateEcsInstance(api,vmMgr);
+   }]).directive('zMigrateVmInstance', ['Api', 'VmInstanceManager', function (api, vmMgr) {
         return new MVmInstance.MigrateVm(api, vmMgr);
     }]).directive('zChangeInstanceOffering', ['Api', 'VmInstanceManager', 'InstanceOfferingManager', function (api, vmMgr, insMgr) {
         return new MVmInstance.ChangeInstanceOffering(api, vmMgr, insMgr);
