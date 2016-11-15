@@ -152,6 +152,7 @@ api_names = [
     'org.zstack.header.vm.APIQueryVmInstanceMsg',
     'org.zstack.header.vm.APISetVmHostnameMsg',
     'org.zstack.header.vm.APIStartVmInstanceMsg',
+    'org.zstack.header.vm.APIStartVmPubInstanceMsg',
     'org.zstack.header.vm.APIDeleteVmHostnameMsg',
     'org.zstack.header.vm.APIDetachL3NetworkFromVmMsg',
     'org.zstack.header.vm.APICreatePublicVmInstanceMsg',
