@@ -1,0 +1,175 @@
+
+    <div class="row">
+        <div id="sidebar" class="col-sm-4" ng-show="isLogin()">
+            <div class="panel-group" id="menu">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">
+                            <a data-toggle="collapse" data-target="#image" href="/#/dashboard">
+                             {{"index.Dashboard" | translate}}
+                            </a>
+                        </h4>
+                    </div>
+                </div>
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h4 class="panel-title" data-toggle="collapse" data-target="#compute">
+                            {{"index.Compute" | translate}}
+                        </h4>
+                    </div>
+                    <div id="compute" class="panel-collapse collapse in">
+                        <div class="panel-body">
+                            <div class="list-group">
+                                <a href="/#/vmInstance" class="list-group-item">
+                                    <i class="fa fa-fw fa-sm fa-windows"></i>
+                                    <span class="menu-name">{{"index.Instance" | translate}}</span>&nbsp;
+                                </a>
+
+                                <a href="/#/host" class="list-group-item">
+                                    <i class="fa fa-fw fa-sm fa-laptop"></i>
+                                    <span class="menu-name"> {{"index.Host" | translate}}</span>&nbsp;
+                                </a>
+                                <a href="/#/cluster" class="list-group-item">
+                                    <i class="fa fa-fw fa-sm fa-th"></i>
+                                    <span class="menu-name"> {{"index.Cluster" | translate}}</span>&nbsp;
+                                </a>
+                                <a href="/#/zone" class="list-group-item">
+                                    <i class="fa fa-fw fa-sm fa-cloud"></i>
+                                    <span class="menu-name"> {{"index.Zone" | translate}}</span>&nbsp;
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">
+                            <a data-toggle="collapse" data-target="#image" href="/#/image">
+                                {{"index.Image" | translate}}
+                            </a>
+                        </h4>
+                    </div>
+                </div>
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h4 class="panel-title" data-toggle="collapse" data-target="#storage">
+                                {{"index.Storage" | translate}}
+                        </h4>
+                    </div>
+                    <div id="storage" class="panel-collapse collapse in">
+                        <div class="panel-body">
+                            <div class="list-group">
+                                <a href="/#/primaryStorage" class="list-group-item">
+                                    <i class="fa fa-fw fa-sm fa-hdd-o"></i>
+                                    <span class="menu-name"> {{"index.Primary Storage" | translate}}</span>&nbsp;
+                                </a>
+
+                                <a href="/#/backupStorage" class="list-group-item">
+                                    <i class="fa fa-fw fa-sm fa-save"></i>
+                                    <span class="menu-name"> {{"index.Backup Storage" | translate}}</span>&nbsp;
+                                </a>
+                                <a href="/#/volume" class="list-group-item">
+                                    <i class="fa fa-fw fa-sm fa-inbox"></i>
+                                    <span class="menu-name"> {{"index.Volume" | translate}}</span>&nbsp;
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h4 class="panel-title" data-toggle="collapse" data-target="#network">
+                            {{"index.Network" | translate}}
+                        </h4>
+                    </div>
+                    <div id="network" class="panel-collapse collapse in">
+                        <div class="panel-body">
+                            <div class="list-group">
+                                <a href="/#/l2Network" class="list-group-item">
+                                    <i class="fa fa-fw fa-sm fa-download"></i>
+                                    <span class="menu-name"> {{"index.L2 Network" | translate}}</span>&nbsp;
+                                </a>
+
+                                <a href="/#/l3Network" class="list-group-item">
+                                    <i class="fa fa-fw fa-sm fa-sort-amount-asc"></i>
+                                    <span class="menu-name"> {{"index.L3 Network" | translate}}</span>&nbsp;
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h4 class="panel-title" data-toggle="collapse" data-target="#networkService">
+                            {{"index.Network Service" | translate}}
+                        </h4>
+                    </div>
+                    <div id="networkService" class="panel-collapse collapse in">
+                        <div class="panel-body">
+                            <div class="list-group">
+                                <a href="/#/securityGroup" class="list-group-item">
+                                    <i class="fa fa-fw fa-sm fa-shield"></i>
+                                    <span class="menu-name"> {{"index.Security Group" | translate}}</span>&nbsp;
+                                </a>
+                                <a href="/#/vip" class="list-group-item">
+                                    <i class="fa fa-fw fa-sm fa-random"></i>
+                                    <span class="menu-name"> {{"index.VIP" | translate}}</span>&nbsp;
+                                </a>
+                                <a href="/#/eip" class="list-group-item">
+                                    <i class="fa fa-fw fa-sm fa-random"></i>
+                                    <span class="menu-name"> {{"index.EIP" | translate}}</span>&nbsp;
+                                </a>
+                                <a href="/#/portForwarding" class="list-group-item">
+                                    <i class="fa fa-fw fa-sm fa-random"></i>
+                                    <span class="menu-name"> {{"index.Port Forwarding" | translate}}</span>&nbsp;
+                                </a>
+                                <a href="/#/virtualRouter" class="list-group-item">
+                                    <i class="fa fa-fw fa-sm fa-sitemap"></i>
+                                    <span class="menu-name"> {{"index.Virtual Router" | translate}}</span>&nbsp;
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h4 class="panel-title" data-toggle="collapse" data-target="#configuration">
+                            {{"index.Configuration" | translate}}
+                        </h4>
+                    </div>
+                    <div id="configuration" class="panel-collapse collapse in">
+                        <div class="panel-body">
+                            <div class="list-group">
+                                <a href="/#/instanceOffering" class="list-group-item">
+                                    <i class="fa fa-fw fa-sm fa-download"></i>
+                                    <span class="menu-name"> {{"index.Instance Offering" | translate}}</span>&nbsp;
+                                </a>
+
+                                <a href="/#/diskOffering" class="list-group-item">
+                                    <i class="fa fa-fw fa-sm fa-sort-amount-asc"></i>
+                                    <span class="menu-name"> {{"index.Disk Offering" | translate}}</span>&nbsp;
+                                </a>
+
+                                <a href="/#/virtualRouterOffering" class="list-group-item">
+                                    <i class="fa fa-fw fa-sm fa-download"></i>
+                                    <span class="menu-name"> {{"index.Virtual Router Offering" | translate}}</span>&nbsp;
+                                </a>
+
+                                <a href="/#/globalConfig" class="list-group-item">
+                                    <i class="fa fa-fw fa-sm fa-download"></i>
+                                    <span class="menu-name"> {{"index.Global Configure" | translate}}</span>&nbsp;
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div ng-cloak class="ng-cloak">
+            <div class="col-sm-20">
+                <div ng-view=""></div>
+            </div>
+        </div>
+    </div>
