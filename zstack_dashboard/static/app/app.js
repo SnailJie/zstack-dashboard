@@ -7854,6 +7854,32 @@ var MRoot;
                         break;
                 }
             };
+            
+            $scope.cloudTypeName='公有云';
+            $rootScope.cloudType='private';
+            $scope.cloudType='private';
+            $scope.tabs = [{
+                              title: '私有云',
+                              url: '/static/templates/priIndex.html',
+                              type: 'private'
+                          },{
+                              title: '公有云',
+                              url: '/static/templates/pubIndex.html',
+                              type: 'public'
+                          }
+                      ];
+            $scope.currentTab = '/static/templates/priIndex.html';
+            $scope.onClickTab = function (tab) {
+                $scope.currentTab = tab.url;
+                $scope.cloudTypeName=tab.title;
+                $scope.cloudType=tab.type;
+            };
+
+            $scope.isActiveTab = function(tabUrl) {
+                return tabUrl ==  $scope.currentTab;
+            }
+            
+            
         }
         main.$inject = ['$scope', '$rootScope', 'Api', 'ApiDetails', '$location', '$cookies', '$translate'];
         return main;
@@ -19481,11 +19507,11 @@ var MVmInstance;
             msg.replyWithCount = true;
             msg.conditions = qobj.conditions ? qobj.conditions : [];
             if (!allVm) {
-                msg.conditions.push({
-                    name: "type",
-                    op: "=",
-                    value: "UserVm"
-                });
+//                msg.conditions.push({
+//                    name: "type",
+//                    op: "=",
+//                    value: "UserVm"
+//                });
             }
             if (Utils.notNullnotUndefined(this.sortBy) && this.sortBy.isValid()) {
                 msg.sortBy = this.sortBy.field;
@@ -19828,6 +19854,17 @@ var MVmInstance;
                                 break;
                             }
                         }
+                        if (vms[i].description == 'ECS Vm'){
+                        	  if($scope.cloudType!='public'){
+                        		  vms.splice(i,1);
+                        	  }
+                  		  
+                        }else {
+                        	 if($scope.cloudType=='public'){
+                       		  delete vms[i];
+                       	  }
+                        }
+                        
                     }
                     var hostUuids = [];
                     for (var j in vms) {

@@ -1,6 +1,6 @@
  
  
-    <div class="row"  style="float: left; width: 15%;" ng-show="isLogin()">
+    <div class="row"  style="float: left; width: 15%;"  >
         <div id="sidebar" class="col-sm-4" style="width: 100%;">
 				   <div class="panel-group" id="menu" style=" margin-right: 20px;">
 	                <div class="panel panel-default">
@@ -21,22 +21,21 @@
 	                    <div id="compute" class="panel-collapse collapse in">
 	                        <div class="panel-body">
 	                            <div class="list-group">
-	                                <a href="/#/vmInstance" class="list-group-item">
+	                                <a href="/#/account" class="list-group-item">
 	                                    <i class="fa fa-fw fa-sm fa-windows"></i>
-	                                    <span class="menu-name">{{"index.Instance" | translate}}</span>&nbsp;
+	                                    <span class="menu-name">账户管理</span>&nbsp;
 	                                </a>
-	
-	                                <a href="/#/host" class="list-group-item">
+	                                <a href="/#/vmInstance" class="list-group-item">
 	                                    <i class="fa fa-fw fa-sm fa-laptop"></i>
-	                                    <span class="menu-name"> {{"index.Host" | translate}}</span>&nbsp;
+	                                    <span class="menu-name"> 云主机</span>&nbsp;
 	                                </a>
-	                                <a href="/#/cluster" class="list-group-item">
+	                                <a href="/#/imagepub" class="list-group-item">
 	                                    <i class="fa fa-fw fa-sm fa-th"></i>
-	                                    <span class="menu-name"> {{"index.Cluster" | translate}}</span>&nbsp;
+	                                    <span class="menu-name"> 镜像</span>&nbsp;
 	                                </a>
 	                                <a href="/#/zone" class="list-group-item">
 	                                    <i class="fa fa-fw fa-sm fa-cloud"></i>
-	                                    <span class="menu-name"> {{"index.Zone" | translate}}</span>&nbsp;
+	                                    <span class="menu-name"> 区域</span>&nbsp;
 	                                </a>
 	                            </div>
 	                        </div>
@@ -51,4 +50,3 @@
              <div ng-view=""></div>
          </div>
      </div>
-
