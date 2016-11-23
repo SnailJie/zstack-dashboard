@@ -1,18 +1,17 @@
- 
- 
-    <div class="row"  style="float: left; width: 15%;"  >
-        <div id="sidebar" class="col-sm-4" style="width: 100%;">
-				   <div class="panel-group" id="menu">
-	                <div class="panel panel-default">
-	                    <div class="panel-heading">
-	                        <h4 class="panel-title">
-	                            <a data-toggle="collapse" data-target="#image" href="/#/dashboard">
-	                             {{"index.Dashboard" | translate}}
-	                            </a>
-	                        </h4>
-	                    </div>
-	                </div>
-	                <div class="panel panel-default">
+
+    <div class="row">
+        <div id="sidebar" class="col-sm-4" >
+            <div class="panel-group" id="menu">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">
+                            <a data-toggle="collapse" data-target="#image" href="/#/dashboard">
+                             {{"index.Dashboard" | translate}}
+                            </a>
+                        </h4>
+                    </div>
+                </div>
+                  <div class="panel panel-default">
 	                    <div class="panel-heading">
 	                        <h4 class="panel-title" data-toggle="collapse" data-target="#compute">
 	                            {{"index.Compute" | translate}}
@@ -41,12 +40,15 @@
 	                        </div>
 	                    </div>
 	                  </div>
-	                </div>
-                </div>
+         
+            </div>
+
         </div>
 
-     <div ng-cloak class="ng-cloak">
-         <div class="col-sm-20">
-             <div ng-view=""></div>
-         </div>
-     </div>
+        <div ng-cloak class="ng-cloak">
+            <div class="col-sm-20">
+                <div ng-view=""></div>
+            </div>
+        </div>
+    </div>
+
