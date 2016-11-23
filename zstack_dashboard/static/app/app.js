@@ -7855,7 +7855,7 @@ var MRoot;
                 }
             };
             
-            $scope.cloudTypeName='公有云';
+            $scope.cloudTypeName='私有云';
             $rootScope.cloudType='private';
             $scope.cloudType='private';
             $scope.tabs = [{
@@ -7868,7 +7868,7 @@ var MRoot;
                               type: 'public'
                           }
                       ];
-            $scope.currentTab = '/static/templates/priIndex.html';
+            
             $scope.onClickTab = function (tab) {
                 $scope.currentTab = tab.url;
                 $scope.cloudTypeName=tab.title;
@@ -7878,6 +7878,12 @@ var MRoot;
             $scope.isActiveTab = function(tabUrl) {
                 return tabUrl ==  $scope.currentTab;
             }
+            /*if ($scope.isLogin) {
+            	$scope.currentTab='/static/templates/login/login.html'
+            }else{
+            	*/
+            $scope.currentTab = '/static/templates/priIndex.html';
+            
             
             
         }
