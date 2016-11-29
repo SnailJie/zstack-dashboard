@@ -7965,6 +7965,10 @@ var Controller;
                                 text: "Zone",
                                 url: "/#/zone"
                             },
+                            {
+                                text: "PubAccount",
+                                url: "/#/pubAccount"
+                            },
                         ]
                     },
                     {
@@ -8948,6 +8952,444 @@ angular.module('root').factory('ZoneManager', ['Api', '$rootScope', function (ap
     }]);
 /// <reference path="d.ts/angularjs/angular.d.ts" />
 /// <reference path="d.ts/kendo.all.d.ts" />
+
+var MPubAccount;
+(function (MPubAccount) {
+    var PubAccount = (function (_super) {
+        __extends(PubAccount, _super);
+        function PubAccount() {
+            _super.apply(this, arguments);
+        }
+        PubAccount.prototype.progressOn = function () {
+            this.inProgress = true;
+        };
+        PubAccount.prototype.progressOff = function () {
+            this.inProgress = false;
+        };
+        PubAccount.prototype.isInProgress = function () {
+            return this.inProgress;
+        };
+        PubAccount.prototype.isEnableShow = function () {
+            return this.state == 'Disabled';
+        };
+        PubAccount.prototype.isDisableShow = function () {
+            return this.state == 'Enabled';
+        };
+        PubAccount.prototype.stateLabel = function () {
+            if (this.state == 'Enabled') {
+                return 'label label-success';
+            }
+            else if (this.state == 'Disabled') {
+                return 'label label-danger';
+            }
+            else {
+                return 'label label-default';
+            }
+        };
+       
+        PubAccount.prototype.updateObservableObject = function (inv) {
+            // self : ObservableObject
+            var self = this;
+            self.set('username', inv.username);
+            self.set('password', inv.password);
+            self.set('description', inv.description);
+            self.set('accesskeyID', inv.accesskeyID);
+            self.set('accesskeyKey', inv.accesskeyKey);
+            self.set('token', inv.token);
+        };
+        return PubAccount;
+    }(ApiHeader.AccountInventory));
+    MPubAccount.PubAccount = PubAccount;
+
+
+
+    var PubAccountManager = (function () {
+        function PubAccountManager(api, $rootScope) {
+            this.api = api;
+            this.$rootScope = $rootScope;
+        }
+        PubAccountManager.prototype.setSortBy = function (sortBy) {
+            this.sortBy = sortBy;
+        };
+        PubAccountManager.prototype.query = function (qobj, callback) {
+            var msg = new ApiHeader.APIQueryPubAccountMsg();
+            msg.count = qobj.count === true;
+            msg.start = qobj.start;
+            msg.limit = qobj.limit;
+            msg.replyWithCount = true;
+            msg.conditions = qobj.conditions ? qobj.conditions : [];
+            if (Utils.notNullnotUndefined(this.sortBy) && this.sortBy.isValid()) {
+                msg.sortBy = this.sortBy.field;
+                msg.sortDirection = this.sortBy.direction;
+            }
+            this.api.syncApi(msg, function (ret) {
+                var PubAccount = [];
+                ret.inventories.forEach(function (inv) {
+                    var z = new PubAccount();
+                    angular.extend(z, inv);
+                    PubAccount.push(new kendo.data.ObservableObject(z));
+                });
+                callback(PubAccount, ret.total);
+            });
+        };
+        PubAccountManager.prototype.create = function (PubAccount, done) {
+            var _this = this;
+            var msg = new ApiHeader.APICreatePubAccountMsg();
+            msg.username = PubAccount.username;
+            msg.password = PubAccount.password;
+            msg.description = PubAccount.description;
+            msg.accesskeyKey = PubAccount.accesskeyKey;
+            msg.accesskeyID = PubAccount.accesskeyID;
+            msg.token = PubAccount.token;
+
+            this.api.asyncApi(msg, function (ret) {
+                var z = new PubAccount();
+                angular.extend(z, ret.inventory);
+                _this.$rootScope.$broadcast(MRoot.Events.NOTIFICATION, {
+                    msg: Utils.sprintf('Created new PubAccount: {0}', z.username),
+                    link: Utils.sprintf('/#/PubAccount/{0}', z.uuid)
+                });
+                done(new kendo.data.ObservableObject(z));
+            });
+        };
+       
+        
+        PubAccountManager.prototype.delete = function (PubAccount, done) {
+            var _this = this;
+            var msg = new ApiHeader.APIDeletePubAccountMsg();
+            msg.uuid = PubAccount.uuid;
+            this.api.asyncApi(msg, function (ret) {
+                _this.$rootScope.$broadcast(MRoot.Events.NOTIFICATION, {
+                    msg: Utils.sprintf('Deleted PubAccount: {0}', PubAccount.username)
+                });
+                done(ret);
+            });
+        };
+        PubAccountManager.$inject = ['Api'];
+        return PubAccountManager;
+    }());
+    MPubAccount.PubAccountManager = PubAccountManager;
+
+
+
+
+
+
+    var PubAccountModel = (function () {
+        function PubAccountModel() {
+            this.current = new PubAccount();
+        }
+        PubAccountModel.prototype.resetCurrent = function () {
+            this.current = null;
+        };
+        PubAccountModel.prototype.setCurrent = function ($scope, PubAccount) {
+            this.current = PubAccount;
+        };
+        return PubAccountModel;
+    }());
+    MPubAccount.PubAccountModel = PubAccountModel;
+
+
+
+    var CreatePubAccountModel = (function () {
+        function CreatePubAccountModel() {
+            this.name = Utils.shortHashName('pubAccount');
+        }
+        CreatePubAccountModel.prototype.canCreate = function () {
+            return angular.isDefined(this.name);
+        };
+        return CreatePubAccountModel;
+    }());
+    MPubAccount.CreatePubAccountModel = CreatePubAccountModel;
+
+
+
+    var Action = (function () {
+        function Action($scope, pubAccountMgr) {
+            this.$scope = $scope;
+            this.pubAccountMgr = pubAccountMgr;
+        }
+        Action.prototype.enable = function () {
+            this.pubAccountMgr.enable(this.$scope.model.current);
+        };
+        Action.prototype.disable = function () {
+            this.pubAccountMgr.disable(this.$scope.model.current);
+        };
+       
+        
+        return Action;
+    }());
+
+
+    var FilterBy = (function () {
+        function FilterBy() {
+            this.state = 'All';
+        }
+        FilterBy.prototype.useState = function () {
+            if (this.state == 'All') {
+                this.buttonName = 'state:all';
+            }
+            else if (this.state == 'Enabled') {
+                this.buttonName = 'state:Enabled';
+            }
+            else if (this.state == 'Disabled') {
+                this.buttonName = 'state:Disabled';
+            }
+            return this.state;
+        };
+        return FilterBy;
+    }());
+    MPubAccount.FilterBy = FilterBy;
+
+
+
+    var Controller = (function () {
+        function Controller($scope, pubAccountMgr, api, $location) {
+            var _this = this;
+            this.$scope = $scope;
+            this.pubAccountMgr = pubAccountMgr;
+            this.api = api;
+            this.$location = $location;
+            $scope.action = new Action($scope, pubAccountMgr);
+            $scope.funcCreatePubAccount = function (win) {
+                $scope.modelCreatePubAccount = new PubAccountModel();
+                win.center();
+                win.open();
+            };
+            $scope.funcCreatePubAccountDone = function (win) {
+                pubAccountMgr.create($scope.modelCreatePubAccount, function (ret) {
+                    $scope.model.resetCurrent();
+                    $scope.optionsPubAccountGrid.dataSource.insert(0, ret);
+                });
+                win.close();
+            };
+            $scope.funcCreatePubAccountCancel = function (win) {
+                win.close();
+            };
+            $scope.funcRefresh = function () {
+                var grid = $scope.pubAccountGrid;
+                grid.dataSource.read();
+            };
+            $scope.funcIsActionShow = function () {
+                return !Utils.isEmptyObject($scope.model.current);
+            };
+            $scope.funcIsActionDisabled = function () {
+                if ($scope.model.current == null) {
+                    return true;
+                }
+                return $scope.model.current.isInProgress();
+            };
+            $scope.funcShowPopoverSortedBy = function (popover) {
+                popover.toggle();
+            };
+            $scope.filterBy = new FilterBy();
+            $scope.filterBy.useState();
+            $scope.funcShowPopoverFilterBy = function (popover) {
+                popover.toggle();
+            };
+            $scope.funcFilterByConfirm = function (popover) {
+                var grid = $scope.pubAccountGrid;
+                var state = $scope.filterBy.useState();
+                if (state === 'All') {
+                    grid.dataSource.filter(null);
+                }
+                else {
+                    grid.dataSource.filter({
+                        field: 'state',
+                        operator: 'eq',
+                        value: state
+                    });
+                }
+                popover.toggle();
+            };
+            $scope.popoverFilterBy = function (popover) {
+                popover.toggle();
+            };
+            $scope.funcSearch = function (search) {
+                search.open();
+            };
+            
+            $scope.optionsSearch = {
+                fields: ApiHeader.ZoneInventoryQueryable,
+                name: 'ZONE',
+                schema: {
+                    state: {
+                        type: Directive.SearchBoxSchema.VALUE_TYPE_LIST,
+                        list: ['Enabled', 'Disabled']
+                    },
+                    createDate: {
+                        type: Directive.SearchBoxSchema.VALUE_TYPE_TIMESTAMP
+                    },
+                    lastOpDate: {
+                        type: Directive.SearchBoxSchema.VALUE_TYPE_TIMESTAMP
+                    }
+                },
+                done: function (ret) {
+                    console.log(JSON.stringify(ret));
+                    var qobj = new ApiHeader.QueryObject();
+                    qobj.conditions = ret;
+                    pubAccountMgr.query(qobj, function (zones, total) {
+                        $scope.model.resetCurrent();
+                        $scope.optionsPubAccountGrid.dataSource.data(zones);
+                    });
+                }
+            };
+           
+           
+            $scope.optionsNewZone = {
+                width: "480px",
+                animation: false,
+                modal: true,
+                draggable: false,
+                resizable: false
+            };
+            $scope.model = new PubAccountModel();
+            $scope.optionsDeletepubAccount = {
+                confirm: function () {
+                    pubAccountMgr.delete($scope.model.current, function (ret) {
+                        var row = $scope.optionsPubAccountGrid.dataSource.getByUid(_this.$scope.model.current.uid);
+                        $scope.model.resetCurrent();
+                        $scope.optionsPubAccountGrid.dataSource.remove(row);
+                    });
+                },
+                title: 'DELETE ZONE',
+                description: 'Deleting zone will cause all sub resources(e.g Cluster, Host, VM) being deleted and no way to recover'
+            };
+            $scope.funcDeletepubAccount = function (win) {
+                win.open();
+            };
+           
+            $scope.optionsSortBy = {
+                done: function (ret) {
+                    pubAccountMgr.setSortBy(ret);
+                    $scope.optionsPubAccountGrid.dataSource.read();
+                    $scope.model.resetCurrent();
+                },
+                fields: [
+                    {
+                        name: '{{"zone.ts.Name" | translate}}',
+                        value: 'name'
+                    },
+                    {
+                        name: '{{"zone.ts.State" | translate}}',
+                        value: 'state'
+                    },
+                    {
+                        name: '{{"zone.ts.Created Date" | translate}}',
+                        value: 'createDate'
+                    },
+                    {
+                        name: '{{"zone.ts.Last Updated Date" | translate}}',
+                        value: 'lastOpDate'
+                    }
+                ]
+            };
+            $scope.funcZoneGridDoubleClick = function (e) {
+                if (Utils.notNullnotUndefined($scope.model.current)) {
+                    var url = Utils.sprintf('/zone/{0}', $scope.model.current.uuid);
+                    $location.path(url);
+                    e.preventDefault();
+                }
+            };
+            $scope.optionsPubAccountGrid = {
+                change: function (e) {
+                    var grid = e.sender;
+                    var selected = grid.select();
+                    Utils.safeApply($scope, function () {
+                        $scope.model.setCurrent($scope, grid.dataItem(selected));
+                    });
+                },
+                columns: [
+                    {
+                        field: 'username',
+                        title: 'username',
+                        width: '20%',
+                        template: '<span><div class="{{dataItem.gridColumnLabel()}}"></div><i class="fa fa-spinner fa-spin" ng-show="dataItem.isInProgress()"></i><a href="/\\#/zone/{{dataItem.uuid}}"><span>#: name #</span></a></span>'
+                    },
+                    {
+                        field: 'token',
+                        title: 'token',
+                        width: '20%',
+                        template: '<span class="{{dataItem.stateLabel()}}">{{dataItem.state}}</span>'
+                    },
+                    {
+                        field: 'description',
+                        title: '{{"zone.ts.DESCRIPTION" | translate}}',
+                        width: '30%'
+                    },
+                    {
+                        field: 'uuid',
+                        title: '{{"zone.ts.UUID" | translate}}',
+                        width: '30%'
+                    }
+                ],
+                resizable: true,
+                scrollable: true,
+                selectable: true,
+                pageable: true,
+                dataBound: function (e) {
+                    var grid = e.sender;
+                    if (grid.dataSource.totalPages() == 1) {
+                        grid.pager.element.hide();
+                    }
+                    var selected = null;
+                    if ($scope.model.current) {
+                        selected = $scope.model.current;
+                    }
+                    else {
+                        selected = grid.dataSource.data()[0];
+                    }
+                    if (selected) {
+                        var row = grid.table.find('tr[data-uid="' + selected.uid + '"]');
+                        grid.select(row);
+                    }
+                },
+                dataSource: new kendo.data.DataSource({
+                    transport: {
+                        read: function (options) {
+                            console.log(JSON.stringify(options));
+                            var qobj = new ApiHeader.QueryObject();
+                            qobj.limit = options.data.take;
+                            qobj.start = options.data.pageSize * (options.data.page - 1);
+                            pubAccountMgr.query(qobj, function (zones, total) {
+                                options.success({
+                                    data: zones,
+                                    total: total
+                                });
+                            });
+                        }
+                    },
+                    serverPaging: true,
+                    pageSize: 20,
+                    schema: {
+                        data: 'data',
+                        total: 'total'
+                    }
+                })
+            };
+        }
+        Controller.$inject = ['$scope', 'PubAccountManager', 'Api', '$location'];
+        return Controller;
+    }());
+    MPubAccount.Controller = Controller;
+})(MPubAccount || (MPubAccount = {}));
+
+
+
+
+
+angular.module('root').factory('PubAccountManager', ['Api', '$rootScope', function (api, $rootScope) {
+        return new MPubAccount.PubAccountManager(api, $rootScope);
+    }]).config(['$routeProvider', function (route) {
+        route.when('/pubAccount', {
+            templateUrl: '/static/templates/account/account.html',
+            controller: 'MPubAccount.Controller'
+        });
+    }]);
+
+
+
+
 var MCluster;
 (function (MCluster) {
    var Cluster = (function (_super) {
