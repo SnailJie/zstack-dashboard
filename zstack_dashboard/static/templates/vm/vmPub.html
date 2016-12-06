@@ -1,16 +1,9 @@
 <div style="display: none">
-    <div z-create-vm-instance="winNewVmInstance" z-options="optionsCreateVmInstance"></div>
-    <div z-create-ecs-instance="winNewEcsInstance" z-options="optionsCreateECSVmInstance"></div>
+    <div z-create-pubvm-instance="winNewEcsInstance" z-options="winCreatePubVmInstanceOptions__"></div>
     <div z-search="search" z-options="optionsSearch"></div>
-    <div z-confirm="deleteVmInstance" z-options="optionsDeleteVmInstance"></div>
-    <div z-confirm="expungeVmInstance" z-options="optionsExpungeVmInstance"></div>
-    <div z-migrate-vm-instance="migrateVm" z-options="optionsMigrateVm"></div>
-    <div z-change-instance-offering="changeInstanceOffering" z-options="optionsChangeInstanceOffering"></div>
-    <div z-vm-attach-volume="attachVolume" z-options="optionsAttachVolume"></div>
-    <div z-vm-detach-volume="detachVolume" z-options="optionsDetachVolume"></div>
-    <div z-vm-attach-l3-network="attachL3Network" z-options="optionsAttachL3Network"></div>
-    <div z-vm-detach-l3-network="detachL3Network" z-options="optionsDetachL3Network"></div>
-</div>
+    <div z-confirm="deleteVmInstance" z-options="optionsDeletePubVmInstance"></div>
+ 
+</div> 
 
 <div>
     <h3 class="z-h3">{{"vm.vm.VM INSTANCE" | translate}}</h3> 
@@ -35,9 +28,7 @@
                {{"vm.vm.New VmInstance" | translate}}<span class="caret"></span>
             </button>
             <ul class="dropdown-menu" role="menu">
-            <!--     <li><a href ng-click="funcCreateVmInstance(winNewVmInstance)" >{{"vm.vm.New PrivateVmInstance" | translate}}</a></li>
- -->                 <li class="divider"></li>
-                <li><a href ng-click="funcCreateEcsVmInstance(winNewEcsInstance)" >{{"vm.vm.New ECSVmInstance" | translate}}</a></li>
+                <li><a href ng-click="funcCreatePubVmInstance(winNewEcsInstance)" >{{"vm.vm.New ECSVmInstance" | translate}}</a></li>
             </ul>
         </div>
 
@@ -65,20 +56,15 @@
                 <li><a href ng-click="action.reboot()" ng-show="action.isActionShow('reboot')">{{"vm.vm.Reboot" | translate}}</a></li>
                 <li><a href ng-click="action.migrate()" ng-show="action.isActionShow('migrate')">{{"vm.vm.Migrate" | translate}}</a></li>
                 <li><a href ng-click="action.console()" ng-show="action.isActionShow('console')">{{"vm.vm.Console" | translate}}</a></li>
-                <li><a href ng-click="action.attachVolume()" ng-show="action.isActionShow('attachVolume')">{{"vm.vm.Attach Volume" | translate}}</a></li>
-                <li><a href ng-click="action.detachVolume()" ng-show="action.isActionShow('detachVolume')">{{"vm.vm.Detach Volume" | translate}}</a></li>
-                <li><a href ng-click="action.attachL3Network()" ng-show="action.isActionShow('attachL3Network')">{{"vm.vm.Attach L3 Network" | translate}}</a></li>
-                <li><a href ng-click="action.detachL3Network()" ng-show="action.isActionShow('detachL3Network')">{{"vm.vm.Detach L3 Network" | translate}}</a></li>
                 <li><a href ng-click="action.changeInstanceOffering()" ng-show="action.isActionShow('changeInstanceOffering')">{{"vm.vm.Change Instance Offering" | translate}}</a></li>
                 <li><a href ng-click="action.recover()" ng-show="action.isActionShow('recoverVm')">{{"vm.vm.recover" | translate}}</a></li>
                 <li class="divider"></li>
-                <li><a href style="color:red" ng-click="funcDeleteVmInstance(deleteVmInstance)"  ng-show="action.isActionShow('delete')">{{"vm.vm.Delete" | translate}}</a></li>
-                <li><a href style="color:red" ng-click="funcExpungeVmInstance(expungeVmInstance)" ng-show="action.isActionShow('expungeVm')">{{"vm.vm.Expunge" | translate}}</a></li>
+                <li><a href style="color:red" ng-click="funcDeletePubVmInstance(deleteVmInstance)"  ng-show="action.isActionShow('delete')">{{"vm.vm.Delete" | translate}}</a></li>
             </ul>
         </div>
     </div>
 
-    <div kendo-grid="vmInstanceGrid" k-options="OVmInstanceGrid.options" z-grid-double-click="funcGridDoubleClick" class="z-flat-table"></div>
+    <div kendo-grid="pubVmInstanceGrid" k-options="oPubVmInstanceGrid.options" z-grid-double-click="funcGridDoubleClick" class="z-flat-table"></div>
     <p class="z-hint">{{"vm.vm.HINT1" | translate}}</p>
     <p class="z-hint">{{"vm.vm.HINT2" | translate}}</p>
 </div>

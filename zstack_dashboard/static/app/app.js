@@ -437,6 +437,20 @@ var ApiHeader;
     }());
     ApiHeader.APICreatePublicVmInstanceMsg = APICreatePublicVmInstanceMsg;
     
+    
+    var APICreatePubVmInstanceMsg = (function () {
+        function APICreatePubVmInstanceMsg() {
+        }
+        APICreatePubVmInstanceMsg.prototype.toApiMap = function () {
+            var msg = {
+                'org.zstack.header.pubVmInstance.APICreatePubVmInstanceMsg': this
+            };
+            return msg;
+        };
+        return APICreatePubVmInstanceMsg;
+    }());
+    ApiHeader.APICreatePubVmInstanceMsg = APICreatePubVmInstanceMsg;
+    
     var APIGetVmInstanceMsg = (function () {
         function APIGetVmInstanceMsg() {
         }
@@ -2244,6 +2258,22 @@ var ApiHeader;
         return APIGetPubCloudTypesMsg;
     }());
     ApiHeader.APIGetPubCloudTypesMsg = APIGetPubCloudTypesMsg;
+    
+  //PubVmInstance
+    var APIQueryPubVmInstanceMsg = (function () {
+        function APIQueryPubVmInstanceMsg() {
+        }
+        APIQueryPubVmInstanceMsg.prototype.toApiMap = function () {
+            var msg = {
+                'org.zstack.header.pubVmInstance.APIQueryPubVmInstanceMsg': this
+            };
+            return msg;
+        };
+        return APIQueryPubVmInstanceMsg;
+    }());
+    ApiHeader.APIQueryPubVmInstanceMsg = APIQueryPubVmInstanceMsg;
+    
+   
     
     
     //Cluster
@@ -4959,6 +4989,15 @@ var APIUpdateXenHostMsg = (function () {
         return PubAccountInventory;
     }());
     ApiHeader.PubAccountInventory = PubAccountInventory;
+    
+    
+    var PubVmInstanceInventory = (function () {
+        function PubVmInstanceInventory() {
+        }
+        return PubVmInstanceInventory;
+    }());
+    ApiHeader.PubVmInstanceInventory = PubVmInstanceInventory;
+    
     
     var APIRemoveUserFromGroupEvent = (function () {
         function APIRemoveUserFromGroupEvent() {
@@ -9416,7 +9455,6 @@ var MPubAccount;
    }());
    MPubAccount.CreatePubAccountOptions = CreatePubAccountOptions;
 
-
    var CreatePubAccount = (function () {
        function CreatePubAccount(api, pubAccountMgr) {
            var _this = this;
@@ -9555,9 +9593,6 @@ var MPubAccount;
    MPubAccount.CreatePubAccount = CreatePubAccount;
     
 })(MPubAccount || (MPubAccount = {}));
-
-
-
 angular.module('root').factory('PubAccountManager', ['Api', '$rootScope', function (api, $rootScope) {
        return new MPubAccount.PubAccountManager(api, $rootScope);
    }]).directive('zCreatePubaccount', ['Api', 'PubAccountManager',
@@ -9571,6 +9606,569 @@ angular.module('root').factory('PubAccountManager', ['Api', '$rootScope', functi
        });
    }]);
 
+ 
+
+
+
+
+var MPubVmInstance;
+(function (MPubVmInstance) {
+  var PubVmInstance = (function (_super) {
+       __extends(PubVmInstance, _super);
+       function PubVmInstance() {
+           _super.apply(this, arguments);
+       }
+       PubVmInstance.prototype.progressOn = function () {
+           this.inProgress = true;
+       };
+       PubVmInstance.prototype.progressOff = function () {
+           this.inProgress = false;
+       };
+       PubVmInstance.prototype.isInProgress = function () {
+           return this.inProgress;
+       };
+       PubVmInstance.prototype.isEnableShow = function () {
+           return this.state == 'Disabled';
+       };
+       PubVmInstance.prototype.isDisableShow = function () {
+           return this.state == 'Enabled';
+       };
+       PubVmInstance.prototype.stateLabel = function () {
+           if (this.state == 'Enabled') {
+               return 'label label-success';
+           }
+           else if (this.state == 'Disabled') {
+               return 'label label-danger';
+           }
+           else {
+               return 'label label-default';
+           }
+       };
+       PubVmInstance.prototype.gridColumnLabel = function () {
+           if (this.state == 'Enabled') {
+               return 'z-color-box-green';
+           }
+           else if (this.state == 'Disabled') {
+               return 'z-color-box-red';
+           }
+       };
+       PubVmInstance.prototype.updateObservableObject = function (inv) {
+           // self : ObservableObject
+           var self = this;
+           self.set('name', inv.name);
+           self.set('description', inv.description);
+           self.set('cloudType', inv.cloudType);
+           self.set('state', inv.state);
+           self.set('createDate', inv.createDate);
+           self.set('lastOpDate', inv.lastOpDate);
+       };
+       return PubVmInstance;
+   }(ApiHeader.PubVmInstanceInventory));    //Need New
+   MPubVmInstance.PubVmInstance = PubVmInstance;
+    
+
+   var PubVmInstanceManager = (function () {
+       function PubVmInstanceManager(api, $rootScope) {
+           this.api = api;
+           this.$rootScope = $rootScope;
+       }
+       PubVmInstanceManager.prototype.setSortBy = function (sortBy) {
+           this.sortBy = sortBy;
+       };
+       PubVmInstanceManager.prototype.wrap = function (PubVmInstance) {
+           return new kendo.data.ObservableObject(PubVmInstance);
+       };
+
+       PubVmInstanceManager.prototype.create = function (PubVmInstance, done) {
+           var _this = this;
+           var msg = new ApiHeader.APICreatePubVmInstanceMsg();    //Need New
+           msg.name = PubVmInstance.name;
+           msg.description = PubVmInstance.description;
+           msg.pubCloudType = PubVmInstance.pubCloudType;
+
+           this.api.asyncApi(msg, function (ret) {
+           var c = new PubAccount();
+           angular.extend(c, ret.inventory);
+           done(_this.wrap(c));
+           _this.$rootScope.$broadcast(MRoot.Events.NOTIFICATION, {
+               msg: Utils.sprintf('Created new PubVmInstance: {0}', c.name),
+               link: Utils.sprintf('/#/PubVmInstance', c.uuid)
+            });
+           });
+         };
+
+
+       PubVmInstanceManager.prototype.query = function (qobj, callback) {
+           var _this = this;
+           var msg = new ApiHeader.APIQueryPubVmInstanceMsg();    //Need New
+           msg.count = qobj.count === true;
+           msg.start = qobj.start;
+           msg.limit = qobj.limit;
+           msg.replyWithCount = true;
+           msg.conditions = qobj.conditions ? qobj.conditions : [];
+           if (Utils.notNullnotUndefined(this.sortBy) && this.sortBy.isValid()) {
+               msg.sortBy = this.sortBy.field;
+               msg.sortDirection = this.sortBy.direction;
+           }
+           this.api.syncApi(msg, function (ret) {
+               var clusters = [];
+               ret.inventories.forEach(function (inv) {
+                   var c = new PubAccount();
+                   angular.extend(c, inv);
+                   clusters.push(_this.wrap(c));
+               });
+               callback(clusters, ret.total);
+           });
+       };
+        
+       PubVmInstanceManager.prototype.delete = function (PubVmInstance, done) {
+           var _this = this;
+           PubVmInstance.progressOn();
+           var msg = new ApiHeader.APIDeletePubVmInstanceMsg();    //Need New
+           msg.uuid = PubVmInstance.uuid;
+           this.api.asyncApi(msg, function (ret) {
+               PubVmInstance.progressOff();
+               done(ret);
+               _this.$rootScope.$broadcast(MRoot.Events.NOTIFICATION, {
+                   msg: Utils.sprintf('Deleted cluster: {0}', PubVmInstance.name)
+               });
+           });
+       };
+       PubVmInstanceManager.$inject = ['Api', '$rootScope'];
+       return PubVmInstanceManager;
+   }());
+   MPubVmInstance.PubVmInstanceManager = PubVmInstanceManager;
+
+
+
+   
+   var PubVmInstanceModel = (function () {
+       function PubVmInstanceModel() {
+           this.current = new PubVmInstance();
+       }
+       PubVmInstanceModel.prototype.resetCurrent = function () {
+           this.current = null;
+       };
+       PubVmInstanceModel.prototype.setCurrent = function ($scope, PubVmInstance) {
+           this.current = PubVmInstance;
+       };
+       return PubVmInstanceModel;
+   }());
+   MPubVmInstance.PubVmInstanceModel = PubVmInstanceModel;
+
+   var oPubVmInstanceGrid = (function (_super) {
+       __extends(oPubVmInstanceGrid, _super);
+       function oPubVmInstanceGrid($scope, pubVmInstanceMgr) {
+           _super.call(this);
+           this.pubVmInstanceMgr = pubVmInstanceMgr;
+           _super.prototype.init.call(this, $scope, $scope.pubVmInstanceGrid);
+           
+           this.options.columns = [
+               {
+                   field: 'username',
+                   title: 'HostName',
+                   width: '15%',
+                   template: '<a href="/\\#/cluster/{{dataItem.uuid}}">{{dataItem.name}}</a>'
+               },
+                {
+                   field: 'accesskey',
+                   title: 'cloudType',
+                   width: '15%',
+                   template: '<a href="/\\#/cluster/{{dataItem.uuid}}">{{dataItem.name}}</a>'
+               },
+               {
+                   field: 'information',
+                   title: 'token',
+                   width: '15%'
+               },
+               {
+                   field: 'description',
+                   title: 'description',
+                   width: '25%'
+               },
+               
+               {
+                   field: 'state',
+                   title: 'state',
+                   width: '15%',
+                   template: '<span class="{{dataItem.stateLabel()}}">{{dataItem.state}}</span>'
+               },
+               {
+                   field: 'uuid',
+                   title: '{{"cluster.ts.UUID" | translate}}',
+                   width: '30%'
+               }
+           ];
+           this.options.dataSource.transport.read = function (options) {
+               var qobj = new ApiHeader.QueryObject();
+               qobj.limit = options.data.take;
+               qobj.start = options.data.pageSize * (options.data.page - 1);
+               pubVmInstanceMgr.query(qobj, function (pubAccounts, total) {
+                   options.success({
+                       data: pubAccounts,
+                       total: total
+                   });
+               });
+           };
+       }
+       return oPubVmInstanceGrid;
+   }(Utils.OGrid));
+
+
+   var Action = (function () {
+       function Action($scope, pubVmInstanceMgr) {
+           this.$scope = $scope;
+           this.pubVmInstanceMgr = pubVmInstanceMgr;
+       }
+       Action.prototype.enable = function () {
+           this.pubVmInstanceMgr.enable(this.$scope.model.current);
+       };
+       Action.prototype.disable = function () {
+           this.pubVmInstanceMgr.disable(this.$scope.model.current);
+       };
+       
+       return Action;
+   }());
+
+
+   var FilterBy = (function () {
+       function FilterBy($scope, hypervisorTypes) {
+           var _this = this;
+           this.$scope = $scope;
+           this.hypervisorTypes = hypervisorTypes;
+           this.fieldList = {
+               dataSource: new kendo.data.DataSource({
+                   data: [
+                       {
+                           name: '{{"cluster.ts.None" | translate}}',
+                           value: FilterBy.NONE
+                       },
+                       {
+                           name: '{{"cluster.ts.State" | translate}}',
+                           value: FilterBy.STATE
+                       },
+                       {
+                           name: '{{"cluster.ts.Hypervisor" | translate}}',
+                           value: FilterBy.HYPERVISOR
+                       }
+                   ]
+               }),
+               dataTextField: 'name',
+               dataValueField: 'value'
+           };
+           this.valueList = {
+               dataSource: new kendo.data.DataSource({
+                   data: []
+               })
+           };
+           this.field = FilterBy.NONE;
+           $scope.$watch(function () {
+               return _this.field;
+           }, function () {
+               if (_this.field == FilterBy.NONE) {
+                   _this.valueList.dataSource.data([]);
+                   _this.value = null;
+               }
+               else if (_this.field == FilterBy.STATE) {
+                   _this.valueList.dataSource.data(['Enabled', 'Disabled']);
+               }
+               else if (_this.field == FilterBy.HYPERVISOR) {
+                   _this.valueList.dataSource.data(_this.hypervisorTypes);
+               }
+           });
+       }
+       FilterBy.prototype.confirm = function (popover) {
+           console.log(JSON.stringify(this.toKendoFilter()));
+           this.$scope.oPubVmInstanceGrid.setFilter(this.toKendoFilter());
+           this.name = !Utils.notNullnotUndefined(this.value) ? null : Utils.sprintf('{0}:{1}', this.field, this.value);
+           popover.toggle();
+       };
+       FilterBy.prototype.open = function (popover) {
+           popover.toggle();
+       };
+       FilterBy.prototype.isValueListDisabled = function () {
+           return !Utils.notNullnotUndefined(this.value);
+       };
+       FilterBy.prototype.getButtonName = function () {
+           return this.name;
+       };
+       FilterBy.prototype.toKendoFilter = function () {
+           if (!Utils.notNullnotUndefined(this.value)) {
+               return null;
+           }
+           return {
+               field: this.field,
+               operator: 'eq',
+               value: this.value
+           };
+       };
+       FilterBy.NONE = 'none';
+       FilterBy.STATE = 'state';
+       FilterBy.HYPERVISOR = 'hypervisorType';
+       return FilterBy;
+   }());
+
+
+   var Controller = (function () {
+       function Controller($scope, pubVmInstanceMgr, $location) {
+           this.$scope = $scope;
+           this.pubVmInstanceMgr = pubVmInstanceMgr;
+           this.$location = $location;
+           $scope.model = new  PubVmInstanceModel();   //Need New
+           $scope.oPubVmInstanceGrid = new oPubVmInstanceGrid($scope, pubVmInstanceMgr);
+           $scope.action = new Action($scope, pubVmInstanceMgr);
+           $scope.optionsSortBy = {
+               fields: [
+                   {
+                       name: '{{"cluster.ts.Name" | translate}}',
+                       value: 'name'
+                   },
+                   {
+                       name: '{{"cluster.ts.Description" | translate}}',
+                       value: 'Description'
+                   },
+                   {
+                       name: '{{"cluster.ts.State" | translate}}',
+                       value: 'state'
+                   },
+                   {
+                       name: '{{"cluster.ts.Hypervisor" | translate}}',
+                       value: 'hypervisorType'
+                   },
+                   {
+                       name: '{{"cluster.ts.Created Date" | translate}}',
+                       value: 'createDate'
+                   },
+                   {
+                       name: '{{"cluster.ts.Last Updated Date" | translate}}',
+                       value: 'lastOpDate'
+                   }
+               ],
+               done: function (ret) {
+                   pubVmInstanceMgr.setSortBy(ret);
+                   $scope.oPubVmInstanceGrid.refresh();
+               }
+           };
+           $scope.optionsSearch = {
+               fields: ApiHeader.ClusterInventoryQueryable,
+               name: 'CLUSTER',
+               schema: {
+                   state: {
+                       type: Directive.SearchBoxSchema.VALUE_TYPE_LIST,
+                       list: ['Enabled', 'Disabled']
+                   },
+                   hypervisorType: {
+                       type: Directive.SearchBoxSchema.VALUE_TYPE_LIST,
+                       list: this.hypervisorTypes
+                   },
+                   createDate: {
+                       type: Directive.SearchBoxSchema.VALUE_TYPE_TIMESTAMP
+                   },
+                   lastOpDate: {
+                       type: Directive.SearchBoxSchema.VALUE_TYPE_TIMESTAMP
+                   }
+               },
+               done: function (ret) {
+                   var qobj = new ApiHeader.QueryObject();
+                   qobj.conditions = ret;
+                   pubVmInstanceMgr.query(qobj, function (clusters, total) {
+                       $scope.oPubVmInstanceGrid.refresh(clusters);
+                   });
+               }
+           };
+           $scope.optionsDeletePubVmInstance = {
+                   title: 'DELETE VM INSTANCE',
+                   btnType: 'btn-danger',
+                   width: '350px',
+                   description: function () {
+                       return $scope.model.current.name;
+                   },
+                   confirm: function () {
+                       pubVmInstanceMgr.delete($scope.model.current, function (ret) {
+                           $scope.oVmInstanceGrid.deleteCurrent();
+                       });
+                   }
+               };
+            
+           $scope.filterBy = new FilterBy($scope, this.hypervisorTypes);
+
+           $scope.funcSearch = function (win) {
+               win.open();
+           };
+           $scope.funcCreatePubVmInstance = function (win) {
+               win.open();
+           };
+           $scope.funcDeletePubVmInstance = function (win) {
+               $scope.deletePubVmInstance.open();
+           };
+           $scope.funcRefresh = function () {
+               $scope.oPubVmInstanceGrid.refresh();
+           };
+           $scope.funcIsActionShow = function () {
+               return !Utils.isEmptyObject($scope.model.current);
+           };
+           $scope.funcIsActionDisabled = function () {
+               return Utils.notNullnotUndefined($scope.model.current) && $scope.model.current.isInProgress();
+           };
+           $scope.optionsCreatePubVmInstance= {
+               done: function (cluster) {
+                   $scope.oPubVmInstanceGrid.add(cluster);
+               }
+           };
+           
+       }
+       Controller.$inject = ['$scope', 'PubVmInstanceManager', '$location'];
+       return Controller;
+   }());
+   MPubVmInstance.Controller = Controller;
+
+   var CreatePubVmInstanceOptions = (function () {
+       function CreatePubVmInstanceOptions() {
+       }
+       return CreatePubVmInstanceOptions;
+   }());
+   MPubVmInstance.CreatePubVmInstanceOptions = CreatePubVmInstanceOptions;
+
+
+   var CreatePubVmInstance = (function () {
+       function CreatePubVmInstance(api, pubVmInstanceMgr) {
+           var _this = this;
+           this.api = api;
+           this.pubVmInstanceMgr = pubVmInstanceMgr;
+           this.scope = true;
+           this.link = function ($scope, $element, $attrs, $ctrl, $transclude) {
+               var instanceName = $attrs.zCreatePubvmInstance;    //same with html
+               var parentScope = $scope.$parent;
+               parentScope[instanceName] = _this;
+               _this.options = new CreatePubVmInstanceOptions();
+               var optionName = $attrs.zOptions;
+               if (angular.isDefined(optionName)) {
+                   _this.options = parentScope[optionName];
+                   $scope.$watch(function () {
+                       return parentScope[optionName];
+                   }, function () {
+                       _this.options = parentScope[optionName];
+                   });
+               }
+               var infoPage = $scope.infoPage = {
+                   activeState: true,
+                   name: null,
+                   description: null,
+                   accesskey: null,
+                   canMoveToPrevious: function () {
+                       return false;
+                   },
+                   hasPubCloudType: function () {
+                       return $scope.PubCloudTypeList.dataSource.data().length > 0;
+                   },
+                   canMoveToNext: function () {
+                       return true;
+                   },
+                   show: function () {
+                       this.getAnchorElement().tab('show');
+                   },
+                   getAnchorElement: function () {
+                       return $('.nav a[data-target="#CreatePubVmInstanceInfo"]');
+                   },
+                   active: function () {
+                       this.activeState = true;
+                   },
+                   isActive: function () {
+                       return this.activeState;
+                   },
+                   getPageName: function () {
+                       return 'CreatePubVmInstanceInfo';
+                   },
+                   reset: function () {
+                       this.name = Utils.shortHashName("PubAccount");
+                       this.PubCloudType = null;
+                       this.description = null;
+                       this.accesskey = null;
+                       this.accessID = null;
+                       this.token = null;
+                       this.activeState = false;
+                   }
+               };
+                
+               var mediator = $scope.mediator = {
+                   currentPage: infoPage,
+                   movedToPage: function (page) {
+                       $scope.mediator.currentPage = page;
+                   },
+                   finishButtonName: function () {
+                       return "Create";
+                   },
+                   finish: function () {
+                       var resultCluster;
+                       var chain = new Utils.Chain();
+                       chain.then(function () {
+                           pubVmInstanceMgr.create(infoPage, function (ret) {
+                               resultCluster = ret;
+                               chain.next();
+                           });
+                       }).done(function () {
+                           if (Utils.notNullnotUndefined(_this.options.done)) {
+                               _this.options.done(resultCluster);
+                           }
+                           $scope.winCreatePubVmInstance__.close();
+                       }).start();
+                   }
+               };
+               $scope.button = new Utils.WizardButton([
+                   infoPage
+               ], mediator);
+
+               $scope.PubCloudTypeList = {
+                   dataSource: new kendo.data.DataSource({ data: [] }),
+                   dataTextField: "type",
+                   dataValueField: "type"
+               };
+               $scope.winCreatePubVmInstanceOptions__ = {
+                   width: "700px",
+                   //height: "518px",
+                   animation: false,
+                   modal: true,
+                   draggable: false,
+                   resizable: false
+               };
+               _this.$scope = $scope;
+           };
+           this.restrict = 'EA';
+           this.replace = true;
+           this.templateUrl = '/static/templates/vm/createECSVm.html';
+       }
+       
+        CreatePubVmInstance.prototype.open = function () {
+           var _this = this;
+           var win = this.$scope.winCreatePubVmInstance__;
+           this.$scope.button.reset();
+           var chain = new Utils.Chain();
+           chain.then(function () {
+               chain.next();
+           }).done(function () {
+               win.center();
+               win.open();
+           }).start();
+
+       };
+       return CreatePubVmInstance;
+   }());
+ 
+   MPubVmInstance.CreatePubVmInstance = CreatePubVmInstance;
+})(MPubVmInstance || (MPubVmInstance = {}));
+
+angular.module('root').factory('PubVmInstanceManager', ['Api', '$rootScope', function (api, $rootScope) {
+       return new MPubVmInstance.PubVmInstanceManager(api, $rootScope);
+   }]).directive('zCreatePubvmInstance', ['Api', 'PubVmInstanceManager',
+   function (api, PubVmInstanceManager) {
+       return new MPubVmInstance.CreatePubVmInstance(api, PubVmInstanceManager);
+   }]).config(['$routeProvider', function (route) {
+       route.when('/PubVmInstance', {
+           templateUrl: '/static/templates/vm/vmPub.html',
+           controller: 'MPubVmInstance.Controller',
+            
+       });
+   }]);
 
 
 
