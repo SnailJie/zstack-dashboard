@@ -239,6 +239,8 @@ api_names = [
     'org.zstack.header.cluster.APIChangeClusterStateMsg',
     'org.zstack.header.cluster.APIUpdateClusterMsg',
     'org.zstack.header.cluster.APIQueryClusterMsg',
+    'org.zstack.header.pubAccount.APIQueryPubAccountMsg',
+    'org.zstack.header.pubAccount.APIGetPubCloudTypesMsg',
     'org.zstack.header.managementnode.APIQueryManagementNodeMsg',
     'org.zstack.header.managementnode.APIGetVersionMsg',
     'org.zstack.header.console.APIReconnectConsoleProxyAgentMsg',
