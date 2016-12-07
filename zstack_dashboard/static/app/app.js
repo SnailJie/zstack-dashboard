@@ -2238,7 +2238,7 @@ var ApiHeader;
         }
         APIQueryPubAccountMsg.prototype.toApiMap = function () {
             var msg = {
-                'org.zstack.header.pubAccount.APIQueryPubAccountMsg': this
+                'org.zstack.header.identity.APIQueryPubAccountMsg': this
             };
             return msg;
         };
@@ -2246,12 +2246,41 @@ var ApiHeader;
     }());
     ApiHeader.APIQueryPubAccountMsg = APIQueryPubAccountMsg;
     
+    APICreatePubAccountMsg = (function () {
+        function APICreatePubAccountMsg() {
+        }
+        APICreatePubAccountMsg.prototype.toApiMap = function () {
+            var msg = {
+                'org.zstack.header.identity.APICreatePubAccountMsg': this
+            };
+            return msg;
+        };
+        return APICreatePubAccountMsg;
+    }());
+    ApiHeader.APICreatePubAccountMsg = APICreatePubAccountMsg;
+    
+    var APIDeletePubAccountMsg = (function () {
+        function APIDeletePubAccountMsg() {
+        }
+        APIDeletePubAccountMsg.prototype.toApiMap = function () {
+            var msg = {
+                'org.zstack.header.identity.APIDeletePubAccountMsg': this
+            };
+            return msg;
+        };
+        return APIDeletePubAccountMsg;
+    }());
+    ApiHeader.APIDeletePubAccountMsg = APIDeletePubAccountMsg;
+     
+    
+    
+  //PubVmInstance
     var APIGetPubCloudTypesMsg = (function () {
         function APIGetPubCloudTypesMsg() {
         }
         APIGetPubCloudTypesMsg.prototype.toApiMap = function () {
             var msg = {
-                'org.zstack.header.pubAccount.APIGetPubCloudTypesMsg': this
+                'org.zstack.header.pubVmInstance.APIGetPubCloudTypesMsg': this
             };
             return msg;
         };
@@ -2259,7 +2288,7 @@ var ApiHeader;
     }());
     ApiHeader.APIGetPubCloudTypesMsg = APIGetPubCloudTypesMsg;
     
-  //PubVmInstance
+  
     var APIQueryPubVmInstanceMsg = (function () {
         function APIQueryPubVmInstanceMsg() {
         }
@@ -2273,7 +2302,19 @@ var ApiHeader;
     }());
     ApiHeader.APIQueryPubVmInstanceMsg = APIQueryPubVmInstanceMsg;
     
-   
+    var APIDeletePubVmInstanceMsg = (function () {
+        function APIDeletePubVmInstanceMsg() {
+        }
+        APIDeletePubVmInstanceMsg.prototype.toApiMap = function () {
+            var msg = {
+                'org.zstack.header.pubVmInstance.APIDeletePubVmInstanceMsg': this
+            };
+            return msg;
+        };
+        return APIDeletePubVmInstanceMsg;
+    }());
+    ApiHeader.APIDeletePubVmInstanceMsg = APIDeletePubVmInstanceMsg;
+
     
     
     //Cluster
