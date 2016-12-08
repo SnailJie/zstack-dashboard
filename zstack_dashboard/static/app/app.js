@@ -2280,7 +2280,7 @@ var ApiHeader;
         }
         APIGetPubCloudTypesMsg.prototype.toApiMap = function () {
             var msg = {
-                'org.zstack.header.pubVmInstance.APIGetPubCloudTypesMsg': this
+                'org.zstack.header.vm.APIGetPubCloudTypesMsg': this
             };
             return msg;
         };
@@ -2294,7 +2294,7 @@ var ApiHeader;
         }
         APIQueryPubVmInstanceMsg.prototype.toApiMap = function () {
             var msg = {
-                'org.zstack.header.pubVmInstance.APIQueryPubVmInstanceMsg': this
+                'org.zstack.header.vm.APIQueryPubVmInstanceMsg': this
             };
             return msg;
         };
@@ -2307,7 +2307,7 @@ var ApiHeader;
         }
         APIDeletePubVmInstanceMsg.prototype.toApiMap = function () {
             var msg = {
-                'org.zstack.header.pubVmInstance.APIDeletePubVmInstanceMsg': this
+                'org.zstack.header.vmv.APIDeletePubVmInstanceMsg': this
             };
             return msg;
         };
@@ -7027,7 +7027,7 @@ var Utils;
         Api.prototype.getPubCloudType = function (done) {
             var msg = new ApiHeader.APIGetPubCloudTypesMsg();
             this.syncApi(msg, function (ret) {
-                done(ret.pubCloudTypes);
+                done(ret.cloudTypes);
             });
         };
         Api.prototype.getVolumeFormats = function (done) {
@@ -9612,16 +9612,15 @@ var MPubAccount;
            this.$scope.button.reset();
            var chain = new Utils.Chain();
            chain.then(function () {
-        	   chain.next();
-//               _this.api.getPubCloudType(function (pubcloudTypes) {
-//                   var types = [];
-//                   angular.forEach(pubcloudTypes, function (item) {
-//                       types.push({ type: item });
-//                   });
-//                   _this.$scope.PubCloudTypeList.dataSource.data(new kendo.data.ObservableArray(types));
-//                   _this.$scope.model.pubCloudTypes = pubcloudTypes[0];
-//                   chain.next();
-//               });
+               _this.api.getPubCloudType(function (cloudTypes) {
+                   var types = [];
+                   angular.forEach(cloudTypes, function (item) {
+                       types.push({ type: item });
+                   });
+                   _this.$scope.PubCloudTypeList.dataSource.data(new kendo.data.ObservableArray(types));
+                   _this.$scope.model.cloudTypes = cloudTypes[0];
+                   chain.next();
+               });
            }).done(function () {
                win.center();
                win.open();
