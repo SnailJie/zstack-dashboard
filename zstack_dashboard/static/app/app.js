@@ -9078,7 +9078,8 @@ angular.module('root').factory('ZoneManager', ['Api', '$rootScope', function (ap
     }]);
 /// <reference path="d.ts/angularjs/angular.d.ts" />
 /// <reference path="d.ts/kendo.all.d.ts" />
- 
+  
+
 
 var MPubAccount;
 (function (MPubAccount) {
@@ -9124,13 +9125,12 @@ var MPubAccount;
        PubAccount.prototype.updateObservableObject = function (inv) {
            // self : ObservableObject
            var self = this;
-           self.set('name', inv.name);
+           self.set('username', inv.username);
            self.set('description', inv.description);
-           self.set('hypervisorType', inv.hypervisorType);
-           self.set('state', inv.state);
-           self.set('createDate', inv.createDate);
-           self.set('lastOpDate', inv.lastOpDate);
-            self.set('accesskey', inv.accesskey);
+           self.set('cloudType', inv.cloudType);
+           self.set('token', inv.token);
+           self.set('accesskeyID', inv.accesskeyID);
+           self.set('accesskeyKey', inv.accesskeyKey);
        };
        return PubAccount;
    }(ApiHeader.PubAccountInventory));
@@ -9151,9 +9151,13 @@ var MPubAccount;
        PubAccountManager.prototype.create = function (pubAccount, done) {
            var _this = this;
            var msg = new ApiHeader.APICreatePubAccountMsg();
-           msg.name = pubAccount.name;
+           msg.username = pubAccount.username;
+           msg.password = pubAccount.password;
+           msg.accesskeyID = pubAccount.accesskeyID;
+           msg.accesskeyKey = pubAccount.accesskeyKey;
+           msg.token = pubAccount.token;
            msg.description = pubAccount.description;
-           msg.pubCloudTyoe = pubAccount.pubCloudTyoe;
+           msg.cloudType = pubAccount.cloudType;
 
            this.api.asyncApi(msg, function (ret) {
            var c = new PubAccount();
@@ -9233,17 +9237,26 @@ var MPubAccount;
            _super.prototype.init.call(this, $scope, $scope.pubAccountGrid);
            
            this.options.columns = [
+				{
+				    field: 'cloudType',
+				    title: '云厂商',
+				    width: '15%',
+				},
                {
                    field: 'username',
-                   title: 'username',
+                   title: '用户名',
                    width: '15%',
-                   template: '<a href="/\\#/cluster/{{dataItem.uuid}}">{{dataItem.name}}</a>'
                },
                 {
-                   field: 'accesskey',
-                   title: 'accesskey',
+                   field: 'accesskeyKey',
+                   title: 'accesskeyKey',
                    width: '15%',
-                   template: '<a href="/\\#/cluster/{{dataItem.uuid}}">{{dataItem.name}}</a>'
+               },
+               {
+                   field: 'accesskeyID',
+                   title: 'accesskeyID',
+                   width: '15%',
+                  
                },
                {
                    field: 'token',
@@ -9252,15 +9265,8 @@ var MPubAccount;
                },
                {
                    field: 'description',
-                   title: 'description',
+                   title: '描述',
                    width: '25%'
-               },
-               
-               {
-                   field: 'state',
-                   title: 'state',
-                   width: '15%',
-                   template: '<span class="{{dataItem.stateLabel()}}">{{dataItem.state}}</span>'
                },
                {
                    field: 'uuid',
@@ -9391,27 +9397,27 @@ var MPubAccount;
                fields: [
                    {
                        name: '{{"cluster.ts.Name" | translate}}',
-                       value: 'name'
+                       value: 'username'
                    },
                    {
                        name: '{{"cluster.ts.Description" | translate}}',
-                       value: 'Description'
+                       value: 'accesskeyKey'
                    },
                    {
                        name: '{{"cluster.ts.State" | translate}}',
-                       value: 'state'
+                       value: 'accesskeyID'
                    },
                    {
                        name: '{{"cluster.ts.Hypervisor" | translate}}',
-                       value: 'hypervisorType'
+                       value: 'token'
                    },
                    {
                        name: '{{"cluster.ts.Created Date" | translate}}',
-                       value: 'createDate'
+                       value: 'description'
                    },
                    {
                        name: '{{"cluster.ts.Last Updated Date" | translate}}',
-                       value: 'lastOpDate'
+                       value: 'uuid'
                    }
                ],
                done: function (ret) {
@@ -9518,9 +9524,14 @@ var MPubAccount;
                }
                var infoPage = $scope.infoPage = {
                    activeState: true,
-                   name: null,
+                   username: null,
+                   password: null,
+                   cloudType: null,
+                   token: null,
                    description: null,
-                   accesskey: null,
+                   accesskeyID: null,
+                   accesskeyKey: null,
+                   description: null,
                    canMoveToPrevious: function () {
                        return false;
                    },
@@ -9547,12 +9558,12 @@ var MPubAccount;
                    },
                    reset: function () {
                        this.name = Utils.shortHashName("PubAccount");
-                       this.PubCloudType = null;
+                       this.cloudType = null;
                        this.description = null;
                        this.username = null;
                        this.password = null;
-                       this.accesskey = null;
-                       this.accessID = null;
+                       this.accesskeyKey = null;
+                       this.accesskeyID = null;
                        this.token = null;
                        this.activeState = false;
                    }
@@ -9575,10 +9586,8 @@ var MPubAccount;
                                chain.next();
                            });
                        }).done(function () {
-                           if (Utils.notNullnotUndefined(_this.options.done)) {
-                               _this.options.done(resultCluster);
-                           }
                            $scope.winCreatePubAccount__.close();
+                           $scope.oPubAccountGrid.refresh();
                        }).start();
                    }
                };
@@ -9618,7 +9627,7 @@ var MPubAccount;
                        types.push({ type: item });
                    });
                    _this.$scope.PubCloudTypeList.dataSource.data(new kendo.data.ObservableArray(types));
-                   _this.$scope.model.cloudTypes = cloudTypes[0];
+                   _this.$scope.model.cloudType = cloudTypes[0];
                    chain.next();
                });
            }).done(function () {
@@ -9645,6 +9654,8 @@ angular.module('root').factory('PubAccountManager', ['Api', '$rootScope', functi
             
        });
    }]);
+
+ 
 
  
 

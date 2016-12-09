@@ -11,32 +11,32 @@
                     <form class="form">
                         <div class="form-group col-sm-24">
                             <label for="PubCloudType">云厂商</label>
-                            <select id="PubCloudType" kendo-drop-down-list k-options="PubCloudTypeList" class="z-win-dropdown" ng-model="infoPage.PubCloudType"></select>
+                            <select id="PubCloudType" kendo-drop-down-list k-options="PubCloudTypeList" class="z-win-dropdown" ng-model="infoPage.cloudType"></select>
                         </div>
 		                <div class="form-group col-lg-18">
 		                <p class="z-hint">请根据该类型资源所需的必填项进行填写</p>
-		                    <label for="name">用户名</label>
-		                    <input class="form-control" type="text" id="name" placeholder="(Required) max length of 255 characters" ng-model="modelCreateZone.name" required data-message="name is required">
+		                    <label for="username">用户名</label>
+		                    <input class="form-control" type="text" id="username" placeholder="  max length of 255 characters" ng-model="infoPage.username"  >
 		                </div>
 		                <div class="form-group col-lg-18">
-		                    <label for="name">密码</label>
-		                    <input class="form-control" type="text" id="name" placeholder="(Required) max length of 255 characters" ng-model="modelCreateZone.name" required data-message="name is required">
+		                    <label for="password">密码</label>
+		                    <input class="form-control" type="text" id="password" placeholder="  max length of 255 characters" ng-model="infoPage.password" >
 		                </div>
 		                <div class="form-group col-lg-18">
-		                    <label for="name">accesskeyID</label>
-		                    <input class="form-control" type="text" id="name" placeholder="(Required) max length of 255 characters" ng-model="modelCreateZone.name" required data-message="name is required">
+		                    <label for="accesskeyID">accesskeyID</label>
+		                    <input class="form-control" type="text" id="accesskeyID" placeholder="  max length of 255 characters" ng-model="infoPage.accesskeyID"  >
 		                </div>
 		                <div class="form-group col-lg-18">
-		                    <label for="name">accesskeyKey</label>
-		                    <input class="form-control" type="text" id="name" placeholder="(Required) max length of 255 characters" ng-model="modelCreateZone.name" required data-message="name is required">
+		                    <label for="accesskeyKey">accesskeyKey</label>
+		                    <input class="form-control" type="text" id="accesskeyKey" placeholder="  max length of 255 characters" ng-model="infoPage.accesskeyKey" >
 		                </div>
 		                <div class="form-group col-lg-18">
-		                    <label for="name">token</label>
-		                    <input class="form-control" type="text" id="name" placeholder="(Required) max length of 255 characters" ng-model="modelCreateZone.name" required data-message="name is required">
+		                    <label for="token">token</label>
+		                    <input class="form-control" type="text" id="token" placeholder="  max length of 255 characters" ng-model="infoPage.token"  >
 		                </div>
 		                <div class="form-group col-lg-18">
 		                    <label for="description">{{"zone.zone.DESCRIPTION" | translate}}</label>
-		                    <textarea  class="form-control" rows="5" id="description" placeholder="(Optional) max length of 2048 characters" ng-model="modelCreateZone.description"></textarea>
+		                    <textarea  class="form-control" rows="5" id="description" placeholder="(Optional) max length of 2048 characters" ng-model="infoPage.description"></textarea>
 		                </div>
                     </form>
                 </div>
@@ -50,7 +50,7 @@
 
         <div class="col-sm-7 z-wizard-bar">
             <ul class="nav">
-                <li class="active"><a data-target="#createClusterInfo" ng-click="button.pageClick('createClusterInfo')">{{"cluster.createCluster.CLUSTER INFO" | translate}}</a></li>
+                <li class="active"><a data-target="#createClusterInfo" ng-click="button.pageClick('createClusterInfo')">PUB-CLOUD ACCOUNT INFO</a></li>
             </ul>
         </div>
 
