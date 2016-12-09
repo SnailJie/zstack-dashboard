@@ -1,5 +1,6 @@
 <div style="display: none">
     <div z-create-pubaccount="winNewPubAccount" z-options="optionsCreateCluster"></div>
+    <div z-delete-confirm="pubAccountDelete" z-options="optionsDeletePubAccount"></div>
     <div z-search="search" z-options="optionsSearch"></div>
 </div>
  	
@@ -52,7 +53,7 @@
             <ul class="dropdown-menu" role="menu">
                 <li><a href ng-click="action.stop()" >修改</a></li>
                 <li class="divider"></li>
-                <li><a href style="color:red" ng-click="funcDeletepubAccount(pubAccountDelete)"  >{{"vm.vm.Delete" | translate}}</a></li>
+                <li><a href style="color:red" ng-click="funcDeletePubAccount(pubAccountDelete)"  >{{"vm.vm.Delete" | translate}}</a></li>
             </ul>
         </div>
     </div>

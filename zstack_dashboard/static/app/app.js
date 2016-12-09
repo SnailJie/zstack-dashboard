@@ -9203,7 +9203,7 @@ var MPubAccount;
                pubAccount.progressOff();
                done(ret);
                _this.$rootScope.$broadcast(MRoot.Events.NOTIFICATION, {
-                   msg: Utils.sprintf('Deleted cluster: {0}', pubAccount.name)
+                   msg: Utils.sprintf('Deleted account: {0}', pubAccount.username)
                });
            });
        };
@@ -9463,9 +9463,11 @@ var MPubAccount;
                win.open();
            };
            $scope.funcDeletePubAccount = function (win) {
-               $scope.deletePubAccount.open();
+        	   win.open();
            };
+           
            $scope.optionsDeletePubAccount = {
+                	   
                title: 'DELETE PubAccount',
                description: 'Are you sure?',
                confirm: function () {
