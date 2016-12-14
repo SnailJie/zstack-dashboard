@@ -9659,9 +9659,6 @@ angular.module('root').factory('PubAccountManager', ['Api', '$rootScope', functi
 
  
 
- 
-
-
 
 
 var MPubVmInstance;
@@ -9821,13 +9818,11 @@ var MPubVmInstance;
                    field: 'username',
                    title: 'HostName',
                    width: '15%',
-                   template: '<a href="/\\#/cluster/{{dataItem.uuid}}">{{dataItem.name}}</a>'
                },
                 {
                    field: 'accesskey',
                    title: 'cloudType',
                    width: '15%',
-                   template: '<a href="/\\#/cluster/{{dataItem.uuid}}">{{dataItem.name}}</a>'
                },
                {
                    field: 'information',
@@ -9885,25 +9880,23 @@ var MPubVmInstance;
 
 
    var FilterBy = (function () {
-       function FilterBy($scope, hypervisorTypes) {
+       function FilterBy($scope, cloudTypes) {
            var _this = this;
            this.$scope = $scope;
-           this.hypervisorTypes = hypervisorTypes;
            this.fieldList = {
                dataSource: new kendo.data.DataSource({
                    data: [
                        {
                            name: '{{"cluster.ts.None" | translate}}',
                            value: FilterBy.NONE
+                       },{
+                           name: 'cloudType',
+                           value: FilterBy.CLOUDTYPE
                        },
                        {
-                           name: '{{"cluster.ts.State" | translate}}',
+                           name: 'state',
                            value: FilterBy.STATE
-                       },
-                       {
-                           name: '{{"cluster.ts.Hypervisor" | translate}}',
-                           value: FilterBy.HYPERVISOR
-                       }
+                       } 
                    ]
                }),
                dataTextField: 'name',
@@ -9925,8 +9918,9 @@ var MPubVmInstance;
                else if (_this.field == FilterBy.STATE) {
                    _this.valueList.dataSource.data(['Enabled', 'Disabled']);
                }
-               else if (_this.field == FilterBy.HYPERVISOR) {
-                   _this.valueList.dataSource.data(_this.hypervisorTypes);
+               else if (_this.field == FilterBy.CLOUDTYPE) {
+//                   _this.valueList.dataSource.data(_this.cloudTypes);
+            	   _this.valueList.dataSource.data(['ECS', 'EC2']);
                }
            });
        }
@@ -9957,10 +9951,11 @@ var MPubVmInstance;
        };
        FilterBy.NONE = 'none';
        FilterBy.STATE = 'state';
-       FilterBy.HYPERVISOR = 'hypervisorType';
+       FilterBy.CLOUDTYPE = 'cloudType';
        return FilterBy;
    }());
-
+ 
+   
 
    var Controller = (function () {
        function Controller($scope, pubVmInstanceMgr, $location) {
@@ -9986,7 +9981,7 @@ var MPubVmInstance;
                    },
                    {
                        name: '{{"cluster.ts.Hypervisor" | translate}}',
-                       value: 'hypervisorType'
+                       value: 'cloudType'
                    },
                    {
                        name: '{{"cluster.ts.Created Date" | translate}}',
@@ -10010,9 +10005,9 @@ var MPubVmInstance;
                        type: Directive.SearchBoxSchema.VALUE_TYPE_LIST,
                        list: ['Enabled', 'Disabled']
                    },
-                   hypervisorType: {
+                   cloudType: {
                        type: Directive.SearchBoxSchema.VALUE_TYPE_LIST,
-                       list: this.hypervisorTypes
+                       list: this.cloudType
                    },
                    createDate: {
                        type: Directive.SearchBoxSchema.VALUE_TYPE_TIMESTAMP
@@ -10043,7 +10038,7 @@ var MPubVmInstance;
                    }
                };
             
-           $scope.filterBy = new FilterBy($scope, this.hypervisorTypes);
+           $scope.filterBy = new FilterBy($scope, this.cloudType);
 
            $scope.funcSearch = function (win) {
                win.open();
@@ -10223,7 +10218,10 @@ angular.module('root').factory('PubVmInstanceManager', ['Api', '$rootScope', fun
        });
    }]);
 
+ 
 
+
+ 
 
 
 var MCluster;
