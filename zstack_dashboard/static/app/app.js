@@ -9660,7 +9660,6 @@ angular.module('root').factory('PubAccountManager', ['Api', '$rootScope', functi
  
 
 
-
 var MPubVmInstance;
 (function (MPubVmInstance) {
   var PubVmInstance = (function (_super) {
@@ -9731,10 +9730,11 @@ var MPubVmInstance;
 
        PubVmInstanceManager.prototype.create = function (PubVmInstance, done) {
            var _this = this;
-           var msg = new ApiHeader.APICreatePubVmInstanceMsg();    //Need New
-           msg.name = PubVmInstance.name;
+           var msg = new ApiHeader.APICreatePublicVmInstanceMsg();    //Need New
+           msg.name = PubVmInstance.hostname;
            msg.description = PubVmInstance.description;
-           msg.pubCloudType = PubVmInstance.pubCloudType;
+//           msg.pubCloudType = PubVmInstance.pubCloudType;
+           
 
            this.api.asyncApi(msg, function (ret) {
            var c = new PubAccount();
@@ -9920,7 +9920,7 @@ var MPubVmInstance;
                }
                else if (_this.field == FilterBy.CLOUDTYPE) {
 //                   _this.valueList.dataSource.data(_this.cloudTypes);
-            	   _this.valueList.dataSource.data(['ECS', 'EC2']);
+                   _this.valueList.dataSource.data(['ECS', 'EC2']);
                }
            });
        }
@@ -10079,10 +10079,11 @@ var MPubVmInstance;
 
 
    var CreatePubVmInstance = (function () {
-       function CreatePubVmInstance(api, pubVmInstanceMgr) {
+       function CreatePubVmInstance(api, pubVmInstanceMgr,pubAccountMgr) {
            var _this = this;
            this.api = api;
            this.pubVmInstanceMgr = pubVmInstanceMgr;
+           this.pubAccountMgr = pubAccountMgr;
            this.scope = true;
            this.link = function ($scope, $element, $attrs, $ctrl, $transclude) {
                var instanceName = $attrs.zCreatePubvmInstance;    //same with html
@@ -10100,9 +10101,12 @@ var MPubVmInstance;
                }
                var infoPage = $scope.infoPage = {
                    activeState: true,
-                   name: null,
+                   accountUuid: null,
+                   cloudType:null,
+                   hostname: null,
                    description: null,
-                   accesskey: null,
+                   memorySize:null,
+                   cpuNum:null,
                    canMoveToPrevious: function () {
                        return false;
                    },
@@ -10129,12 +10133,15 @@ var MPubVmInstance;
                    },
                    reset: function () {
                        this.name = Utils.shortHashName("PubAccount");
-                       this.PubCloudType = null;
+                       this.accountUuid = null;
                        this.description = null;
-                       this.accesskey = null;
-                       this.accessID = null;
-                       this.token = null;
+                       this.cloudType = null;
+                       this.hostname = null;
+                       this.memorySize = null;
+                       this.cpuNum = null;
                        this.activeState = false;
+
+                   
                    }
                };
                 
@@ -10156,7 +10163,7 @@ var MPubVmInstance;
                            });
                        }).done(function () {
                            if (Utils.notNullnotUndefined(_this.options.done)) {
-                               _this.options.done(resultCluster);
+                               this.options.done(resultCluster);
                            }
                            $scope.winCreatePubVmInstance__.close();
                        }).start();
@@ -10166,11 +10173,40 @@ var MPubVmInstance;
                    infoPage
                ], mediator);
 
+                $scope.$watch(function () {
+                    return $scope.infoPage.selectCloudType;
+                }, function () {
+                    var zuuid = $scope.infoPage.selectCloudType;
+                    if (Utils.notNullnotUndefined(zuuid)) {
+                        var qobj = new ApiHeader.QueryObject();
+                        qobj.conditions = [
+                            {
+                                name: 'cloudType',
+                                op: '=',
+                                value: zuuid
+                            }
+                        ];
+                        _this.pubAccountMgr.query(qobj, function (clusters) {
+                            _this.$scope.accountOptions__.dataSource.data(clusters);
+                        });
+                    }
+                });
                $scope.PubCloudTypeList = {
                    dataSource: new kendo.data.DataSource({ data: [] }),
                    dataTextField: "type",
                    dataValueField: "type"
                };
+                 $scope.accountOptions__ = {
+                   dataSource: new kendo.data.DataSource({ data: [] }),
+                   dataTextField: "username",
+                   dataValueField: "username"
+               };
+               $scope.cloudTypeOptions__ = {
+                    dataSource: new kendo.data.DataSource({ data: [] }),
+                    dataTextField: "name",
+                    dataValueField: "uuid",
+                    optionLabel: ""
+                };
                $scope.winCreatePubVmInstanceOptions__ = {
                    width: "700px",
                    //height: "518px",
@@ -10192,10 +10228,20 @@ var MPubVmInstance;
            this.$scope.button.reset();
            var chain = new Utils.Chain();
            chain.then(function () {
-               chain.next();
-           }).done(function () {
-               win.center();
-               win.open();
+               _this.api.getPubCloudType(function (cloudTypes) {
+                   var types = [];
+                   angular.forEach(cloudTypes, function (item) {
+                       types.push({ type: item });
+                   });
+                   _this.$scope.PubCloudTypeList.dataSource.data(new kendo.data.ObservableArray(types));
+                   _this.$scope.model.cloudType = cloudTypes[0];
+                   chain.next();
+               });
+           }).then(function () {
+                chain.next();
+            }).done(function () {
+                win.center();
+                win.open();
            }).start();
 
        };
@@ -10207,9 +10253,9 @@ var MPubVmInstance;
 
 angular.module('root').factory('PubVmInstanceManager', ['Api', '$rootScope', function (api, $rootScope) {
        return new MPubVmInstance.PubVmInstanceManager(api, $rootScope);
-   }]).directive('zCreatePubvmInstance', ['Api', 'PubVmInstanceManager',
-   function (api, PubVmInstanceManager) {
-       return new MPubVmInstance.CreatePubVmInstance(api, PubVmInstanceManager);
+   }]).directive('zCreatePubvmInstance', ['Api', 'PubVmInstanceManager','PubAccountManager',
+   function (api, PubVmInstanceManager,pubAccountMgr) {
+       return new MPubVmInstance.CreatePubVmInstance(api, PubVmInstanceManager,pubAccountMgr);
    }]).config(['$routeProvider', function (route) {
        route.when('/PubVmInstance', {
            templateUrl: '/static/templates/vm/vmPub.html',
@@ -10217,11 +10263,6 @@ angular.module('root').factory('PubVmInstanceManager', ['Api', '$rootScope', fun
             
        });
    }]);
-
- 
-
-
- 
 
 
 var MCluster;
