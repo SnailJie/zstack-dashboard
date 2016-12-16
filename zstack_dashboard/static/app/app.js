@@ -9704,7 +9704,7 @@ var MPubVmInstance;
        PubVmInstance.prototype.updateObservableObject = function (inv) {
            // self : ObservableObject
            var self = this;
-           self.set('name', inv.name);
+           self.set('hostname', inv.hostname);
            self.set('description', inv.description);
            self.set('cloudType', inv.cloudType);
            self.set('state', inv.state);
@@ -9731,10 +9731,13 @@ var MPubVmInstance;
        PubVmInstanceManager.prototype.create = function (PubVmInstance, done) {
            var _this = this;
            var msg = new ApiHeader.APICreatePublicVmInstanceMsg();    //Need New
-           msg.name = PubVmInstance.hostname;
+           msg.hostname = PubVmInstance.hostname;
            msg.description = PubVmInstance.description;
-//           msg.pubCloudType = PubVmInstance.pubCloudType;
-           
+           msg.cloudType = PubVmInstance.selectCloudType;
+           msg.accountUuid = PubVmInstance.accountUuid;
+           msg.memorySize = PubVmInstance.memorySize;
+           msg.cpuInfo = PubVmInstance.cpuInfo;
+           msg.image = PubVmInstance.image;
 
            this.api.asyncApi(msg, function (ret) {
            var c = new PubAccount();
@@ -9814,38 +9817,49 @@ var MPubVmInstance;
            _super.prototype.init.call(this, $scope, $scope.pubVmInstanceGrid);
            
            this.options.columns = [
-               {
-                   field: 'username',
-                   title: 'HostName',
-                   width: '15%',
-               },
-                {
-                   field: 'accesskey',
-                   title: 'cloudType',
-                   width: '15%',
-               },
-               {
-                   field: 'information',
-                   title: 'token',
-                   width: '15%'
-               },
-               {
-                   field: 'description',
-                   title: 'description',
-                   width: '25%'
-               },
-               
-               {
-                   field: 'state',
-                   title: 'state',
-                   width: '15%',
-                   template: '<span class="{{dataItem.stateLabel()}}">{{dataItem.state}}</span>'
-               },
-               {
-                   field: 'uuid',
-                   title: '{{"cluster.ts.UUID" | translate}}',
-                   width: '30%'
-               }
+                        {
+                            field: 'cloudType',
+                            title: 'cloudType',
+                            width: '15%',
+                        },
+                        {
+                            field: 'hostname',
+                            title: 'HostName',
+                            width: '15%',
+                        },
+                        {
+                            field: 'cpuInfo',
+                            title: 'cpuInfo',
+                            width: '15%'
+                        },
+                        {
+                            field: 'memorySize',
+                            title: 'memorySize',
+                            width: '15%'
+                        },
+                         {
+                            field: 'accountUuid',
+                            title: 'account',
+                            width: '15%',
+                             
+                        },
+                        {
+                            field: 'description',
+                            title: 'description',
+                            width: '25%'
+                        },
+                        
+                        {
+                            field: 'state',
+                            title: 'state',
+                            width: '15%',
+                            template: '<span class="{{dataItem.stateLabel()}}">{{dataItem.state}}</span>'
+                        },
+                        {
+                            field: 'uuid',
+                            title: '{{"cluster.ts.UUID" | translate}}',
+                            width: '30%'
+                        }
            ];
            this.options.dataSource.transport.read = function (options) {
                var qobj = new ApiHeader.QueryObject();
@@ -10046,6 +10060,15 @@ var MPubVmInstance;
            $scope.funcCreatePubVmInstance = function (win) {
                win.open();
            };
+           $scope.funcCreatePubVmInstanceDone = function (win) {
+             pubVmInstanceMgr.create($scope.infoPage, function (ret) {
+                $scope.model.resetCurrent(); 
+                $scope.oPubVmInstanceGrid.dataSource.insert(0, ret);
+                 });
+               win.close();
+           };
+
+            
            $scope.funcDeletePubVmInstance = function (win) {
                $scope.deletePubVmInstance.open();
            };
@@ -10102,11 +10125,12 @@ var MPubVmInstance;
                var infoPage = $scope.infoPage = {
                    activeState: true,
                    accountUuid: null,
-                   cloudType:null,
+                   selectCloudType:null,
                    hostname: null,
                    description: null,
                    memorySize:null,
-                   cpuNum:null,
+                   cpuInfo:null,
+                   image:null,
                    canMoveToPrevious: function () {
                        return false;
                    },
@@ -10135,11 +10159,12 @@ var MPubVmInstance;
                        this.name = Utils.shortHashName("PubAccount");
                        this.accountUuid = null;
                        this.description = null;
-                       this.cloudType = null;
+                       this.selectCloudType = null;
                        this.hostname = null;
                        this.memorySize = null;
-                       this.cpuNum = null;
+                       this.cpuInfo = null;
                        this.activeState = false;
+                       this.image = null;          
 
                    
                    }
@@ -10199,7 +10224,8 @@ var MPubVmInstance;
                  $scope.accountOptions__ = {
                    dataSource: new kendo.data.DataSource({ data: [] }),
                    dataTextField: "username",
-                   dataValueField: "username"
+                   dataValueField: "uuid",
+              
                };
                $scope.cloudTypeOptions__ = {
                     dataSource: new kendo.data.DataSource({ data: [] }),
@@ -10263,6 +10289,7 @@ angular.module('root').factory('PubVmInstanceManager', ['Api', '$rootScope', fun
             
        });
    }]);
+
 
 
 var MCluster;
