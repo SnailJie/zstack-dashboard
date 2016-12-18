@@ -10224,8 +10224,7 @@ var MPubVmInstance;
                  $scope.accountOptions__ = {
                    dataSource: new kendo.data.DataSource({ data: [] }),
                    dataTextField: "username",
-                   dataValueField: "uuid",
-              
+                   dataValueField: "uuid"
                };
                $scope.cloudTypeOptions__ = {
                     dataSource: new kendo.data.DataSource({ data: [] }),
