@@ -2302,6 +2302,20 @@ var ApiHeader;
     }());
     ApiHeader.APIQueryPubVmInstanceMsg = APIQueryPubVmInstanceMsg;
     
+    var APIUpdatePubVmInstanceMsg = (function () {
+        function APIUpdatePubVmInstanceMsg() {
+        }
+        APIUpdatePubVmInstanceMsg.prototype.toApiMap = function () {
+            var msg = {
+                'org.zstack.header.vm.APIUpdatePubVmInstanceMsg': this
+            };
+            return msg;
+        };
+        return APIUpdatePubVmInstanceMsg;
+    }());
+    ApiHeader.APIUpdatePubVmInstanceMsg = APIUpdatePubVmInstanceMsg;
+    
+    
     var APIDeletePubVmInstanceMsg = (function () {
         function APIDeletePubVmInstanceMsg() {
         }
@@ -9212,9 +9226,6 @@ var MPubAccount;
    }());
    MPubAccount.PubAccountManager = PubAccountManager;
 
-
-
-   
    var PubAccountModel = (function () {
        function PubAccountModel() {
            this.current = new PubAccount();
@@ -9659,7 +9670,6 @@ angular.module('root').factory('PubAccountManager', ['Api', '$rootScope', functi
 
  
 
-
 var MPubVmInstance;
 (function (MPubVmInstance) {
   var PubVmInstance = (function (_super) {
@@ -9740,7 +9750,7 @@ var MPubVmInstance;
            msg.image = PubVmInstance.image;
 
            this.api.asyncApi(msg, function (ret) {
-           var c = new PubAccount();
+           var c = new PubVmInstance();
            angular.extend(c, ret.inventory);
            done(_this.wrap(c));
            _this.$rootScope.$broadcast(MRoot.Events.NOTIFICATION, {
@@ -9766,7 +9776,30 @@ var MPubVmInstance;
            this.api.syncApi(msg, function (ret) {
                var clusters = [];
                ret.inventories.forEach(function (inv) {
-                   var c = new PubAccount();
+                   var c = new PubVmInstance();
+                   angular.extend(c, inv);
+                   clusters.push(_this.wrap(c));
+               });
+               callback(clusters, ret.total);
+           });
+       };
+
+        PubVmInstanceManager.prototype.update = function (qobj, callback) {
+           var _this = this;
+           var msg = new ApiHeader.APIUpdatePubVmInstanceMsg();    //Need New
+           msg.count = qobj.count === true;
+           msg.start = qobj.start;
+           msg.limit = qobj.limit;
+           msg.replyWithCount = true;
+           msg.conditions = qobj.conditions ? qobj.conditions : [];
+           if (Utils.notNullnotUndefined(this.sortBy) && this.sortBy.isValid()) {
+               msg.sortBy = this.sortBy.field;
+               msg.sortDirection = this.sortBy.direction;
+           }
+           this.api.syncApi(msg, function (ret) {
+               var clusters = [];
+               ret.inventories.forEach(function (inv) {
+                   var c = new PubVmInstance();
                    angular.extend(c, inv);
                    clusters.push(_this.wrap(c));
                });
@@ -10073,7 +10106,10 @@ var MPubVmInstance;
                $scope.deletePubVmInstance.open();
            };
            $scope.funcRefresh = function () {
-               $scope.oPubVmInstanceGrid.refresh();
+               var qobj = new ApiHeader.QueryObject();
+               pubVmInstanceMgr.update(qobj, function (clusters, total) {
+                       $scope.oPubVmInstanceGrid.refresh(clusters);
+                   });
            };
            $scope.funcIsActionShow = function () {
                return !Utils.isEmptyObject($scope.model.current);
@@ -10288,6 +10324,7 @@ angular.module('root').factory('PubVmInstanceManager', ['Api', '$rootScope', fun
             
        });
    }]);
+
 
 
 
