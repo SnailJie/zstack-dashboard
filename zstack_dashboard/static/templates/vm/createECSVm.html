@@ -15,27 +15,23 @@
                             <select id="account" kendo-combo-box k-options="accountOptions__" k-placeholder="'选择账户'" class="z-win-dropdown" k-ng-model="infoPage.accountUuid"></select>
                         </div>
                         
-                        <div class="form-group col-sm-24">
+                       
+
+                        <div class="form-group col-sm-18">
+                            <label for="account"> 虚拟机配置</label>
+                            <select id="account" kendo-combo-box k-options="instanceOptions__" k-placeholder="'选择配置'" class="z-win-dropdown" k-ng-model="infoPage.instanceOfferUuid"></select>
+                        </div>
+                        
+						 <div class="form-group col-sm-24">
                             <label for="hostname">主机名</label>
                             <input class="form-control z-win-input" type="text" id="hostname" placeholder="(Required) max length of 255 characters" ng-model="infoPage.hostname" required data-message="hostname is required">
-                   	    </div>
-                   	    <div class="form-group col-sm-24">
-                            <label for="name">CPU数量</label>
-                            <input class="form-control z-win-input" type="text" id="name" placeholder="(Required) max length of 255 characters" ng-model="infoPage.cpuInfo" required data-message="name is required">
-                   	    </div>
-                   	    <div class="form-group col-sm-24">
-                            <label for="name">内存</label>
-                            <input class="form-control z-win-input" type="text" id="name" placeholder="(Required) max length of 255 characters" ng-model="infoPage.memorySize" required data-message="name is required">
-                   	    </div>
-                   	    <div class="form-group col-sm-24">
-                            <label for="name">镜像</label>
-                            <input class="form-control z-win-input" type="text" id="name" placeholder="(Required) max length of 255 characters" ng-model="infoPage.image"  >
-                   	    </div>
-                   	     <div class="form-group col-sm-24">
+                         </div>
+ 
+                         <div class="form-group col-sm-24">
                             <label for="name">描述</label>
                             <input class="form-control z-win-input" type="text" id="name" placeholder="(Required) max length of 255 characters" ng-model="infoPage.description"  >
-                   	    </div>
-                   	    
+                        </div>
+                        
                     </form>
 
                 </div>

@@ -9800,23 +9800,20 @@ var MPubVmInstance;
         PubVmInstanceManager.prototype.queryConf = function (qobj, callback) {
            var _this = this;
            var msg = new ApiHeader.APIQueryPubVmInstanceOfferingMsg();    //Need New
-           msg.count = qobj.count === true;
-           msg.start = qobj.start;
-           msg.limit = qobj.limit;
-           msg.cloudType = qobj.cloudType;
+           msg.cloudType = qobj;
            msg.replyWithCount = true;
-           msg.conditions = qobj.conditions ? qobj.conditions : [];
            if (Utils.notNullnotUndefined(this.sortBy) && this.sortBy.isValid()) {
                msg.sortBy = this.sortBy.field;
                msg.sortDirection = this.sortBy.direction;
            }
            this.api.syncApi(msg, function (ret) {
                var clusters = [];
-               ret.inventories.forEach(function (inv) {
-                   var c = new PubVmInstance();
-                   angular.extend(c, inv);
-                   clusters.push(_this.wrap(c));
-               });
+               clusters = ret.instanceOffering;
+//               ret.inventories.forEach(function (inv) {
+//                   var c = new PubVmInstance();
+//                   angular.extend(c, inv);
+//                   clusters.push(_this.wrap(c));
+//               });
                callback(clusters, ret.total);
            });
        };
@@ -10285,27 +10282,17 @@ var MPubVmInstance;
                             }
                         ];
                         _this.pubAccountMgr.query(qobj, function (clusters) {
+                        	
                             _this.$scope.accountOptions__.dataSource.data(clusters);
                         });
 
-
-                    var qobj2 = new ApiHeader.QueryObject();
-                        qobj2.conditions = [
-                            {
-                                name: 'cloudType',
-                                op: '=',
-                                value: zuuid
-                            }
-                        ];
-                        _this.pubAccountMgr.queryConf(qobj, function (clusters) {
+                        _this.pubVmInstanceMgr.queryConf(zuuid, function (clusters) {
                             _this.$scope.instanceOptions__.dataSource.data(clusters);
                         });
-
-
-
-
                     }
                 });
+                
+                 
                $scope.PubCloudTypeList = {
                    dataSource: new kendo.data.DataSource({ data: [] }),
                    dataTextField: "type",
@@ -10319,11 +10306,12 @@ var MPubVmInstance;
 
                 $scope.instanceOptions__ = {
                    dataSource: new kendo.data.DataSource({ data: [] }),
-                   dataTextField: "cpuNum",
+                   dataTextField: "name",
                    dataValueField: "uuid",
-                  template: '<div style="color: black"><span class="z-label">{{"l3Network.ts.Name" | translate}}:</span><span>#: cpuNum #</span></div>' +
-                        '<div style="color: black"><span class="z-label">{{"l3Network.ts.Type" | translate}}:</span><span>#: image #</span></div>' +
-                        '<div style="color: black"><span class="z-label">{{"l3Network.ts.UUID" | translate}}:</span><span>#: diskSize #</span></div>'
+//                  template: '<div style="color: black"><span class="z-label">{{"l3Network.ts.Name" | translate}}:</span><span>#: instanceMD #</span></div>' +
+//                        '<div style="color: black"><span class="z-label">{{"l3Network.ts.Type" | translate}}:</span><span>#: image #</span></div>' +
+//                        '<div style="color: black"><span class="z-label">{{"l3Network.ts.UUID" | translate}}:</span><span>#: diskSize #</span></div>'
+                   template: '<div style="color: black"><span class="z-label">{{"l3Network.ts.Name" | translate}}:</span><span>#: cpuNum #</span></div>' 
                };
                
                $scope.cloudTypeOptions__ = {
