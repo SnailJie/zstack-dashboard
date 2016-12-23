@@ -9758,9 +9758,7 @@ var MPubVmInstance;
            msg.description = PubVmInstance.description;
            msg.cloudType = PubVmInstance.selectCloudType;
            msg.accountUuid = PubVmInstance.accountUuid;
-           msg.memorySize = PubVmInstance.memorySize;
-           msg.cpuInfo = PubVmInstance.cpuInfo;
-           msg.image = PubVmInstance.image;
+           msg.instanceOfferUuid = PubVmInstance.instanceOfferUuid;
 
            this.api.asyncApi(msg, function (ret) {
            var c = new PubVmInstance();
@@ -10198,9 +10196,7 @@ var MPubVmInstance;
                    selectCloudType:null,
                    hostname: null,
                    description: null,
-                   memorySize:null,
-                   cpuInfo:null,
-                   image:null,
+                   instanceOfferUuid:null,
                    canMoveToPrevious: function () {
                        return false;
                    },
@@ -10231,10 +10227,8 @@ var MPubVmInstance;
                        this.description = null;
                        this.selectCloudType = null;
                        this.hostname = null;
-                       this.memorySize = null;
-                       this.cpuInfo = null;
+                       this.instanceOfferUuid = null;
                        this.activeState = false;
-                       this.image = null;          
 
                    
                    }
@@ -10282,17 +10276,14 @@ var MPubVmInstance;
                             }
                         ];
                         _this.pubAccountMgr.query(qobj, function (clusters) {
-                        	
                             _this.$scope.accountOptions__.dataSource.data(clusters);
                         });
-
                         _this.pubVmInstanceMgr.queryConf(zuuid, function (clusters) {
                             _this.$scope.instanceOptions__.dataSource.data(clusters);
                         });
                     }
                 });
                 
-                 
                $scope.PubCloudTypeList = {
                    dataSource: new kendo.data.DataSource({ data: [] }),
                    dataTextField: "type",
@@ -10308,10 +10299,10 @@ var MPubVmInstance;
                    dataSource: new kendo.data.DataSource({ data: [] }),
                    dataTextField: "name",
                    dataValueField: "uuid",
-//                  template: '<div style="color: black"><span class="z-label">{{"l3Network.ts.Name" | translate}}:</span><span>#: instanceMD #</span></div>' +
-//                        '<div style="color: black"><span class="z-label">{{"l3Network.ts.Type" | translate}}:</span><span>#: image #</span></div>' +
-//                        '<div style="color: black"><span class="z-label">{{"l3Network.ts.UUID" | translate}}:</span><span>#: diskSize #</span></div>'
-                   template: '<div style="color: black"><span class="z-label">{{"l3Network.ts.Name" | translate}}:</span><span>#: cpuNum #</span></div>' 
+                   template: '<div style="color: black"><span class="z-label">CPU数量:</span><span>#: cpuNum #</span></div>' +
+                        '<div style="color: black"><span class="z-label">镜像:</span><span>#: image #</span></div>' +
+                        '<div style="color: black"><span class="z-label">硬盘大小:</span><span>#: diskSize #</span></div>'
+                  
                };
                
                $scope.cloudTypeOptions__ = {
