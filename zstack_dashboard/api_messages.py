@@ -242,6 +242,7 @@ api_names = [
     'org.zstack.header.cluster.APIChangeClusterStateMsg',
     'org.zstack.header.cluster.APIUpdateClusterMsg',
     'org.zstack.header.cluster.APIQueryClusterMsg',
+    'org.zstack.header.vm.APIQueryPubVmInstanceOfferingMsg',
     'org.zstack.header.vm.APIQueryPubVmInstanceMsg',
     'org.zstack.header.vm.APIUpdatePubVmInstanceMsg',
     'org.zstack.header.vm.APIGetPubCloudTypesMsg',
