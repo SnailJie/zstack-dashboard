@@ -1,54 +1,94 @@
-<div kendo-window="winCreatePubVmInstance__" k-visible="false" k-options="winCreatePubVmInstanceOptions__">
-    <div class="row">
-        <div class="col-sm-15">
-            <div class="tab-content">
-                <div id="createECSVmInstance" class="tab-pane active">
-                    <h4 class="z-win-h4">创建公有云</h4>
-                    <form class="form">
-                        <div class="form-group col-sm-18">
-                            <label for="cloudType">云厂商</label>
-                            <select id="cloudType" kendo-combo-box k-options="PubCloudTypeList" k-placeholder="'选择云厂商'" class="z-win-dropdown" k-ng-model="infoPage.selectCloudType"></select>
-                        </div>
+<div kendo-window="winCreatePubVmInstance__" k-visible="false"
+	k-options="winCreatePubVmInstanceOptions__">
+	<div class="row">
+		<div class="col-sm-15">
+			<div class="tab-content">
+				<div id="createECSVmInstance" class="tab-pane active">
+					<h4 class="z-win-h4">创建公有云</h4>
+					<form class="form">
+						<div class="form-group col-sm-18">
+							<label for="cloudType">云厂商</label> <select id="cloudType"
+								kendo-combo-box k-options="PubCloudTypeList"
+								k-placeholder="'选择云厂商'" class="z-win-dropdown"
+								k-ng-model="infoPage.selectCloudType"></select>
+						</div>
 
-                        <div class="form-group col-sm-18">
-                            <label for="account">账户</label>
-                            <select id="account" kendo-combo-box k-options="accountOptions__" k-placeholder="'选择账户'" class="z-win-dropdown" k-ng-model="infoPage.accountUuid"></select>
-                        </div>
-                        
-                       
+						<div class="form-group col-sm-18">
+							<label for="account">账户</label> <select id="account"
+								kendo-combo-box k-options="accountOptions__"
+								k-placeholder="'选择账户'" class="z-win-dropdown"
+								k-ng-model="infoPage.accountUuid"></select>
+						</div>
+						
+						<div class="form-group col-sm-24">
+							<label for="hostname">主机名</label> <input
+								class="form-control z-win-input" type="text" id="hostname"
+								placeholder="(Required) max length of 255 characters"
+								ng-model="infoPage.hostname" required
+								data-message="hostname is required">
+							</div>
 
-                        <div class="form-group col-sm-18">
-                            <label for="account"> 虚拟机配置</label>
-                            <select id="account" kendo-combo-box k-options="instanceOptions__" k-placeholder="'选择配置'" class="z-win-dropdown" k-ng-model="infoPage.instanceOfferUuid"></select>
-                        </div>
-                        
-						 <div class="form-group col-sm-24">
-                            <label for="hostname">主机名</label>
-                            <input class="form-control z-win-input" type="text" id="hostname" placeholder="(Required) max length of 255 characters" ng-model="infoPage.hostname" required data-message="hostname is required">
-                         </div>
- 
-                         <div class="form-group col-sm-24">
-                            <label for="name">描述</label>
-                            <input class="form-control z-win-input" type="text" id="name" placeholder="(Required) max length of 255 characters" ng-model="infoPage.description"  >
-                        </div>
-                        
-                    </form>
+						<div class='form-group col-sm-24' style="height: 1px; background-color: #cdcdcd;"></div>
+						
+							<div class="form-group col-sm-18" ng-show="infoPage.isCloud('ECS')">
+								<label for="regionECS"> 区域</label> 
+								<select id="regionECS" kendo-combo-box k-options="regionECSOptions__"
+									k-placeholder="'选择区域'" class="z-win-dropdown"
+									k-ng-model="infoPage.region"></select>
+							</div>
+							<div class="form-group col-sm-18" ng-show="infoPage.isCloud('ECS')">
+								<label for="instanceOfferUuid"> 阿里云虚拟机配置</label> <select id="instanceOfferUuid" kendo-combo-box k-options="instanceOptions__" k-placeholder="'选择配置'" class="z-win-dropdown"
+									k-ng-model="infoPage.instanceOfferUuid"></select>
+							</div>
 
-                </div>
 
-                <div class="form-group col-sm-18">
-                    <button type="button" class="btn btn-default" ng-click="button.previousClick()" ng-disabled="!button.canPreviousProceed()">{{"vm.createVm.Previous" | translate}}</button>
-                    <button type="button" class="btn btn-primary" ng-disabled="!button.canNextProceed()" ng-click="button.nextClick()">{{button.nextButtonName()}}</button>
-                </div>
-            </div>
-        </div>
+							
+						
+						<div class="form-group col-sm-18" ng-show="infoPage.isCloud('EC2')">
+								<label for="regionEC2"> 亚马逊区域</label> <select id="regionEC2"
+									kendo-combo-box k-options="regionECSOptions__"
+									k-placeholder="'选择区域'" class="z-win-dropdown"
+									k-ng-model="infoPage.region"></select>
+							</div>
+						<div class="form-group col-sm-18" ng-show="infoPage.isCloud('EC2')">
+								<label for="regionEC2"> 亚马逊镜像</label> <select id="regionEC2"
+									kendo-combo-box k-options="regionECSOptions__"
+									k-placeholder="'选择区域'" class="z-win-dropdown"
+									k-ng-model="infoPage.region"></select>
+							</div>
+						
 
-          <div class="col-sm-7">
-            <div class="z-wizard-bar">
-                <ul class="nav">
-                    <li class="active"><a data-target="#createECSVmInstance" ng-click="button.pageClick('createECSVmInstance')">{{"host.createHost.HOST INFO" | translate}}</a></li>
-                </ul>
-            </div>
-        </div>
-    </div>
+						<div class="form-group col-sm-24">
+							<label for="name">描述</label> <input
+								class="form-control z-win-input" type="text" id="name"
+								placeholder="(Required) max length of 255 characters"
+								ng-model="infoPage.description">
+						</div>
+
+					</form>
+
+				</div>
+
+				<div class="form-group col-sm-18">
+					<button type="button" class="btn btn-default"
+						ng-click="button.previousClick()"
+						ng-disabled="!button.canPreviousProceed()">{{"vm.createVm.Previous"
+						| translate}}</button>
+					<button type="button" class="btn btn-primary"
+						ng-disabled="!button.canNextProceed()"
+						ng-click="button.nextClick()">{{button.nextButtonName()}}</button>
+				</div>
+			</div>
+		</div>
+
+		<div class="col-sm-7">
+			<div class="z-wizard-bar">
+				<ul class="nav">
+					<li class="active"><a data-target="#createECSVmInstance"
+						ng-click="button.pageClick('createECSVmInstance')">{{"host.createHost.HOST
+							INFO" | translate}}</a></li>
+				</ul>
+			</div>
+		</div>
+	</div>
 </div>

@@ -9683,6 +9683,7 @@ angular.module('root').factory('PubAccountManager', ['Api', '$rootScope', functi
 
  
 
+
 var MPubVmInstance;
 (function (MPubVmInstance) {
   var PubVmInstance = (function (_super) {
@@ -10133,7 +10134,7 @@ var MPubVmInstance;
                win.close();
            };
 
-            
+       
            $scope.funcDeletePubVmInstance = function (win) {
                $scope.deletePubVmInstance.open();
            };
@@ -10203,6 +10204,9 @@ var MPubVmInstance;
                    hasPubCloudType: function () {
                        return $scope.PubCloudTypeList.dataSource.data().length > 0;
                    },
+                   isCloud: function (type) {
+                       return $scope.infoPage.selectCloudType == type;
+                   },
                    canMoveToNext: function () {
                        return true;
                    },
@@ -10261,7 +10265,8 @@ var MPubVmInstance;
                $scope.button = new Utils.WizardButton([
                    infoPage
                ], mediator);
-
+               
+               
                 $scope.$watch(function () {
                     return $scope.infoPage.selectCloudType;
                 }, function () {
@@ -10289,15 +10294,31 @@ var MPubVmInstance;
                    dataTextField: "type",
                    dataValueField: "type"
                };
-                 $scope.accountOptions__ = {
+                $scope.accountOptions__ = {
                    dataSource: new kendo.data.DataSource({ data: [] }),
                    dataTextField: "username",
                    dataValueField: "uuid"
                };
+                 
+//                $scope.regionECSOptions__ = {
+//                         dataSource: new kendo.data.DataSource({ data: [
+//                                 {"value":"华北 2","id":"cn-beijing"},{"value":"华南 1","id":"cn-shenzhen"} 
+//                             ] }),
+//                         dataTextField: "value ",
+//                         dataValueField: "id",
+//                     };
+                
+                
+                
+              $scope.regionECSOptions__ = {
+                       dataSource: new kendo.data.DataSource({ data: [
+                               'a','b'
+                           ] })
+                   };
 
                 $scope.instanceOptions__ = {
                    dataSource: new kendo.data.DataSource({ data: [] }),
-                   dataTextField: "name",
+                   dataTextField: "uuid ",
                    dataValueField: "uuid",
                    template: '<div style="color: black"><span class="z-label">CPU数量:</span><span>#: cpuNum #</span></div>' +
                         '<div style="color: black"><span class="z-label">镜像:</span><span>#: image #</span></div>' +
@@ -10367,7 +10388,7 @@ angular.module('root').factory('PubVmInstanceManager', ['Api', '$rootScope', fun
             
        });
    }]);
-
+          
 
 
 
