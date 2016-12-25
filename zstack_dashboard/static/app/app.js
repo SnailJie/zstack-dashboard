@@ -9734,6 +9734,8 @@ var MPubVmInstance;
            self.set('state', inv.state);
            self.set('createDate', inv.createDate);
            self.set('lastOpDate', inv.lastOpDate);
+           self.set('diskSize', inv.diskSize);
+           self.set('image', inv.image);
        };
        return PubVmInstance;
    }(ApiHeader.PubVmInstanceInventory));    //Need New
@@ -9760,7 +9762,9 @@ var MPubVmInstance;
            msg.cloudType = PubVmInstance.selectCloudType;
            msg.accountUuid = PubVmInstance.accountUuid;
            msg.instanceOfferUuid = PubVmInstance.instanceOfferUuid;
-
+           msg.diskSize = PubVmInstance.diskSize;
+           msg.region = PubVmInstance.region;
+           msg.image = PubVmInstance.image;
            this.api.asyncApi(msg, function (ret) {
            var c = new PubVmInstance();
            angular.extend(c, ret.inventory);
@@ -10308,21 +10312,11 @@ var MPubVmInstance;
                          dataTextField: "value ",
                          dataValueField: "id",
                      };
-//                
-                
-                
-//              $scope.regionECSOptions__ = {
-//                       dataSource: new kendo.data.DataSource({ data: [
-//                               'a','b'
-//                           ] })
-//                   };
               
               $scope.imageOptions__ = {
             		  dataSource: new kendo.data.DataSource({ data: [] })
                   };
               
-              
-
                 $scope.instanceOptions__ = {
                    dataSource: new kendo.data.DataSource({ data: [] }),
                    dataTextField: "uuid ",
