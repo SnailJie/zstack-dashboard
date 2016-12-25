@@ -19,44 +19,67 @@
 								k-placeholder="'选择账户'" class="z-win-dropdown"
 								k-ng-model="infoPage.accountUuid"></select>
 						</div>
-						
+
 						<div class="form-group col-sm-24">
 							<label for="hostname">主机名</label> <input
 								class="form-control z-win-input" type="text" id="hostname"
 								placeholder="(Required) max length of 255 characters"
 								ng-model="infoPage.hostname" required
 								data-message="hostname is required">
-							</div>
+						</div>
 
-						<div class='form-group col-sm-24' style="height: 1px; background-color: #cdcdcd;"></div>
-						
-							<div class="form-group col-sm-18" ng-show="infoPage.isCloud('ECS')">
-								<label for="regionECS"> 区域</label> 
-								<select id="regionECS" kendo-combo-box k-options="regionECSOptions__"
-									k-placeholder="'选择区域'" class="z-win-dropdown"
-									k-ng-model="infoPage.region"></select>
-							</div>
-							<div class="form-group col-sm-18" ng-show="infoPage.isCloud('ECS')">
-								<label for="instanceOfferUuid"> 阿里云虚拟机配置</label> <select id="instanceOfferUuid" kendo-combo-box k-options="instanceOptions__" k-placeholder="'选择配置'" class="z-win-dropdown"
-									k-ng-model="infoPage.instanceOfferUuid"></select>
-							</div>
+						<div class='form-group col-sm-24'
+							style="height: 1px; background-color: #cdcdcd;"></div>
+						<!-- --------------------------ECS------------------------------------------------ -->
+						<div class="form-group col-sm-18"
+							ng-show="infoPage.isCloud('ECS')">
+							<label for="regionECS"> 区域</label> <select id="regionECS"
+								kendo-combo-box k-options="regionECSOptions__"
+								k-placeholder="'选择区域'" class="z-win-dropdown"
+								k-ng-model="infoPage.region"></select>
+						</div>
+						<div class="form-group col-sm-18"
+							ng-show="infoPage.isCloud('ECS')">
+							<label for="instanceOfferUuid"> cpu/内存配置</label> <select
+								id="instanceOfferUuid" kendo-combo-box
+								k-options="instanceOptions__" k-placeholder="'选择配置'"
+								class="z-win-dropdown" k-ng-model="infoPage.instanceOfferUuid"></select>
+						</div>
+
+						<div class="form-group col-sm-24">
+							<label for="diskSize">硬盘大小</label> <input
+								class="form-control z-win-input" type="text" id="diskSize"
+								placeholder="(Required) max length of 255 characters"
+								ng-model="infoPage.diskSize" required
+								data-message="diskSize is required">
+						</div>
+
+						<div class="form-group col-sm-18"
+							ng-show="infoPage.isCloud('ECS')">
+							<label for="image"> 镜像</label> <select
+								id="image" kendo-combo-box
+								k-options="imageOptions__" k-placeholder="'选择配置'"
+								class="z-win-dropdown" k-ng-model="infoPage.image"></select>
+						</div>
 
 
-							
-						
-						<div class="form-group col-sm-18" ng-show="infoPage.isCloud('EC2')">
-								<label for="regionEC2"> 亚马逊区域</label> <select id="regionEC2"
-									kendo-combo-box k-options="regionECSOptions__"
-									k-placeholder="'选择区域'" class="z-win-dropdown"
-									k-ng-model="infoPage.region"></select>
-							</div>
-						<div class="form-group col-sm-18" ng-show="infoPage.isCloud('EC2')">
-								<label for="regionEC2"> 亚马逊镜像</label> <select id="regionEC2"
-									kendo-combo-box k-options="regionECSOptions__"
-									k-placeholder="'选择区域'" class="z-win-dropdown"
-									k-ng-model="infoPage.region"></select>
-							</div>
-						
+
+							<!-- --------------------------EC2------------------------------------------------ -->
+						<div class="form-group col-sm-18"
+							ng-show="infoPage.isCloud('EC2')">
+							<label for="regionEC2"> 亚马逊区域</label> <select id="regionEC2"
+								kendo-combo-box k-options="regionECSOptions__"
+								k-placeholder="'选择区域'" class="z-win-dropdown"
+								k-ng-model="infoPage.region"></select>
+						</div>
+						<div class="form-group col-sm-18"
+							ng-show="infoPage.isCloud('EC2')">
+							<label for="regionEC2"> 亚马逊镜像</label> <select id="regionEC2"
+								kendo-combo-box k-options="regionECSOptions__"
+								k-placeholder="'选择区域'" class="z-win-dropdown"
+								k-ng-model="infoPage.image"></select>
+						</div>
+
 
 						<div class="form-group col-sm-24">
 							<label for="name">描述</label> <input

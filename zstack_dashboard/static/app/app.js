@@ -9806,14 +9806,11 @@ var MPubVmInstance;
                msg.sortDirection = this.sortBy.direction;
            }
            this.api.syncApi(msg, function (ret) {
-               var clusters = [];
-               clusters = ret.instanceOffering;
-//               ret.inventories.forEach(function (inv) {
-//                   var c = new PubVmInstance();
-//                   angular.extend(c, inv);
-//                   clusters.push(_this.wrap(c));
-//               });
-               callback(clusters, ret.total);
+               var instances = [];
+               instances = ret.instanceOffering;
+               var images = [];
+               images = ret.images;
+               callback(instances,images, ret.total);
            });
        };
 
@@ -10197,6 +10194,9 @@ var MPubVmInstance;
                    selectCloudType:null,
                    hostname: null,
                    description: null,
+                   diskSize: null,
+                   image: null,
+                   region: null,
                    instanceOfferUuid:null,
                    canMoveToPrevious: function () {
                        return false;
@@ -10283,8 +10283,9 @@ var MPubVmInstance;
                         _this.pubAccountMgr.query(qobj, function (clusters) {
                             _this.$scope.accountOptions__.dataSource.data(clusters);
                         });
-                        _this.pubVmInstanceMgr.queryConf(zuuid, function (clusters) {
+                        _this.pubVmInstanceMgr.queryConf(zuuid, function (clusters,images) {
                             _this.$scope.instanceOptions__.dataSource.data(clusters);
+                            _this.$scope.imageOptions__.dataSource.data(images);
                         });
                     }
                 });
@@ -10300,30 +10301,34 @@ var MPubVmInstance;
                    dataValueField: "uuid"
                };
                  
-//                $scope.regionECSOptions__ = {
-//                         dataSource: new kendo.data.DataSource({ data: [
-//                                 {"value":"华北 2","id":"cn-beijing"},{"value":"华南 1","id":"cn-shenzhen"} 
-//                             ] }),
-//                         dataTextField: "value ",
-//                         dataValueField: "id",
-//                     };
+                $scope.regionECSOptions__ = {
+                         dataSource: new kendo.data.DataSource({ data: [
+                                 {"value":"华北 2","id":"cn-beijing"},{"value":"华南 1","id":"cn-shenzhen"} 
+                             ] }),
+                         dataTextField: "value ",
+                         dataValueField: "id",
+                     };
+//                
                 
                 
-                
-              $scope.regionECSOptions__ = {
-                       dataSource: new kendo.data.DataSource({ data: [
-                               'a','b'
-                           ] })
-                   };
+//              $scope.regionECSOptions__ = {
+//                       dataSource: new kendo.data.DataSource({ data: [
+//                               'a','b'
+//                           ] })
+//                   };
+              
+              $scope.imageOptions__ = {
+            		  dataSource: new kendo.data.DataSource({ data: [] })
+                  };
+              
+              
 
                 $scope.instanceOptions__ = {
                    dataSource: new kendo.data.DataSource({ data: [] }),
                    dataTextField: "uuid ",
                    dataValueField: "uuid",
                    template: '<div style="color: black"><span class="z-label">CPU数量:</span><span>#: cpuNum #</span></div>' +
-                        '<div style="color: black"><span class="z-label">镜像:</span><span>#: image #</span></div>' +
-                        '<div style="color: black"><span class="z-label">硬盘大小:</span><span>#: diskSize #</span></div>'
-                  
+                        '<div style="color: black"><span class="z-label">内存大小:</span><span>#: memory #</span></div>'
                };
                
                $scope.cloudTypeOptions__ = {
