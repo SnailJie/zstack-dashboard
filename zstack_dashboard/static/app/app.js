@@ -9765,6 +9765,41 @@ var MPubVmInstance;
          };
 
 
+         PubVmInstanceManager.prototype.reboot = function (vm) {
+             var _this = this;
+             vm.progressOn();
+             vm.state = 'Rebooting';
+             var msg = new ApiHeader.APIRebootVmPubInstanceMsg();
+             msg.uuid = PubVmInstance.pubID;
+             this.api.asyncApi(msg, function (ret) {
+                 vm.updateObservableObject(ret.inventory);
+                 vm.progressOff();
+                 _this.$rootScope.$broadcast(MRoot.Events.NOTIFICATION, {
+                     msg: Utils.sprintf('Rebooted VmInstance: {0}', vm.name),
+                     link: Utils.sprintf('/#/vmInstance/{0}', vm.uuid)
+                 });
+             }, function () {
+                 vm.progressOff();
+             });
+             
+             
+         };
+
+          PubVmInstanceManager.prototype.stop = function (vm) {
+             var _this = this;
+             vm.progressOn();
+             vm.state = 'Stopping';
+             var msg = new ApiHeader.APIStopVmPubInstanceMsg();
+             msg.uuid = PubVmInstance.pubID;
+             this.api.asyncApi(msg, function (ret) {
+                vm.updateObservableObject(ret.inventory);
+                vm.progressOff();
+                _this.$rootScope.$broadcast(MRoot.Events.NOTIFICATION, {
+                    msg: Utils.sprintf('Stopped VmInstance: {0}', vm.name),
+                    link: Utils.sprintf('/#/vmInstance/{0}', vm.uuid)
+                });
+            });
+         };
        PubVmInstanceManager.prototype.query = function (qobj, callback) {
            var _this = this;
            var msg = new ApiHeader.APIQueryPubVmInstanceMsg();    //Need New
