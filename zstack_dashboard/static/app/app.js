@@ -2329,20 +2329,6 @@ var ApiHeader;
     ApiHeader.APIUpdatePubVmInstanceMsg = APIUpdatePubVmInstanceMsg;
     
     
-    var APIDeletePubVmInstanceMsg = (function () {
-        function APIDeletePubVmInstanceMsg() {
-        }
-        APIDeletePubVmInstanceMsg.prototype.toApiMap = function () {
-            var msg = {
-                'org.zstack.header.vmv.APIDeletePubVmInstanceMsg': this
-            };
-            return msg;
-        };
-        return APIDeletePubVmInstanceMsg;
-    }());
-    ApiHeader.APIDeletePubVmInstanceMsg = APIDeletePubVmInstanceMsg;
-
-    
     
     //Cluster
     var APIListClusterMsg = (function () {
@@ -9684,6 +9670,8 @@ angular.module('root').factory('PubAccountManager', ['Api', '$rootScope', functi
  
 
 
+
+
 var MPubVmInstance;
 (function (MPubVmInstance) {
   var PubVmInstance = (function (_super) {
@@ -9844,8 +9832,8 @@ var MPubVmInstance;
        PubVmInstanceManager.prototype.delete = function (PubVmInstance, done) {
            var _this = this;
            PubVmInstance.progressOn();
-           var msg = new ApiHeader.APIDeletePubVmInstanceMsg();    //Need New
-           msg.uuid = PubVmInstance.uuid;
+           var msg = new ApiHeader.APIDestroyVmPubInstanceMsg();    //Need New
+           msg.uuid = PubVmInstance.pubID;
            this.api.asyncApi(msg, function (ret) {
                PubVmInstance.progressOff();
                done(ret);
@@ -9923,8 +9911,8 @@ var MPubVmInstance;
                             template: '<span class="{{dataItem.stateLabel()}}">{{dataItem.state}}</span>'
                         },
                         {
-                            field: 'uuid',
-                            title: '{{"cluster.ts.UUID" | translate}}',
+                            field: 'pubID',
+                            title: '标识ID',
                             width: '30%'
                         }
            ];
@@ -9949,13 +9937,43 @@ var MPubVmInstance;
            this.$scope = $scope;
            this.pubVmInstanceMgr = pubVmInstanceMgr;
        }
+
        Action.prototype.enable = function () {
            this.pubVmInstanceMgr.enable(this.$scope.model.current);
        };
+
        Action.prototype.disable = function () {
            this.pubVmInstanceMgr.disable(this.$scope.model.current);
-       };
-       
+       }; 
+       Action.prototype.start = function () {
+            this.pubVmInstanceMgr.start(this.$scope.model.current);
+        };
+        Action.prototype.stop = function () {
+            this.pubVmInstanceMgr.stop(this.$scope.model.current);
+        };
+        Action.prototype.reboot = function () {
+            this.pubVmInstanceMgr.reboot(this.$scope.model.current);
+        };
+        
+       Action.prototype.isActionShow = function (action) {
+            if (!Utils.notNullnotUndefined(this.$scope.model.current) || Utils.isEmptyObject(this.$scope.model.current)) {
+                return false;
+            }
+            if (action == 'start') {
+                return this.$scope.model.current.state == 'Stopped';
+            }
+            else if (action == 'stop') {
+                return this.$scope.model.current.state == 'Running';
+            }
+            else if (action == 'reboot') {
+                return this.$scope.model.current.state == 'Running';
+            } else if (action == 'delete' && Utils.notNullnotUndefined(this.$scope.model.current)) {
+                return this.$scope.model.current.state != 'Destroyed';
+            }
+            else {
+                return false;
+            }
+        };
        return Action;
    }());
 
@@ -10127,17 +10145,8 @@ var MPubVmInstance;
            $scope.funcCreatePubVmInstance = function (win) {
                win.open();
            };
-           $scope.funcCreatePubVmInstanceDone = function (win) {
-             pubVmInstanceMgr.create($scope.infoPage, function (ret) {
-                $scope.model.resetCurrent(); 
-                $scope.oPubVmInstanceGrid.dataSource.insert(0, ret);
-                 });
-               win.close();
-           };
-
-       
            $scope.funcDeletePubVmInstance = function (win) {
-               $scope.deletePubVmInstance.open();
+               win.open();
            };
            $scope.funcRefresh = function () {
                var qobj = new ApiHeader.QueryObject();
@@ -10314,7 +10323,7 @@ var MPubVmInstance;
                      };
               
               $scope.imageOptions__ = {
-            		  dataSource: new kendo.data.DataSource({ data: [] })
+                      dataSource: new kendo.data.DataSource({ data: [] })
                   };
               
                 $scope.instanceOptions__ = {
@@ -10387,6 +10396,8 @@ angular.module('root').factory('PubVmInstanceManager', ['Api', '$rootScope', fun
             
        });
    }]);
+          
+
           
 
 

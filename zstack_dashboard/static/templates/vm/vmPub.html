@@ -54,10 +54,7 @@
                 <li><a href ng-click="action.start()" ng-show="action.isActionShow('start')">{{"vm.vm.Start" | translate}}</a></li>
                 <li><a href ng-click="action.stop()" ng-show="action.isActionShow('stop')">{{"vm.vm.Stop" | translate}}</a></li>
                 <li><a href ng-click="action.reboot()" ng-show="action.isActionShow('reboot')">{{"vm.vm.Reboot" | translate}}</a></li>
-                <li><a href ng-click="action.migrate()" ng-show="action.isActionShow('migrate')">{{"vm.vm.Migrate" | translate}}</a></li>
                 <li><a href ng-click="action.console()" ng-show="action.isActionShow('console')">{{"vm.vm.Console" | translate}}</a></li>
-                <li><a href ng-click="action.changeInstanceOffering()" ng-show="action.isActionShow('changeInstanceOffering')">{{"vm.vm.Change Instance Offering" | translate}}</a></li>
-                <li><a href ng-click="action.recover()" ng-show="action.isActionShow('recoverVm')">{{"vm.vm.recover" | translate}}</a></li>
                 <li class="divider"></li>
                 <li><a href style="color:red" ng-click="funcDeletePubVmInstance(deleteVmInstance)"  ng-show="action.isActionShow('delete')">{{"vm.vm.Delete" | translate}}</a></li>
             </ul>
