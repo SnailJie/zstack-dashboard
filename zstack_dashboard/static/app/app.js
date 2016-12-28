@@ -9672,6 +9672,7 @@ angular.module('root').factory('PubAccountManager', ['Api', '$rootScope', functi
 
 
 
+
 var MPubVmInstance;
 (function (MPubVmInstance) {
   var PubVmInstance = (function (_super) {
@@ -9763,14 +9764,15 @@ var MPubVmInstance;
             });
            });
          };
-
+     
 
          PubVmInstanceManager.prototype.reboot = function (vm) {
              var _this = this;
              vm.progressOn();
              vm.state = 'Rebooting';
              var msg = new ApiHeader.APIRebootVmPubInstanceMsg();
-             msg.uuid = PubVmInstance.pubID;
+             msg.uuid = vm.uuid;
+             msg.pubID = vm.pubID;
              this.api.asyncApi(msg, function (ret) {
                  vm.updateObservableObject(ret.inventory);
                  vm.progressOff();
@@ -9784,13 +9786,31 @@ var MPubVmInstance;
              
              
          };
+         
+         PubVmInstanceManager.prototype.start = function (vm) {
+             var _this = this;
+             vm.progressOn();
+             vm.state = 'Starting';
+             var msg = new ApiHeader.APIStartVmPubInstanceMsg();
+             msg.uuid = vm.uuid;
+             msg.pubID = vm.pubID;
+             this.api.asyncApi(msg, function (ret) {
+                 vm.updateObservableObject(ret.inventory);
+                 vm.progressOff();
+                 _this.$rootScope.$broadcast(MRoot.Events.NOTIFICATION, {
+                     msg: Utils.sprintf('Started VmInstance: {0}', vm.name),
+                     link: Utils.sprintf('/#/vmInstance/{0}', vm.uuid)
+                 });
+             });
+         };
 
           PubVmInstanceManager.prototype.stop = function (vm) {
              var _this = this;
              vm.progressOn();
              vm.state = 'Stopping';
              var msg = new ApiHeader.APIStopVmPubInstanceMsg();
-             msg.uuid = PubVmInstance.pubID;
+             msg.uuid = vm.uuid;
+             msg.pubID = vm.pubID;
              this.api.asyncApi(msg, function (ret) {
                 vm.updateObservableObject(ret.inventory);
                 vm.progressOff();
@@ -9868,7 +9888,8 @@ var MPubVmInstance;
            var _this = this;
            PubVmInstance.progressOn();
            var msg = new ApiHeader.APIDestroyVmPubInstanceMsg();    //Need New
-           msg.uuid = PubVmInstance.pubID;
+           msg.uuid = PubVmInstance.uuid;
+           msg.pubID = PubVmInstance.pubID;
            this.api.asyncApi(msg, function (ret) {
                PubVmInstance.progressOff();
                done(ret);
@@ -10432,6 +10453,7 @@ angular.module('root').factory('PubVmInstanceManager', ['Api', '$rootScope', fun
        });
    }]);
           
+
 
           
 
@@ -21133,7 +21155,6 @@ var MVmInstance;
               else {
            	  msg = new ApiHeader.APIDestroyVmPubInstanceMsg();
               }
-            
             
             msg.uuid = vm.uuid;
             this.api.asyncApi(msg, function (ret) {
