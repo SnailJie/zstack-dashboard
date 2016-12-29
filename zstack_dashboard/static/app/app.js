@@ -437,6 +437,19 @@ var ApiHeader;
     }());
     ApiHeader.APICreatePublicVmInstanceMsg = APICreatePublicVmInstanceMsg;
     
+    var APICreatePublicVmAgentMsg = (function () {
+        function APICreatePublicVmAgentMsg() {
+        }
+        APICreatePublicVmAgentMsg.prototype.toApiMap = function () {
+            var msg = {
+                'org.zstack.header.vm.APICreatePublicVmAgentMsg': this
+            };
+            return msg;
+        };
+        return APICreatePublicVmAgentMsg;
+    }());
+    ApiHeader.APICreatePublicVmAgentMsg = APICreatePublicVmAgentMsg;
+    
     
     var APICreatePubVmInstanceMsg = (function () {
         function APICreatePubVmInstanceMsg() {
@@ -9673,6 +9686,8 @@ angular.module('root').factory('PubAccountManager', ['Api', '$rootScope', functi
 
 
 
+
+
 var MPubVmInstance;
 (function (MPubVmInstance) {
   var PubVmInstance = (function (_super) {
@@ -9754,6 +9769,24 @@ var MPubVmInstance;
            msg.diskSize = PubVmInstance.diskSize;
            msg.region = PubVmInstance.region;
            msg.image = PubVmInstance.image;
+           this.api.asyncApi(msg, function (ret) {
+           var c = new PubVmInstance();
+           angular.extend(c, ret.inventory);
+           done(_this.wrap(c));
+           _this.$rootScope.$broadcast(MRoot.Events.NOTIFICATION, {
+               msg: Utils.sprintf('Created new PubVmInstance: {0}', c.name),
+               link: Utils.sprintf('/#/PubVmInstance', c.uuid)
+            });
+           });
+         };
+
+
+          PubVmInstanceManager.prototype.createAgent = function (PubVmAgent, done) {
+           var _this = this;
+           var msg = new ApiHeader.APICreatePublicVmAgentMsg();    //Need New
+           msg.ip = PubVmAgent.ip;
+           msg.userName = PubVmAgent.userName;
+           msg.password = PubVmAgent.password;
            this.api.asyncApi(msg, function (ret) {
            var c = new PubVmInstance();
            angular.extend(c, ret.inventory);
@@ -9903,7 +9936,16 @@ var MPubVmInstance;
    }());
    MPubVmInstance.PubVmInstanceManager = PubVmInstanceManager;
 
-
+    var CreateAgentModel = (function () {
+        function CreateAgentModel() {
+            this.name = Utils.shortHashName('PubVmAgent');
+        }
+        CreateAgentModel.prototype.canCreate = function () {
+            return angular.isDefined(this.ip);
+        };
+        return CreateAgentModel;
+    }());
+    MPubVmInstance.CreateAgentModel = CreateAgentModel;
 
    
    var PubVmInstanceModel = (function () {
@@ -10198,6 +10240,26 @@ var MPubVmInstance;
            $scope.funcSearch = function (win) {
                win.open();
            };
+           $scope.funcCreatePubVmAgent = function (win) {
+              $scope.modelCreateAgent = new CreateAgentModel();
+                win.center();
+                win.open();
+           };
+           
+           $scope.funcCreatePubVmAgentDone = function (win) {
+                pubVmInstanceMgr.createAgent($scope.modelCreateAgent, function (ret) {
+                });
+                win.close();
+            };
+            
+            $scope.optionsNewAgent = {
+                    width: "480px",
+                    animation: false,
+                    modal: true,
+                    draggable: false,
+                    resizable: false
+                };
+
            $scope.funcCreatePubVmInstance = function (win) {
                win.open();
            };

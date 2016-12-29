@@ -246,6 +246,7 @@ api_names = [
     'org.zstack.header.vm.APIQueryPubVmInstanceMsg',
     'org.zstack.header.vm.APIUpdatePubVmInstanceMsg',
     'org.zstack.header.vm.APIGetPubCloudTypesMsg',
+    'org.zstack.header.vm.APICreatePublicVmAgentMsg',
     'org.zstack.header.vm.APICreatePubVmInstanceMsg',
     'org.zstack.header.vm.APIDeletePubVmInstanceMsg',
     'org.zstack.header.managementnode.APIQueryManagementNodeMsg',

@@ -1,67 +1,123 @@
 <div style="display: none">
-    <div z-create-pubvm-instance="winNewEcsInstance" z-options="winCreatePubVmInstanceOptions__"></div>
+
+<div kendo-window="winNewAgent" k-visible="false" k-options="optionsNewAgent">
+        <div>
+            <h4 class="z-win-h4">创建公有云主机代理</h4>
+            <form class="form" id="formCreateAgent">
+                <div class="form-group col-lg-18">
+                    <label for="name">代理主机IP</label>
+                    <input class="form-control" type="text" id="ip" placeholder="(Required) max length of 255 characters" ng-model="modelCreateAgent.ip" required data-message="ip is required">
+                </div>
+                <div class="form-group col-lg-18">
+                    <label for="name">用户名</label>
+                    <input class="form-control" type="text" id="userName" placeholder="建议默认填写root" ng-model="modelCreateAgent.userName" required data-message="User Name is required">
+                </div>
+                <div class="form-group col-lg-18">
+                    <label for="name">密码</label>
+                    <input class="form-control" type="text" id="password" placeholder="(Required) max length of 255 characters" ng-model="modelCreateAgent.password" required data-message="password is required">
+                </div>
+                <div class="form-group col-lg-18">
+                    <button type="button" class="btn btn-default" ng-click="">取消</button>
+                    <button type="button" class="btn btn-primary"   ng-click="funcCreatePubVmAgentDone(winNewAgent)">创建</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+    <div z-create-pubvm-instance="winNewEcsInstance"
+        z-options="winCreatePubVmInstanceOptions__"></div>
     <div z-search="search" z-options="optionsSearch"></div>
     <div z-confirm="deleteVmInstance" z-options="optionsDeletePubVmInstance"></div>
- 
-</div> 
+
+</div>
 
 <div>
-    <h3 class="z-h3">{{"vm.vm.VM INSTANCE" | translate}}</h3> 
+    <h3 class="z-h3">{{"vm.vm.VM INSTANCE" | translate}}</h3>
     <div class="btn-group-sm z-btn-bar">
-        <button type="button" class="btn btn-default btn-sm" ng-click="funcRefresh()">
+        <button type="button" class="btn btn-default btn-sm"
+            ng-click="funcRefresh()">
             <i class="fa fa-refresh"></i>
         </button>
 
-        <button type="button" class="btn btn-default btn-sm" ng-click="funcSearch(search)">
+        <button type="button" class="btn btn-default btn-sm"
+            ng-click="funcSearch(search)">
             <i class="fa fa-search"></i>
         </button>
 
         <div z-sort-by z-options="optionsSortBy"></div>
 
-        <button z-popover="popoverFilterBy" type="button" id="vmInstanceFilter" z-content-id="vmInstanceFilterContent" class="btn btn-default btn-sm" ng-click="filterBy.open(popoverFilterBy)">
-            <i class="fa fa-filter"></i><span>&nbsp; {{filterBy.getButtonName()}}</span>
+        <button z-popover="popoverFilterBy" type="button"
+            id="vmInstanceFilter" z-content-id="vmInstanceFilterContent"
+            class="btn btn-default btn-sm"
+            ng-click="filterBy.open(popoverFilterBy)">
+            <i class="fa fa-filter"></i><span>&nbsp;
+                {{filterBy.getButtonName()}}</span>
         </button>
 
-        
-        <div class="btn-group" >
-            <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown"  >
-               {{"vm.vm.New VmInstance" | translate}}<span class="caret"></span>
+        <button type="button" class="btn btn-primary " ng-click="funcCreatePubVmAgent(winNewAgent)">新建代理</button>
+        <div class="btn-group">
+            <button type="button" class="btn btn-success dropdown-toggle"
+                data-toggle="dropdown">
+                {{"vm.vm.New VmInstance" | translate}}<span class="caret"></span>
             </button>
             <ul class="dropdown-menu" role="menu">
-                <li><a href ng-click="funcCreatePubVmInstance(winNewEcsInstance)" >{{"vm.vm.New ECSVmInstance" | translate}}</a></li>
+                <li><a href
+                    ng-click="funcCreatePubVmInstance(winNewEcsInstance)">{{"vm.vm.New
+                        ECSVmInstance" | translate}}</a></li>
             </ul>
         </div>
+
 
         <div id="vmInstanceFilterContent" style="display: none">
             <form class="form">
                 <div class="form-group">
-                    <label for="fieldList" class="z-block-label">{{"vm.vm.FILTER BY" | translate}}</label>
-                    <select id="fieldList" kendo-drop-down-list k-options="filterBy.fieldList" ng-model="filterBy.field"></select>
+                    <label for="fieldList" class="z-block-label">{{"vm.vm.FILTER
+                        BY" | translate}}</label> <select id="fieldList" kendo-drop-down-list
+                        k-options="filterBy.fieldList" ng-model="filterBy.field"></select>
                 </div>
                 <div class="form-group">
-                    <label class="z-block-label" for="valueList">{{"vm.vm.VALUE" | translate}}</label>
-                    <select kendo-drop-down-list id="valueList" ng-disabled="filterBy.isValueListDisabled()" k-options="filterBy.valueList" ng-model="filterBy.value"></select>
+                    <label class="z-block-label" for="valueList">{{"vm.vm.VALUE"
+                        | translate}}</label> <select kendo-drop-down-list id="valueList"
+                        ng-disabled="filterBy.isValueListDisabled()"
+                        k-options="filterBy.valueList" ng-model="filterBy.value"></select>
                 </div>
-                <button type="button" class="btn btn-sm btn-primary" ng-click="filterBy.confirm(popoverFilterBy)">{{"vm.vm.Confirm" | translate}}</button>
+                <button type="button" class="btn btn-sm btn-primary"
+                    ng-click="filterBy.confirm(popoverFilterBy)">{{"vm.vm.Confirm"
+                    | translate}}</button>
             </form>
         </div>
 
         <div class="btn-group" ng-show="funcIsActionShow()">
-            <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" ng-disabled="funcIsActionDisabled()">
+            <button type="button" class="btn btn-primary dropdown-toggle"
+                data-toggle="dropdown" ng-disabled="funcIsActionDisabled()">
                 {{"vm.vm.Action" | translate}} <span class="caret"></span>
             </button>
             <ul class="dropdown-menu" role="menu">
-                <li><a href ng-click="action.start()" ng-show="action.isActionShow('start')">{{"vm.vm.Start" | translate}}</a></li>
-                <li><a href ng-click="action.stop()" ng-show="action.isActionShow('stop')">{{"vm.vm.Stop" | translate}}</a></li>
-                <li><a href ng-click="action.reboot()" ng-show="action.isActionShow('reboot')">{{"vm.vm.Reboot" | translate}}</a></li>
-                <li><a href ng-click="action.console()" ng-show="action.isActionShow('console')">{{"vm.vm.Console" | translate}}</a></li>
+                <li><a href ng-click="action.start()"
+                    ng-show="action.isActionShow('start')">{{"vm.vm.Start" |
+                        translate}}</a></li>
+                <li><a href ng-click="action.stop()"
+                    ng-show="action.isActionShow('stop')">{{"vm.vm.Stop" |
+                        translate}}</a></li>
+                <li><a href ng-click="action.reboot()"
+                    ng-show="action.isActionShow('reboot')">{{"vm.vm.Reboot" |
+                        translate}}</a></li>
+                <li><a href ng-click="action.console()"
+                    ng-show="action.isActionShow('console')">{{"vm.vm.Console" |
+                        translate}}</a></li>
                 <li class="divider"></li>
-                <li><a href style="color:red" ng-click="funcDeletePubVmInstance(deleteVmInstance)"  ng-show="action.isActionShow('delete')">{{"vm.vm.Delete" | translate}}</a></li>
+                <li><a href style="color: red"
+                    ng-click="funcDeletePubVmInstance(deleteVmInstance)"
+                    ng-show="action.isActionShow('delete')">{{"vm.vm.Delete" |
+                        translate}}</a></li>
             </ul>
         </div>
     </div>
 
-    <div kendo-grid="pubVmInstanceGrid" k-options="oPubVmInstanceGrid.options" z-grid-double-click="funcGridDoubleClick" class="z-flat-table"></div>
+    <div kendo-grid="pubVmInstanceGrid"
+        k-options="oPubVmInstanceGrid.options"
+        z-grid-double-click="funcGridDoubleClick" class="z-flat-table"></div>
     <p class="z-hint">{{"vm.vm.HINT1" | translate}}</p>
     <p class="z-hint">{{"vm.vm.HINT2" | translate}}</p>
 </div>
