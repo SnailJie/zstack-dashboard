@@ -1,0 +1,64 @@
+<div style="display: none">
+    <div z-create-pubaccount="winNewPubAccount" z-options="optionsCreateCluster"></div>
+    <div z-delete-confirm="pubAccountDelete" z-options="optionsDeletePubAccount"></div>
+    <div z-search="search" z-options="optionsSearch"></div>
+</div>
+ 	
+<div>
+    <h3 class="z-h3">账户管理</h3> 
+    <div class="btn-group-sm z-btn-bar">
+        <button type="button" class="btn btn-default btn-sm" ng-click="funcRefresh()">
+            <i class="fa fa-refresh"></i>
+        </button>
+
+        <button type="button" class="btn btn-default btn-sm" ng-click="funcSearch(search)">
+            <i class="fa fa-search"></i>
+        </button>
+
+        <div z-sort-by z-options="optionsSortBy"></div>
+
+        <button z-popover="popoverFilterBy" type="button" id="vmInstanceFilter" z-content-id="vmInstanceFilterContent" class="btn btn-default btn-sm" ng-click="filterBy.open(popoverFilterBy)">
+            <i class="fa fa-filter"></i><span>&nbsp; {{filterBy.getButtonName()}}</span>
+        </button>
+
+        
+        <div class="btn-group" >
+            <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown"  >
+               添加账户信息<span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu" role="menu">
+                <li><a href ng-click="funcCreatePubAccount(winNewPubAccount)" >添加云厂商信息</a></li>
+                 <li class="divider"></li>
+            </ul>
+        </div>
+
+        <div id="vmInstanceFilterContent" style="display: none">
+            <form class="form">
+                <div class="form-group">
+                    <label for="fieldList" class="z-block-label">{{"vm.vm.FILTER BY" | translate}}</label>
+                    <select id="fieldList" kendo-drop-down-list k-options="filterBy.fieldList" ng-model="filterBy.field"></select>
+                </div>
+                <div class="form-group">
+                    <label class="z-block-label" for="valueList">{{"vm.vm.VALUE" | translate}}</label>
+                    <select kendo-drop-down-list id="valueList" ng-disabled="filterBy.isValueListDisabled()" k-options="filterBy.valueList" ng-model="filterBy.value"></select>
+                </div>
+                <button type="button" class="btn btn-sm btn-primary" ng-click="filterBy.confirm(popoverFilterBy)">{{"vm.vm.Confirm" | translate}}</button>
+            </form>
+        </div>
+
+        <div class="btn-group" ng-show="funcIsActionShow()">
+            <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" ng-disabled="funcIsActionDisabled()">
+                {{"vm.vm.Action" | translate}} <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu" role="menu">
+                <li><a href ng-click="action.stop()" >修改</a></li>
+                <li class="divider"></li>
+                <li><a href style="color:red" ng-click="funcDeletePubAccount(pubAccountDelete)"  >{{"vm.vm.Delete" | translate}}</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <div kendo-grid="pubAccountGrid" k-options="oPubAccountGrid.options" z-grid-double-click="funcGridDoubleClick" class="z-flat-table"></div>
+    <p class="z-hint">{{"vm.vm.HINT1" | translate}}</p>
+    <p class="z-hint">{{"vm.vm.HINT2" | translate}}</p>
+</div>

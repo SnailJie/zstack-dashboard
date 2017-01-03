@@ -437,6 +437,33 @@ var ApiHeader;
     }());
     ApiHeader.APICreatePublicVmInstanceMsg = APICreatePublicVmInstanceMsg;
     
+    var APICreatePublicVmAgentMsg = (function () {
+        function APICreatePublicVmAgentMsg() {
+        }
+        APICreatePublicVmAgentMsg.prototype.toApiMap = function () {
+            var msg = {
+                'org.zstack.header.vm.APICreatePublicVmAgentMsg': this
+            };
+            return msg;
+        };
+        return APICreatePublicVmAgentMsg;
+    }());
+    ApiHeader.APICreatePublicVmAgentMsg = APICreatePublicVmAgentMsg;
+    
+    
+    var APICreatePubVmInstanceMsg = (function () {
+        function APICreatePubVmInstanceMsg() {
+        }
+        APICreatePubVmInstanceMsg.prototype.toApiMap = function () {
+            var msg = {
+                'org.zstack.header.pubVmInstance.APICreatePubVmInstanceMsg': this
+            };
+            return msg;
+        };
+        return APICreatePubVmInstanceMsg;
+    }());
+    ApiHeader.APICreatePubVmInstanceMsg = APICreatePubVmInstanceMsg;
+    
     var APIGetVmInstanceMsg = (function () {
         function APIGetVmInstanceMsg() {
         }
@@ -2216,6 +2243,107 @@ var ApiHeader;
         return APICreateMessage;
     }());
     ApiHeader.APICreateMessage = APICreateMessage;
+    
+    
+    //PubAccount
+    var APIQueryPubAccountMsg = (function () {
+        function APIQueryPubAccountMsg() {
+        }
+        APIQueryPubAccountMsg.prototype.toApiMap = function () {
+            var msg = {
+                'org.zstack.header.identity.APIQueryPubAccountMsg': this
+            };
+            return msg;
+        };
+        return APIQueryPubAccountMsg;
+    }());
+    ApiHeader.APIQueryPubAccountMsg = APIQueryPubAccountMsg;
+    
+    APICreatePubAccountMsg = (function () {
+        function APICreatePubAccountMsg() {
+        }
+        APICreatePubAccountMsg.prototype.toApiMap = function () {
+            var msg = {
+                'org.zstack.header.identity.APICreatePubAccountMsg': this
+            };
+            return msg;
+        };
+        return APICreatePubAccountMsg;
+    }());
+    ApiHeader.APICreatePubAccountMsg = APICreatePubAccountMsg;
+    
+    var APIDeletePubAccountMsg = (function () {
+        function APIDeletePubAccountMsg() {
+        }
+        APIDeletePubAccountMsg.prototype.toApiMap = function () {
+            var msg = {
+                'org.zstack.header.identity.APIDeletePubAccountMsg': this
+            };
+            return msg;
+        };
+        return APIDeletePubAccountMsg;
+    }());
+    ApiHeader.APIDeletePubAccountMsg = APIDeletePubAccountMsg;
+     
+    
+    
+  //PubVmInstance
+    var APIGetPubCloudTypesMsg = (function () {
+        function APIGetPubCloudTypesMsg() {
+        }
+        APIGetPubCloudTypesMsg.prototype.toApiMap = function () {
+            var msg = {
+                'org.zstack.header.vm.APIGetPubCloudTypesMsg': this
+            };
+            return msg;
+        };
+        return APIGetPubCloudTypesMsg;
+    }());
+    ApiHeader.APIGetPubCloudTypesMsg = APIGetPubCloudTypesMsg;
+    
+  
+    var APIQueryPubVmInstanceOfferingMsg = (function () {
+        function APIQueryPubVmInstanceOfferingMsg() {
+        }
+        APIQueryPubVmInstanceOfferingMsg.prototype.toApiMap = function () {
+            var msg = {
+                'org.zstack.header.vm.APIQueryPubVmInstanceOfferingMsg': this
+            };
+            return msg;
+        };
+        return APIQueryPubVmInstanceOfferingMsg;
+    }());
+    ApiHeader.APIQueryPubVmInstanceOfferingMsg = APIQueryPubVmInstanceOfferingMsg;
+    
+    var APIQueryPubVmInstanceMsg = (function () {
+        function APIQueryPubVmInstanceMsg() {
+        }
+        APIQueryPubVmInstanceMsg.prototype.toApiMap = function () {
+            var msg = {
+                'org.zstack.header.vm.APIQueryPubVmInstanceMsg': this
+            };
+            return msg;
+        };
+        return APIQueryPubVmInstanceMsg;
+    }());
+    ApiHeader.APIQueryPubVmInstanceMsg = APIQueryPubVmInstanceMsg;
+    
+    var APIUpdatePubVmInstanceMsg = (function () {
+        function APIUpdatePubVmInstanceMsg() {
+        }
+        APIUpdatePubVmInstanceMsg.prototype.toApiMap = function () {
+            var msg = {
+                'org.zstack.header.vm.APIUpdatePubVmInstanceMsg': this
+            };
+            return msg;
+        };
+        return APIUpdatePubVmInstanceMsg;
+    }());
+    ApiHeader.APIUpdatePubVmInstanceMsg = APIUpdatePubVmInstanceMsg;
+    
+    
+    
+    //Cluster
     var APIListClusterMsg = (function () {
         function APIListClusterMsg() {
         }
@@ -4920,6 +5048,24 @@ var APIUpdateXenHostMsg = (function () {
         return APIUpdateClusterEvent;
     }());
     ApiHeader.APIUpdateClusterEvent = APIUpdateClusterEvent;
+    
+    
+    var PubAccountInventory = (function () {
+        function PubAccountInventory() {
+        }
+        return PubAccountInventory;
+    }());
+    ApiHeader.PubAccountInventory = PubAccountInventory;
+    
+    
+    var PubVmInstanceInventory = (function () {
+        function PubVmInstanceInventory() {
+        }
+        return PubVmInstanceInventory;
+    }());
+    ApiHeader.PubVmInstanceInventory = PubVmInstanceInventory;
+    
+    
     var APIRemoveUserFromGroupEvent = (function () {
         function APIRemoveUserFromGroupEvent() {
         }
@@ -6904,6 +7050,12 @@ var Utils;
                 done(ret.hypervisorTypes);
             });
         };
+        Api.prototype.getPubCloudType = function (done) {
+            var msg = new ApiHeader.APIGetPubCloudTypesMsg();
+            this.syncApi(msg, function (ret) {
+                done(ret.cloudTypes);
+            });
+        };
         Api.prototype.getVolumeFormats = function (done) {
             var msg = new ApiHeader.APIGetVolumeFormatMsg();
             this.syncApi(msg, function (ret) {
@@ -7965,6 +8117,10 @@ var Controller;
                                 text: "Zone",
                                 url: "/#/zone"
                             },
+                            {
+                                text: "PubAccount",
+                                url: "/#/pubAccount"
+                            },
                         ]
                     },
                     {
@@ -8948,6 +9104,1423 @@ angular.module('root').factory('ZoneManager', ['Api', '$rootScope', function (ap
     }]);
 /// <reference path="d.ts/angularjs/angular.d.ts" />
 /// <reference path="d.ts/kendo.all.d.ts" />
+  
+
+
+var MPubAccount;
+(function (MPubAccount) {
+  var PubAccount = (function (_super) {
+       __extends(PubAccount, _super);
+       function PubAccount() {
+           _super.apply(this, arguments);
+       }
+       PubAccount.prototype.progressOn = function () {
+           this.inProgress = true;
+       };
+       PubAccount.prototype.progressOff = function () {
+           this.inProgress = false;
+       };
+       PubAccount.prototype.isInProgress = function () {
+           return this.inProgress;
+       };
+       PubAccount.prototype.isEnableShow = function () {
+           return this.state == 'Disabled';
+       };
+       PubAccount.prototype.isDisableShow = function () {
+           return this.state == 'Enabled';
+       };
+       PubAccount.prototype.stateLabel = function () {
+           if (this.state == 'Enabled') {
+               return 'label label-success';
+           }
+           else if (this.state == 'Disabled') {
+               return 'label label-danger';
+           }
+           else {
+               return 'label label-default';
+           }
+       };
+       PubAccount.prototype.gridColumnLabel = function () {
+           if (this.state == 'Enabled') {
+               return 'z-color-box-green';
+           }
+           else if (this.state == 'Disabled') {
+               return 'z-color-box-red';
+           }
+       };
+       PubAccount.prototype.updateObservableObject = function (inv) {
+           // self : ObservableObject
+           var self = this;
+           self.set('username', inv.username);
+           self.set('description', inv.description);
+           self.set('cloudType', inv.cloudType);
+           self.set('token', inv.token);
+           self.set('accesskeyID', inv.accesskeyID);
+           self.set('accesskeyKey', inv.accesskeyKey);
+       };
+       return PubAccount;
+   }(ApiHeader.PubAccountInventory));
+   MPubAccount.PubAccount = PubAccount;
+    
+   var PubAccountManager = (function () {
+       function PubAccountManager(api, $rootScope) {
+           this.api = api;
+           this.$rootScope = $rootScope;
+       }
+       PubAccountManager.prototype.setSortBy = function (sortBy) {
+           this.sortBy = sortBy;
+       };
+       PubAccountManager.prototype.wrap = function (pubAccount) {
+           return new kendo.data.ObservableObject(pubAccount);
+       };
+
+       PubAccountManager.prototype.create = function (pubAccount, done) {
+           var _this = this;
+           var msg = new ApiHeader.APICreatePubAccountMsg();
+           msg.username = pubAccount.username;
+           msg.password = pubAccount.password;
+           msg.accesskeyID = pubAccount.accesskeyID;
+           msg.accesskeyKey = pubAccount.accesskeyKey;
+           msg.token = pubAccount.token;
+           msg.description = pubAccount.description;
+           msg.cloudType = pubAccount.cloudType;
+
+           this.api.asyncApi(msg, function (ret) {
+           var c = new PubAccount();
+           angular.extend(c, ret.inventory);
+           done(_this.wrap(c));
+           _this.$rootScope.$broadcast(MRoot.Events.NOTIFICATION, {
+               msg: Utils.sprintf('Created new pubAccount: {0}', c.name),
+               link: Utils.sprintf('/#/pubAccount', c.uuid)
+            });
+           });
+         };
+
+
+       PubAccountManager.prototype.query = function (qobj, callback) {
+           var _this = this;
+           var msg = new ApiHeader.APIQueryPubAccountMsg();
+           msg.count = qobj.count === true;
+           msg.start = qobj.start;
+           msg.limit = qobj.limit;
+           msg.replyWithCount = true;
+           msg.conditions = qobj.conditions ? qobj.conditions : [];
+           if (Utils.notNullnotUndefined(this.sortBy) && this.sortBy.isValid()) {
+               msg.sortBy = this.sortBy.field;
+               msg.sortDirection = this.sortBy.direction;
+           }
+           this.api.syncApi(msg, function (ret) {
+               var clusters = [];
+               ret.inventories.forEach(function (inv) {
+                   var c = new PubAccount();
+                   angular.extend(c, inv);
+                   clusters.push(_this.wrap(c));
+               });
+               callback(clusters, ret.total);
+           });
+       };
+        
+       PubAccountManager.prototype.delete = function (pubAccount, done) {
+           var _this = this;
+           pubAccount.progressOn();
+           var msg = new ApiHeader.APIDeletePubAccountMsg();
+           msg.uuid = pubAccount.uuid;
+           this.api.asyncApi(msg, function (ret) {
+               pubAccount.progressOff();
+               done(ret);
+               _this.$rootScope.$broadcast(MRoot.Events.NOTIFICATION, {
+                   msg: Utils.sprintf('Deleted account: {0}', pubAccount.username)
+               });
+           });
+       };
+       PubAccountManager.$inject = ['Api', '$rootScope'];
+       return PubAccountManager;
+   }());
+   MPubAccount.PubAccountManager = PubAccountManager;
+
+   var PubAccountModel = (function () {
+       function PubAccountModel() {
+           this.current = new PubAccount();
+       }
+       PubAccountModel.prototype.resetCurrent = function () {
+           this.current = null;
+       };
+       PubAccountModel.prototype.setCurrent = function ($scope, PubAccount) {
+           this.current = PubAccount;
+       };
+       return PubAccountModel;
+   }());
+   MPubAccount.PubAccountModel = PubAccountModel;
+
+   var oPubAccountGrid = (function (_super) {
+       __extends(oPubAccountGrid, _super);
+       function oPubAccountGrid($scope, pubAccountMgr) {
+           _super.call(this);
+           this.pubAccountMgr = pubAccountMgr;
+           _super.prototype.init.call(this, $scope, $scope.pubAccountGrid);
+           
+           this.options.columns = [
+				{
+				    field: 'cloudType',
+				    title: '云厂商',
+				    width: '15%',
+				},
+               {
+                   field: 'username',
+                   title: '用户名',
+                   width: '15%',
+               },
+                {
+                   field: 'accesskeyKey',
+                   title: 'accesskeyKey',
+                   width: '15%',
+               },
+               {
+                   field: 'accesskeyID',
+                   title: 'accesskeyID',
+                   width: '15%',
+                  
+               },
+               {
+                   field: 'token',
+                   title: 'token',
+                   width: '15%'
+               },
+               {
+                   field: 'description',
+                   title: '描述',
+                   width: '25%'
+               },
+               {
+                   field: 'uuid',
+                   title: '{{"cluster.ts.UUID" | translate}}',
+                   width: '30%'
+               }
+           ];
+           this.options.dataSource.transport.read = function (options) {
+               var qobj = new ApiHeader.QueryObject();
+               qobj.limit = options.data.take;
+               qobj.start = options.data.pageSize * (options.data.page - 1);
+               pubAccountMgr.query(qobj, function (pubAccounts, total) {
+                   options.success({
+                       data: pubAccounts,
+                       total: total
+                   });
+               });
+           };
+       }
+       return oPubAccountGrid;
+   }(Utils.OGrid));
+
+
+   var Action = (function () {
+       function Action($scope, pubAccountMgr) {
+           this.$scope = $scope;
+           this.pubAccountMgr = pubAccountMgr;
+       }
+       Action.prototype.enable = function () {
+           this.pubAccountMgr.enable(this.$scope.model.current);
+       };
+       Action.prototype.disable = function () {
+           this.pubAccountMgr.disable(this.$scope.model.current);
+       };
+       
+       return Action;
+   }());
+
+
+   var FilterBy = (function () {
+       function FilterBy($scope, hypervisorTypes) {
+           var _this = this;
+           this.$scope = $scope;
+           this.hypervisorTypes = hypervisorTypes;
+           this.fieldList = {
+               dataSource: new kendo.data.DataSource({
+                   data: [
+                       {
+                           name: '{{"cluster.ts.None" | translate}}',
+                           value: FilterBy.NONE
+                       },
+                       {
+                           name: '{{"cluster.ts.State" | translate}}',
+                           value: FilterBy.STATE
+                       },
+                       {
+                           name: '{{"cluster.ts.Hypervisor" | translate}}',
+                           value: FilterBy.HYPERVISOR
+                       }
+                   ]
+               }),
+               dataTextField: 'name',
+               dataValueField: 'value'
+           };
+           this.valueList = {
+               dataSource: new kendo.data.DataSource({
+                   data: []
+               })
+           };
+           this.field = FilterBy.NONE;
+           $scope.$watch(function () {
+               return _this.field;
+           }, function () {
+               if (_this.field == FilterBy.NONE) {
+                   _this.valueList.dataSource.data([]);
+                   _this.value = null;
+               }
+               else if (_this.field == FilterBy.STATE) {
+                   _this.valueList.dataSource.data(['Enabled', 'Disabled']);
+               }
+               else if (_this.field == FilterBy.HYPERVISOR) {
+                   _this.valueList.dataSource.data(_this.hypervisorTypes);
+               }
+           });
+       }
+       FilterBy.prototype.confirm = function (popover) {
+           console.log(JSON.stringify(this.toKendoFilter()));
+           this.$scope.oPubAccountGrid.setFilter(this.toKendoFilter());
+           this.name = !Utils.notNullnotUndefined(this.value) ? null : Utils.sprintf('{0}:{1}', this.field, this.value);
+           popover.toggle();
+       };
+       FilterBy.prototype.open = function (popover) {
+           popover.toggle();
+       };
+       FilterBy.prototype.isValueListDisabled = function () {
+           return !Utils.notNullnotUndefined(this.value);
+       };
+       FilterBy.prototype.getButtonName = function () {
+           return this.name;
+       };
+       FilterBy.prototype.toKendoFilter = function () {
+           if (!Utils.notNullnotUndefined(this.value)) {
+               return null;
+           }
+           return {
+               field: this.field,
+               operator: 'eq',
+               value: this.value
+           };
+       };
+       FilterBy.NONE = 'none';
+       FilterBy.STATE = 'state';
+       FilterBy.HYPERVISOR = 'hypervisorType';
+       return FilterBy;
+   }());
+
+
+   var Controller = (function () {
+       function Controller($scope, pubAccountMgr, $location) {
+           this.$scope = $scope;
+           this.pubAccountMgr = pubAccountMgr;
+           this.$location = $location;
+        
+           $scope.model = new  PubAccountModel();
+           $scope.oPubAccountGrid = new oPubAccountGrid($scope, pubAccountMgr);
+           $scope.action = new Action($scope, pubAccountMgr);
+           $scope.optionsSortBy = {
+               fields: [
+                   {
+                       name: '{{"cluster.ts.Name" | translate}}',
+                       value: 'username'
+                   },
+                   {
+                       name: '{{"cluster.ts.Description" | translate}}',
+                       value: 'accesskeyKey'
+                   },
+                   {
+                       name: '{{"cluster.ts.State" | translate}}',
+                       value: 'accesskeyID'
+                   },
+                   {
+                       name: '{{"cluster.ts.Hypervisor" | translate}}',
+                       value: 'token'
+                   },
+                   {
+                       name: '{{"cluster.ts.Created Date" | translate}}',
+                       value: 'description'
+                   },
+                   {
+                       name: '{{"cluster.ts.Last Updated Date" | translate}}',
+                       value: 'uuid'
+                   }
+               ],
+               done: function (ret) {
+                   pubAccountMgr.setSortBy(ret);
+                   $scope.oPubAccountGrid.refresh();
+               }
+           };
+           $scope.optionsSearch = {
+               fields: ApiHeader.ClusterInventoryQueryable,
+               name: 'CLUSTER',
+               schema: {
+                   state: {
+                       type: Directive.SearchBoxSchema.VALUE_TYPE_LIST,
+                       list: ['Enabled', 'Disabled']
+                   },
+                   hypervisorType: {
+                       type: Directive.SearchBoxSchema.VALUE_TYPE_LIST,
+                       list: this.hypervisorTypes
+                   },
+                   createDate: {
+                       type: Directive.SearchBoxSchema.VALUE_TYPE_TIMESTAMP
+                   },
+                   lastOpDate: {
+                       type: Directive.SearchBoxSchema.VALUE_TYPE_TIMESTAMP
+                   }
+               },
+               done: function (ret) {
+                   var qobj = new ApiHeader.QueryObject();
+                   qobj.conditions = ret;
+                   pubAccountMgr.query(qobj, function (clusters, total) {
+                       $scope.oPubAccountGrid.refresh(clusters);
+                   });
+               }
+           };
+           
+            
+           $scope.filterBy = new FilterBy($scope, this.hypervisorTypes);
+
+           $scope.funcSearch = function (win) {
+               win.open();
+           };
+           $scope.funcCreatePubAccount = function (win) {
+               win.open();
+           };
+           $scope.funcDeletePubAccount = function (win) {
+        	   win.open();
+           };
+           
+           $scope.optionsDeletePubAccount = {
+                	   
+               title: 'DELETE PubAccount',
+               description: 'Are you sure?',
+               confirm: function () {
+                   pubAccountMgr.delete($scope.model.current, function (ret) {
+                       $scope.oPubAccountGrid.deleteCurrent();
+                   });
+               }
+           };
+           $scope.funcRefresh = function () {
+               $scope.oPubAccountGrid.refresh();
+           };
+           $scope.funcIsActionShow = function () {
+               return !Utils.isEmptyObject($scope.model.current);
+           };
+           $scope.funcIsActionDisabled = function () {
+               return Utils.notNullnotUndefined($scope.model.current) && $scope.model.current.isInProgress();
+           };
+           $scope.optionsCreatePubAccount= {
+               done: function (cluster) {
+                   $scope.oPubAccountGrid.add(cluster);
+               }
+           };
+           
+       }
+       Controller.$inject = ['$scope', 'PubAccountManager', '$location'];
+       return Controller;
+   }());
+   MPubAccount.Controller = Controller;
+
+   var CreatePubAccountOptions = (function () {
+       function CreatePubAccountOptions() {
+       }
+       return CreatePubAccountOptions;
+   }());
+   MPubAccount.CreatePubAccountOptions = CreatePubAccountOptions;
+
+   var CreatePubAccount = (function () {
+       function CreatePubAccount(api, pubAccountMgr) {
+           var _this = this;
+           this.api = api;
+           this.pubAccountMgr = pubAccountMgr;
+           this.scope = true;
+           this.link = function ($scope, $element, $attrs, $ctrl, $transclude) {
+               var instanceName = $attrs.zCreatePubaccount;
+               var parentScope = $scope.$parent;
+               parentScope[instanceName] = _this;
+               _this.options = new CreatePubAccountOptions();
+               var optionName = $attrs.zOptions;
+               if (angular.isDefined(optionName)) {
+                   _this.options = parentScope[optionName];
+                   $scope.$watch(function () {
+                       return parentScope[optionName];
+                   }, function () {
+                       _this.options = parentScope[optionName];
+                   });
+               }
+               var infoPage = $scope.infoPage = {
+                   activeState: true,
+                   username: null,
+                   password: null,
+                   cloudType: null,
+                   token: null,
+                   description: null,
+                   accesskeyID: null,
+                   accesskeyKey: null,
+                   description: null,
+                   canMoveToPrevious: function () {
+                       return false;
+                   },
+                   hasPubCloudType: function () {
+                       return $scope.PubCloudTypeList.dataSource.data().length > 0;
+                   },
+                   canMoveToNext: function () {
+                       return true;
+                   },
+                   show: function () {
+                       this.getAnchorElement().tab('show');
+                   },
+                   getAnchorElement: function () {
+                       return $('.nav a[data-target="#createPubAccountInfo"]');
+                   },
+                   active: function () {
+                       this.activeState = true;
+                   },
+                   isActive: function () {
+                       return this.activeState;
+                   },
+                   getPageName: function () {
+                       return 'createPubAccountInfo';
+                   },
+                   reset: function () {
+                       this.name = Utils.shortHashName("PubAccount");
+                       this.cloudType = null;
+                       this.description = null;
+                       this.username = null;
+                       this.password = null;
+                       this.accesskeyKey = null;
+                       this.accesskeyID = null;
+                       this.token = null;
+                       this.activeState = false;
+                   }
+               };
+                
+               var mediator = $scope.mediator = {
+                   currentPage: infoPage,
+                   movedToPage: function (page) {
+                       $scope.mediator.currentPage = page;
+                   },
+                   finishButtonName: function () {
+                       return "Create";
+                   },
+                   finish: function () {
+                       var resultCluster;
+                       var chain = new Utils.Chain();
+                       chain.then(function () {
+                           pubAccountMgr.create(infoPage, function (ret) {
+                               resultCluster = ret;
+                               chain.next();
+                           });
+                       }).done(function () {
+                           $scope.winCreatePubAccount__.close();
+                           $scope.oPubAccountGrid.refresh();
+                       }).start();
+                   }
+               };
+               $scope.button = new Utils.WizardButton([
+                   infoPage
+               ], mediator);
+
+               $scope.PubCloudTypeList = {
+                   dataSource: new kendo.data.DataSource({ data: [] }),
+                   dataTextField: "type",
+                   dataValueField: "type"
+               };
+               $scope.winCreatePubAccountOptions__ = {
+                   width: "700px",
+                   //height: "518px",
+                   animation: false,
+                   modal: true,
+                   draggable: false,
+                   resizable: false
+               };
+               _this.$scope = $scope;
+           };
+           this.restrict = 'EA';
+           this.replace = true;
+           this.templateUrl = '/static/templates/account/createPubAccount.html';
+       }
+       
+        CreatePubAccount.prototype.open = function () {
+           var _this = this;
+           var win = this.$scope.winCreatePubAccount__;
+           this.$scope.button.reset();
+           var chain = new Utils.Chain();
+           chain.then(function () {
+               _this.api.getPubCloudType(function (cloudTypes) {
+                   var types = [];
+                   angular.forEach(cloudTypes, function (item) {
+                       types.push({ type: item });
+                   });
+                   _this.$scope.PubCloudTypeList.dataSource.data(new kendo.data.ObservableArray(types));
+                   _this.$scope.model.cloudType = cloudTypes[0];
+                   chain.next();
+               });
+           }).done(function () {
+               win.center();
+               win.open();
+           }).start();
+
+       };
+       return CreatePubAccount;
+   }());
+
+   MPubAccount.CreatePubAccount = CreatePubAccount;
+    
+})(MPubAccount || (MPubAccount = {}));
+angular.module('root').factory('PubAccountManager', ['Api', '$rootScope', function (api, $rootScope) {
+       return new MPubAccount.PubAccountManager(api, $rootScope);
+   }]).directive('zCreatePubaccount', ['Api', 'PubAccountManager',
+   function (api, PubAccountManager) {
+       return new MPubAccount.CreatePubAccount(api, PubAccountManager);
+   }]).config(['$routeProvider', function (route) {
+       route.when('/pubAccount', {
+           templateUrl: '/static/templates/account/account.html',
+           controller: 'MPubAccount.Controller',
+            
+       });
+   }]);
+
+ 
+
+
+
+
+
+
+
+var MPubVmInstance;
+(function (MPubVmInstance) {
+  var PubVmInstance = (function (_super) {
+       __extends(PubVmInstance, _super);
+       function PubVmInstance() {
+           _super.apply(this, arguments);
+       }
+       PubVmInstance.prototype.progressOn = function () {
+           this.inProgress = true;
+       };
+       PubVmInstance.prototype.progressOff = function () {
+           this.inProgress = false;
+       };
+       PubVmInstance.prototype.isInProgress = function () {
+           return this.inProgress;
+       };
+       PubVmInstance.prototype.isEnableShow = function () {
+           return this.state == 'Disabled';
+       };
+       PubVmInstance.prototype.isDisableShow = function () {
+           return this.state == 'Enabled';
+       };
+       PubVmInstance.prototype.stateLabel = function () {
+           if (this.state == 'Enabled') {
+               return 'label label-success';
+           }
+           else if (this.state == 'Disabled') {
+               return 'label label-danger';
+           }
+           else {
+               return 'label label-default';
+           }
+       };
+       PubVmInstance.prototype.gridColumnLabel = function () {
+           if (this.state == 'Enabled') {
+               return 'z-color-box-green';
+           }
+           else if (this.state == 'Disabled') {
+               return 'z-color-box-red';
+           }
+       };
+       PubVmInstance.prototype.updateObservableObject = function (inv) {
+           // self : ObservableObject
+           var self = this;
+           self.set('hostname', inv.hostname);
+           self.set('description', inv.description);
+           self.set('cloudType', inv.cloudType);
+           self.set('state', inv.state);
+           self.set('createDate', inv.createDate);
+           self.set('lastOpDate', inv.lastOpDate);
+           self.set('diskSize', inv.diskSize);
+           self.set('image', inv.image);
+       };
+       return PubVmInstance;
+   }(ApiHeader.PubVmInstanceInventory));    //Need New
+   MPubVmInstance.PubVmInstance = PubVmInstance;
+    
+
+   var PubVmInstanceManager = (function () {
+       function PubVmInstanceManager(api, $rootScope) {
+           this.api = api;
+           this.$rootScope = $rootScope;
+       }
+       PubVmInstanceManager.prototype.setSortBy = function (sortBy) {
+           this.sortBy = sortBy;
+       };
+       PubVmInstanceManager.prototype.wrap = function (PubVmInstance) {
+           return new kendo.data.ObservableObject(PubVmInstance);
+       };
+
+       PubVmInstanceManager.prototype.create = function (PubVmInstance, done) {
+           var _this = this;
+           var msg = new ApiHeader.APICreatePublicVmInstanceMsg();    //Need New
+           msg.hostname = PubVmInstance.hostname;
+           msg.description = PubVmInstance.description;
+           msg.cloudType = PubVmInstance.selectCloudType;
+           msg.accountUuid = PubVmInstance.accountUuid;
+           msg.instanceOfferUuid = PubVmInstance.instanceOfferUuid;
+           msg.diskSize = PubVmInstance.diskSize;
+           msg.region = PubVmInstance.region;
+           msg.image = PubVmInstance.image;
+           this.api.asyncApi(msg, function (ret) {
+           var c = new PubVmInstance();
+           angular.extend(c, ret.inventory);
+           done(_this.wrap(c));
+           _this.$rootScope.$broadcast(MRoot.Events.NOTIFICATION, {
+               msg: Utils.sprintf('Created new PubVmInstance: {0}', c.name),
+               link: Utils.sprintf('/#/PubVmInstance', c.uuid)
+            });
+           });
+         };
+
+
+          PubVmInstanceManager.prototype.createAgent = function (PubVmAgent, done) {
+           var _this = this;
+           var msg = new ApiHeader.APICreatePublicVmAgentMsg();    //Need New
+           msg.ip = PubVmAgent.ip;
+           msg.userName = PubVmAgent.userName;
+           msg.password = PubVmAgent.password;
+           this.api.asyncApi(msg, function (ret) {
+           var c = new PubVmInstance();
+           angular.extend(c, ret.inventory);
+           done(_this.wrap(c));
+           _this.$rootScope.$broadcast(MRoot.Events.NOTIFICATION, {
+               msg: Utils.sprintf('Created new PubVmInstance: {0}', c.name),
+               link: Utils.sprintf('/#/PubVmInstance', c.uuid)
+            });
+           });
+         };
+     
+
+         PubVmInstanceManager.prototype.reboot = function (vm) {
+             var _this = this;
+             vm.progressOn();
+             vm.state = 'Rebooting';
+             var msg = new ApiHeader.APIRebootVmPubInstanceMsg();
+             msg.uuid = vm.uuid;
+             msg.pubID = vm.pubID;
+             this.api.asyncApi(msg, function (ret) {
+                 vm.updateObservableObject(ret.inventory);
+                 vm.progressOff();
+                 _this.$rootScope.$broadcast(MRoot.Events.NOTIFICATION, {
+                     msg: Utils.sprintf('Rebooted VmInstance: {0}', vm.name),
+                     link: Utils.sprintf('/#/vmInstance/{0}', vm.uuid)
+                 });
+             }, function () {
+                 vm.progressOff();
+             });
+             
+             
+         };
+         
+         PubVmInstanceManager.prototype.start = function (vm) {
+             var _this = this;
+             vm.progressOn();
+             vm.state = 'Starting';
+             var msg = new ApiHeader.APIStartVmPubInstanceMsg();
+             msg.uuid = vm.uuid;
+             msg.pubID = vm.pubID;
+             this.api.asyncApi(msg, function (ret) {
+                 vm.updateObservableObject(ret.inventory);
+                 vm.progressOff();
+                 _this.$rootScope.$broadcast(MRoot.Events.NOTIFICATION, {
+                     msg: Utils.sprintf('Started VmInstance: {0}', vm.name),
+                     link: Utils.sprintf('/#/vmInstance/{0}', vm.uuid)
+                 });
+             });
+         };
+
+          PubVmInstanceManager.prototype.stop = function (vm) {
+             var _this = this;
+             vm.progressOn();
+             vm.state = 'Stopping';
+             var msg = new ApiHeader.APIStopVmPubInstanceMsg();
+             msg.uuid = vm.uuid;
+             msg.pubID = vm.pubID;
+             this.api.asyncApi(msg, function (ret) {
+                vm.updateObservableObject(ret.inventory);
+                vm.progressOff();
+                _this.$rootScope.$broadcast(MRoot.Events.NOTIFICATION, {
+                    msg: Utils.sprintf('Stopped VmInstance: {0}', vm.name),
+                    link: Utils.sprintf('/#/vmInstance/{0}', vm.uuid)
+                });
+            });
+         };
+       PubVmInstanceManager.prototype.query = function (qobj, callback) {
+           var _this = this;
+           var msg = new ApiHeader.APIQueryPubVmInstanceMsg();    //Need New
+           msg.count = qobj.count === true;
+           msg.start = qobj.start;
+           msg.limit = qobj.limit;
+           msg.replyWithCount = true;
+           msg.conditions = qobj.conditions ? qobj.conditions : [];
+           if (Utils.notNullnotUndefined(this.sortBy) && this.sortBy.isValid()) {
+               msg.sortBy = this.sortBy.field;
+               msg.sortDirection = this.sortBy.direction;
+           }
+           this.api.syncApi(msg, function (ret) {
+               var clusters = [];
+               ret.inventories.forEach(function (inv) {
+                   var c = new PubVmInstance();
+                   angular.extend(c, inv);
+                   clusters.push(_this.wrap(c));
+               });
+               callback(clusters, ret.total);
+           });
+       };
+
+        PubVmInstanceManager.prototype.queryConf = function (qobj, callback) {
+           var _this = this;
+           var msg = new ApiHeader.APIQueryPubVmInstanceOfferingMsg();    //Need New
+           msg.cloudType = qobj;
+           msg.replyWithCount = true;
+           if (Utils.notNullnotUndefined(this.sortBy) && this.sortBy.isValid()) {
+               msg.sortBy = this.sortBy.field;
+               msg.sortDirection = this.sortBy.direction;
+           }
+           this.api.syncApi(msg, function (ret) {
+               var instances = [];
+               instances = ret.instanceOffering;
+               var images = [];
+               images = ret.images;
+               callback(instances,images, ret.total);
+           });
+       };
+
+        PubVmInstanceManager.prototype.update = function (qobj, callback) {
+           var _this = this;
+           var msg = new ApiHeader.APIUpdatePubVmInstanceMsg();    //Need New
+           msg.count = qobj.count === true;
+           msg.start = qobj.start;
+           msg.limit = qobj.limit;
+           msg.replyWithCount = true;
+           msg.conditions = qobj.conditions ? qobj.conditions : [];
+           if (Utils.notNullnotUndefined(this.sortBy) && this.sortBy.isValid()) {
+               msg.sortBy = this.sortBy.field;
+               msg.sortDirection = this.sortBy.direction;
+           }
+           this.api.syncApi(msg, function (ret) {
+               var clusters = [];
+               ret.inventories.forEach(function (inv) {
+                   var c = new PubVmInstance();
+                   angular.extend(c, inv);
+                   clusters.push(_this.wrap(c));
+               });
+               callback(clusters, ret.total);
+           });
+       };
+        
+       PubVmInstanceManager.prototype.delete = function (PubVmInstance, done) {
+           var _this = this;
+           PubVmInstance.progressOn();
+           var msg = new ApiHeader.APIDestroyVmPubInstanceMsg();    //Need New
+           msg.uuid = PubVmInstance.uuid;
+           msg.pubID = PubVmInstance.pubID;
+           this.api.asyncApi(msg, function (ret) {
+               PubVmInstance.progressOff();
+               done(ret);
+               _this.$rootScope.$broadcast(MRoot.Events.NOTIFICATION, {
+                   msg: Utils.sprintf('Deleted cluster: {0}', PubVmInstance.name)
+               });
+           });
+       };
+       PubVmInstanceManager.$inject = ['Api', '$rootScope'];
+       return PubVmInstanceManager;
+   }());
+   MPubVmInstance.PubVmInstanceManager = PubVmInstanceManager;
+
+    var CreateAgentModel = (function () {
+        function CreateAgentModel() {
+            this.name = Utils.shortHashName('PubVmAgent');
+        }
+        CreateAgentModel.prototype.canCreate = function () {
+            return angular.isDefined(this.ip);
+        };
+        return CreateAgentModel;
+    }());
+    MPubVmInstance.CreateAgentModel = CreateAgentModel;
+
+   
+   var PubVmInstanceModel = (function () {
+       function PubVmInstanceModel() {
+           this.current = new PubVmInstance();
+       }
+       PubVmInstanceModel.prototype.resetCurrent = function () {
+           this.current = null;
+       };
+       PubVmInstanceModel.prototype.setCurrent = function ($scope, PubVmInstance) {
+           this.current = PubVmInstance;
+       };
+       return PubVmInstanceModel;
+   }());
+   MPubVmInstance.PubVmInstanceModel = PubVmInstanceModel;
+
+   var oPubVmInstanceGrid = (function (_super) {
+       __extends(oPubVmInstanceGrid, _super);
+       function oPubVmInstanceGrid($scope, pubVmInstanceMgr) {
+           _super.call(this);
+           this.pubVmInstanceMgr = pubVmInstanceMgr;
+           _super.prototype.init.call(this, $scope, $scope.pubVmInstanceGrid);
+           
+           this.options.columns = [
+                        {
+                            field: 'cloudType',
+                            title: 'cloudType',
+                            width: '15%',
+                        },
+                        {
+                            field: 'hostname',
+                            title: 'HostName',
+                            width: '15%',
+                        },
+                        {
+                            field: 'cpuInfo',
+                            title: 'cpuInfo',
+                            width: '15%'
+                        },
+                        {
+                            field: 'memorySize',
+                            title: 'memorySize',
+                            width: '15%'
+                        },
+                         {
+                            field: 'accountUuid',
+                            title: 'account',
+                            width: '15%',
+                             
+                        },
+                        {
+                            field: 'description',
+                            title: 'description',
+                            width: '25%'
+                        },
+                        
+                        {
+                            field: 'state',
+                            title: 'state',
+                            width: '15%',
+                            template: '<span class="{{dataItem.stateLabel()}}">{{dataItem.state}}</span>'
+                        },
+                        {
+                            field: 'pubID',
+                            title: '标识ID',
+                            width: '30%'
+                        }
+           ];
+           this.options.dataSource.transport.read = function (options) {
+               var qobj = new ApiHeader.QueryObject();
+               qobj.limit = options.data.take;
+               qobj.start = options.data.pageSize * (options.data.page - 1);
+               pubVmInstanceMgr.query(qobj, function (pubAccounts, total) {
+                   options.success({
+                       data: pubAccounts,
+                       total: total
+                   });
+               });
+           };
+       }
+       return oPubVmInstanceGrid;
+   }(Utils.OGrid));
+
+
+   var Action = (function () {
+       function Action($scope, pubVmInstanceMgr) {
+           this.$scope = $scope;
+           this.pubVmInstanceMgr = pubVmInstanceMgr;
+       }
+
+       Action.prototype.enable = function () {
+           this.pubVmInstanceMgr.enable(this.$scope.model.current);
+       };
+
+       Action.prototype.disable = function () {
+           this.pubVmInstanceMgr.disable(this.$scope.model.current);
+       }; 
+       Action.prototype.start = function () {
+            this.pubVmInstanceMgr.start(this.$scope.model.current);
+        };
+        Action.prototype.stop = function () {
+            this.pubVmInstanceMgr.stop(this.$scope.model.current);
+        };
+        Action.prototype.reboot = function () {
+            this.pubVmInstanceMgr.reboot(this.$scope.model.current);
+        };
+        
+       Action.prototype.isActionShow = function (action) {
+            if (!Utils.notNullnotUndefined(this.$scope.model.current) || Utils.isEmptyObject(this.$scope.model.current)) {
+                return false;
+            }
+            if (action == 'start') {
+                return this.$scope.model.current.state == 'Stopped';
+            }
+            else if (action == 'stop') {
+                return this.$scope.model.current.state == 'Running';
+            }
+            else if (action == 'reboot') {
+                return this.$scope.model.current.state == 'Running';
+            } else if (action == 'delete' && Utils.notNullnotUndefined(this.$scope.model.current)) {
+                return this.$scope.model.current.state != 'Destroyed';
+            }
+            else {
+                return false;
+            }
+        };
+       return Action;
+   }());
+
+
+   var FilterBy = (function () {
+       function FilterBy($scope, cloudTypes) {
+           var _this = this;
+           this.$scope = $scope;
+           this.fieldList = {
+               dataSource: new kendo.data.DataSource({
+                   data: [
+                       {
+                           name: '{{"cluster.ts.None" | translate}}',
+                           value: FilterBy.NONE
+                       },{
+                           name: 'cloudType',
+                           value: FilterBy.CLOUDTYPE
+                       },
+                       {
+                           name: 'state',
+                           value: FilterBy.STATE
+                       } 
+                   ]
+               }),
+               dataTextField: 'name',
+               dataValueField: 'value'
+           };
+           this.valueList = {
+               dataSource: new kendo.data.DataSource({
+                   data: []
+               })
+           };
+           this.field = FilterBy.NONE;
+           $scope.$watch(function () {
+               return _this.field;
+           }, function () {
+               if (_this.field == FilterBy.NONE) {
+                   _this.valueList.dataSource.data([]);
+                   _this.value = null;
+               }
+               else if (_this.field == FilterBy.STATE) {
+                   _this.valueList.dataSource.data(['Enabled', 'Disabled']);
+               }
+               else if (_this.field == FilterBy.CLOUDTYPE) {
+//                   _this.valueList.dataSource.data(_this.cloudTypes);
+                   _this.valueList.dataSource.data(['ECS', 'EC2']);
+               }
+           });
+       }
+       FilterBy.prototype.confirm = function (popover) {
+           console.log(JSON.stringify(this.toKendoFilter()));
+           this.$scope.oPubVmInstanceGrid.setFilter(this.toKendoFilter());
+           this.name = !Utils.notNullnotUndefined(this.value) ? null : Utils.sprintf('{0}:{1}', this.field, this.value);
+           popover.toggle();
+       };
+       FilterBy.prototype.open = function (popover) {
+           popover.toggle();
+       };
+       FilterBy.prototype.isValueListDisabled = function () {
+           return !Utils.notNullnotUndefined(this.value);
+       };
+       FilterBy.prototype.getButtonName = function () {
+           return this.name;
+       };
+       FilterBy.prototype.toKendoFilter = function () {
+           if (!Utils.notNullnotUndefined(this.value)) {
+               return null;
+           }
+           return {
+               field: this.field,
+               operator: 'eq',
+               value: this.value
+           };
+       };
+       FilterBy.NONE = 'none';
+       FilterBy.STATE = 'state';
+       FilterBy.CLOUDTYPE = 'cloudType';
+       return FilterBy;
+   }());
+ 
+   
+
+   var Controller = (function () {
+       function Controller($scope, pubVmInstanceMgr, $location) {
+           this.$scope = $scope;
+           this.pubVmInstanceMgr = pubVmInstanceMgr;
+           this.$location = $location;
+           $scope.model = new  PubVmInstanceModel();   //Need New
+           $scope.oPubVmInstanceGrid = new oPubVmInstanceGrid($scope, pubVmInstanceMgr);
+           $scope.action = new Action($scope, pubVmInstanceMgr);
+           $scope.optionsSortBy = {
+               fields: [
+                   {
+                       name: '{{"cluster.ts.Name" | translate}}',
+                       value: 'name'
+                   },
+                   {
+                       name: '{{"cluster.ts.Description" | translate}}',
+                       value: 'Description'
+                   },
+                   {
+                       name: '{{"cluster.ts.State" | translate}}',
+                       value: 'state'
+                   },
+                   {
+                       name: '{{"cluster.ts.Hypervisor" | translate}}',
+                       value: 'cloudType'
+                   },
+                   {
+                       name: '{{"cluster.ts.Created Date" | translate}}',
+                       value: 'createDate'
+                   },
+                   {
+                       name: '{{"cluster.ts.Last Updated Date" | translate}}',
+                       value: 'lastOpDate'
+                   }
+               ],
+               done: function (ret) {
+                   pubVmInstanceMgr.setSortBy(ret);
+                   $scope.oPubVmInstanceGrid.refresh();
+               }
+           };
+           $scope.optionsSearch = {
+               fields: ApiHeader.ClusterInventoryQueryable,
+               name: 'CLUSTER',
+               schema: {
+                   state: {
+                       type: Directive.SearchBoxSchema.VALUE_TYPE_LIST,
+                       list: ['Enabled', 'Disabled']
+                   },
+                   cloudType: {
+                       type: Directive.SearchBoxSchema.VALUE_TYPE_LIST,
+                       list: this.cloudType
+                   },
+                   createDate: {
+                       type: Directive.SearchBoxSchema.VALUE_TYPE_TIMESTAMP
+                   },
+                   lastOpDate: {
+                       type: Directive.SearchBoxSchema.VALUE_TYPE_TIMESTAMP
+                   }
+               },
+               done: function (ret) {
+                   var qobj = new ApiHeader.QueryObject();
+                   qobj.conditions = ret;
+                   pubVmInstanceMgr.query(qobj, function (clusters, total) {
+                       $scope.oPubVmInstanceGrid.refresh(clusters);
+                   });
+               }
+           };
+           $scope.optionsDeletePubVmInstance = {
+                   title: 'DELETE VM INSTANCE',
+                   btnType: 'btn-danger',
+                   width: '350px',
+                   description: function () {
+                       return $scope.model.current.name;
+                   },
+                   confirm: function () {
+                       pubVmInstanceMgr.delete($scope.model.current, function (ret) {
+                           $scope.oVmInstanceGrid.deleteCurrent();
+                       });
+                   }
+               };
+            
+           $scope.filterBy = new FilterBy($scope, this.cloudType);
+
+           $scope.funcSearch = function (win) {
+               win.open();
+           };
+           $scope.funcCreatePubVmAgent = function (win) {
+              $scope.modelCreateAgent = new CreateAgentModel();
+                win.center();
+                win.open();
+           };
+           
+           $scope.funcCreatePubVmAgentDone = function (win) {
+                pubVmInstanceMgr.createAgent($scope.modelCreateAgent, function (ret) {
+                });
+                win.close();
+            };
+            
+            $scope.optionsNewAgent = {
+                    width: "480px",
+                    animation: false,
+                    modal: true,
+                    draggable: false,
+                    resizable: false
+                };
+
+           $scope.funcCreatePubVmInstance = function (win) {
+               win.open();
+           };
+           $scope.funcDeletePubVmInstance = function (win) {
+               win.open();
+           };
+           $scope.funcRefresh = function () {
+               var qobj = new ApiHeader.QueryObject();
+               pubVmInstanceMgr.update(qobj, function (clusters, total) {
+                       $scope.oPubVmInstanceGrid.refresh(clusters);
+                   });
+           };
+           $scope.funcIsActionShow = function () {
+               return !Utils.isEmptyObject($scope.model.current);
+           };
+           $scope.funcIsActionDisabled = function () {
+               return Utils.notNullnotUndefined($scope.model.current) && $scope.model.current.isInProgress();
+           };
+           $scope.optionsCreatePubVmInstance= {
+               done: function (cluster) {
+                   $scope.oPubVmInstanceGrid.add(cluster);
+               }
+           };
+           
+       }
+       Controller.$inject = ['$scope', 'PubVmInstanceManager', '$location'];
+       return Controller;
+   }());
+   MPubVmInstance.Controller = Controller;
+
+   var CreatePubVmInstanceOptions = (function () {
+       function CreatePubVmInstanceOptions() {
+       }
+       return CreatePubVmInstanceOptions;
+   }());
+   MPubVmInstance.CreatePubVmInstanceOptions = CreatePubVmInstanceOptions;
+
+
+   var CreatePubVmInstance = (function () {
+       function CreatePubVmInstance(api, pubVmInstanceMgr,pubAccountMgr) {
+           var _this = this;
+           this.api = api;
+           this.pubVmInstanceMgr = pubVmInstanceMgr;
+           this.pubAccountMgr = pubAccountMgr;
+           this.scope = true;
+           this.link = function ($scope, $element, $attrs, $ctrl, $transclude) {
+               var instanceName = $attrs.zCreatePubvmInstance;    //same with html
+               var parentScope = $scope.$parent;
+               parentScope[instanceName] = _this;
+               _this.options = new CreatePubVmInstanceOptions();
+               var optionName = $attrs.zOptions;
+               if (angular.isDefined(optionName)) {
+                   _this.options = parentScope[optionName];
+                   $scope.$watch(function () {
+                       return parentScope[optionName];
+                   }, function () {
+                       _this.options = parentScope[optionName];
+                   });
+               }
+               var infoPage = $scope.infoPage = {
+                   activeState: true,
+                   accountUuid: null,
+                   selectCloudType:null,
+                   hostname: null,
+                   description: null,
+                   diskSize: null,
+                   image: null,
+                   region: null,
+                   instanceOfferUuid:null,
+                   canMoveToPrevious: function () {
+                       return false;
+                   },
+                   hasPubCloudType: function () {
+                       return $scope.PubCloudTypeList.dataSource.data().length > 0;
+                   },
+                   isCloud: function (type) {
+                       return $scope.infoPage.selectCloudType == type;
+                   },
+                   canMoveToNext: function () {
+                       return true;
+                   },
+                   show: function () {
+                       this.getAnchorElement().tab('show');
+                   },
+                   getAnchorElement: function () {
+                       return $('.nav a[data-target="#CreatePubVmInstanceInfo"]');
+                   },
+                   active: function () {
+                       this.activeState = true;
+                   },
+                   isActive: function () {
+                       return this.activeState;
+                   },
+                   getPageName: function () {
+                       return 'CreatePubVmInstanceInfo';
+                   },
+                   reset: function () {
+                       this.name = Utils.shortHashName("PubAccount");
+                       this.accountUuid = null;
+                       this.description = null;
+                       this.selectCloudType = null;
+                       this.hostname = null;
+                       this.instanceOfferUuid = null;
+                       this.activeState = false;
+
+                   
+                   }
+               };
+                
+               var mediator = $scope.mediator = {
+                   currentPage: infoPage,
+                   movedToPage: function (page) {
+                       $scope.mediator.currentPage = page;
+                   },
+                   finishButtonName: function () {
+                       return "Create";
+                   },
+                   finish: function () {
+                       var resultCluster;
+                       var chain = new Utils.Chain();
+                       chain.then(function () {
+                           pubVmInstanceMgr.create(infoPage, function (ret) {
+                               resultCluster = ret;
+                               chain.next();
+                           });
+                       }).done(function () {
+                           if (Utils.notNullnotUndefined(_this.options.done)) {
+                               this.options.done(resultCluster);
+                           }
+                           $scope.winCreatePubVmInstance__.close();
+                       }).start();
+                   }
+               };
+               $scope.button = new Utils.WizardButton([
+                   infoPage
+               ], mediator);
+               
+               
+                $scope.$watch(function () {
+                    return $scope.infoPage.selectCloudType;
+                }, function () {
+                    var zuuid = $scope.infoPage.selectCloudType;
+                    if (Utils.notNullnotUndefined(zuuid)) {
+                        var qobj = new ApiHeader.QueryObject();
+                        qobj.conditions = [
+                            {
+                                name: 'cloudType',
+                                op: '=',
+                                value: zuuid
+                            }
+                        ];
+                        _this.pubAccountMgr.query(qobj, function (clusters) {
+                            _this.$scope.accountOptions__.dataSource.data(clusters);
+                        });
+                        _this.pubVmInstanceMgr.queryConf(zuuid, function (clusters,images) {
+                            _this.$scope.instanceOptions__.dataSource.data(clusters);
+                            _this.$scope.imageOptions__.dataSource.data(images);
+                        });
+                    }
+                });
+                
+               $scope.PubCloudTypeList = {
+                   dataSource: new kendo.data.DataSource({ data: [] }),
+                   dataTextField: "type",
+                   dataValueField: "type"
+               };
+                $scope.accountOptions__ = {
+                   dataSource: new kendo.data.DataSource({ data: [] }),
+                   dataTextField: "username",
+                   dataValueField: "uuid"
+               };
+                 
+                $scope.regionECSOptions__ = {
+                         dataSource: new kendo.data.DataSource({ data: [
+                                 {"value":"华北 2","id":"cn-beijing"},{"value":"华南 1","id":"cn-shenzhen"} 
+                             ] }),
+                         dataTextField: "value ",
+                         dataValueField: "id",
+                     };
+              
+              $scope.imageOptions__ = {
+                      dataSource: new kendo.data.DataSource({ data: [] })
+                  };
+              
+                $scope.instanceOptions__ = {
+                   dataSource: new kendo.data.DataSource({ data: [] }),
+                   dataTextField: "uuid ",
+                   dataValueField: "uuid",
+                   template: '<div style="color: black"><span class="z-label">CPU数量:</span><span>#: cpuNum #</span></div>' +
+                        '<div style="color: black"><span class="z-label">内存大小:</span><span>#: memory #</span></div>'
+               };
+               
+               $scope.cloudTypeOptions__ = {
+                    dataSource: new kendo.data.DataSource({ data: [] }),
+                    dataTextField: "name",
+                    dataValueField: "uuid",
+                    optionLabel: ""
+                };
+               $scope.winCreatePubVmInstanceOptions__ = {
+                   width: "700px",
+                   //height: "518px",
+                   animation: false,
+                   modal: true,
+                   draggable: false,
+                   resizable: false
+               };
+               _this.$scope = $scope;
+           };
+           this.restrict = 'EA';
+           this.replace = true;
+           this.templateUrl = '/static/templates/vm/createECSVm.html';
+       }
+       
+        CreatePubVmInstance.prototype.open = function () {
+           var _this = this;
+           var win = this.$scope.winCreatePubVmInstance__;
+           this.$scope.button.reset();
+           var chain = new Utils.Chain();
+           chain.then(function () {
+               _this.api.getPubCloudType(function (cloudTypes) {
+                   var types = [];
+                   angular.forEach(cloudTypes, function (item) {
+                       types.push({ type: item });
+                   });
+                   _this.$scope.PubCloudTypeList.dataSource.data(new kendo.data.ObservableArray(types));
+                   _this.$scope.model.cloudType = cloudTypes[0];
+                   chain.next();
+               });
+           }).then(function () {
+                chain.next();
+            }).done(function () {
+                win.center();
+                win.open();
+           }).start();
+
+       };
+       return CreatePubVmInstance;
+   }());
+ 
+   MPubVmInstance.CreatePubVmInstance = CreatePubVmInstance;
+})(MPubVmInstance || (MPubVmInstance = {}));
+
+angular.module('root').factory('PubVmInstanceManager', ['Api', '$rootScope', function (api, $rootScope) {
+       return new MPubVmInstance.PubVmInstanceManager(api, $rootScope);
+   }]).directive('zCreatePubvmInstance', ['Api', 'PubVmInstanceManager','PubAccountManager',
+   function (api, PubVmInstanceManager,pubAccountMgr) {
+       return new MPubVmInstance.CreatePubVmInstance(api, PubVmInstanceManager,pubAccountMgr);
+   }]).config(['$routeProvider', function (route) {
+       route.when('/PubVmInstance', {
+           templateUrl: '/static/templates/vm/vmPub.html',
+           controller: 'MPubVmInstance.Controller',
+            
+       });
+   }]);
+          
+
+
+          
+
+
+
 var MCluster;
 (function (MCluster) {
    var Cluster = (function (_super) {
@@ -9916,7 +11489,7 @@ var MCluster;
                         return false;
                     },
                     hasZone: function () {
-                        return $scope.zoneList.dataSource.data().length > 0;
+                        return $scope.ZoneList.dataSource.data().length > 0;
                     },
                     canMoveToNext: function () {
                         return Utils.notNullnotUndefined(this.name) && Utils.notNullnotUndefined(this.zoneUuid)
@@ -19644,7 +21217,6 @@ var MVmInstance;
               else {
            	  msg = new ApiHeader.APIDestroyVmPubInstanceMsg();
               }
-            
             
             msg.uuid = vm.uuid;
             this.api.asyncApi(msg, function (ret) {
